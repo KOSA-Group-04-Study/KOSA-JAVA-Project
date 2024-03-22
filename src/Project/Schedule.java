@@ -1,14 +1,18 @@
 package Project;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
+@Getter @Setter
 public class Schedule {
-    Seat[][] seats;
+    private Seat[][] seats;
+    private Integer empty;
 
-    LocalDateTime date; // 시작시간 -> 년월일
-
-    ScreeningTime screeningTime; // 시작 시간 -> ( 9,12,18 시 중 하나)
-
-
+    public Schedule(Seat[][] seats) {
+        this.seats = seats;
+        this.empty = 0;
+    }
 
 }
