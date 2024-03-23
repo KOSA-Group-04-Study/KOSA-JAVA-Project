@@ -1,7 +1,5 @@
 package Project;
 
-import Project.Manager.ConsoleOutputManager;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +14,7 @@ public class Application {
         Movie 엘리멘탈 = new Movie("엘리멘탈", 60, 25000);
         Movie 윙카 = new Movie("윙카", 60, 35000);
         Movie 서울의봄 = new Movie("서울의봄", 60, 45000);
+
 
         Schedule[][] schedules = new Schedule[3][3];
         for (int i = 0; i < 3; i++) {
@@ -57,6 +56,7 @@ public class Application {
         Cinema cinema = new Cinema();
         cinema.setMovieSchedule(data);
 
-        ConsoleOutputManager.printMovieScheduleList(cinema,"2024-03-22");
+        cinema.run();
+
     }
 }
