@@ -16,4 +16,8 @@ import java.util.List;
 public class Client extends User  {
     private Integer point; // 포인트
     private List<Reservation> reservationList;
+
+    public void setPoint(Integer point) {
+        this.point = point;
+    }
 }

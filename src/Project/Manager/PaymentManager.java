@@ -69,7 +69,9 @@ public final class PaymentManager {
             System.out.print("죄송합니다. 금액은 10000원 단위로 충전가능합니다.");
         }
         // 유저 금액에 대한 setter가 필요할듯?
-        user.
+        int changePoint = user.getPoint() + quantity;
+
+        user.setPoint(changePoint);
 
     }
 
