@@ -44,13 +44,10 @@ public final class AuthenticationManager {
                 if (id.equals(storedId) && password.equals(storedPassword)) {
                     // 빌더 패턴 적용해서 싹 넘기면 좋을텐데 왜 안되는거지
                     if (isAdmin == true) {
-               //         return Admin.builder().
+                    //    return Admin.builder().
                     }
                 }
-
             }
-
-
         } catch (FileNotFoundException e) {
             System.out.println("파일이 없습니다.");
             throw new RuntimeException(e);
@@ -83,9 +80,13 @@ public final class AuthenticationManager {
                     System.out.println("이메일 형식에 맞지 않습니다. 다시 진행 하시겠습니까?");
                     System.out.println("1 : 다시입력 / 2 : 메뉴로 돌아가기");
                     boolean answer = askForRetry();
-                    if (answer == false) {
+                    if (!answer) {
                         return;
                     }
+                }
+
+                if(validateEmailFormat(emailId, emailPattern)) {
+                    break;
                 }
             }
         }
@@ -102,9 +103,12 @@ public final class AuthenticationManager {
                 System.out.println("비밀번호 형식에 맞지 않습니다. 다시 진행 하시겠습니까?");
                 System.out.println("1 : 다시입력 / 2 : 메뉴로 돌아가기");
                 boolean answer = askForRetry();
-                if (answer == false) {
+                if (!answer) {
                      return;
                 }
+            }
+            if(validatePasswordFormat(password, emailPattern)) {
+                break;
             }
         }
 
@@ -120,15 +124,18 @@ public final class AuthenticationManager {
 
         while (check) {
             // 비밀번호 입력
-            String password = sc.nextLine();
+            String phoneNumber = sc.nextLine();
 
-            if(!validatePasswordFormat(password,passwordPattern)) {
+            if(!validatePhoneFormat(phoneNumber,phonePattern)) {
                 System.out.println("전화번호 형식에 맞지 않습니다. 다시 진행 하시겠습니까?");
                 System.out.println("1 : 다시입력 / 2 : 메뉴로 돌아가기");
                 boolean answer = askForRetry();
-                if (answer == false) {
+                if (!answer) {
                     return;
                 }
+            }
+            if(validatePhoneFormat(phoneNumber, emailPattern)) {
+                break;
             }
         }
 
@@ -144,7 +151,7 @@ public final class AuthenticationManager {
     }
 
 
-
+    // 다시 입력 여부 결정
     private static boolean askForRetry() {
         while(true) {
             String answer = sc.nextLine();
