@@ -8,11 +8,18 @@ import java.time.LocalDateTime;
 @Getter @Setter
 public class Schedule {
     private Seat[][] seats;
+    private Integer total;
     private Integer empty;
 
-    public Schedule(Seat[][] seats) {
-        this.seats = seats;
-        this.empty = 0;
+    public Schedule(Integer row, Integer col) {
+        this.seats = new Seat[row][col];
+        this.total = row * col;
+        this.empty = row * col;
     }
+
+//    public Schedule(Seat[][] seats) {
+//        this.seats = seats;
+//        this.empty = 0;
+//    }
 
 }

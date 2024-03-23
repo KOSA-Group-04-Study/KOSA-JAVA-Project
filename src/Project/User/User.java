@@ -11,11 +11,11 @@ import java.io.Serializable;
 
 @Getter
 public abstract class User implements Serializable {
-    private String email; // 로그인할떄 아이디
-    private String password;
-    private String name;
-    private String phoneNumber;
-    private boolean isAdmin;
+    protected String email; // 로그인할떄 아이디
+    protected String password;
+    protected String name;
+    protected String phoneNumber;
+    protected boolean isAdmin;
 }
 
 
