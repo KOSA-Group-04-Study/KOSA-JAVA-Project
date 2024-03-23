@@ -70,47 +70,68 @@ public final class AuthenticationManager {
         String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
         String passwordPattern = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{5,}$"; // 특수 문자 1개 이상 포함, 영어 대소문 1개씩 무조건, 숫자도 1개 이상 무조건 최소 5자 이상
         String phonePattern = "010-\\d{4}-\\d{4}";
+        boolean check = true;
 
-        while(true) {
-
+        while (check) {
             System.out.println("회원가입을 시작합니다.");
-            System.out.print("아이디를 입력하세요 : " );
+            System.out.print("아이디를 입력하세요 : ");
             // 이메일 입력
-            String emailId = sc.nextLine();
+            while (true) {
+                String emailId = sc.nextLine();
 
-            if(!validateEmailFormat(emailId ,emailPattern)) {
-                System.out.println("이메일 형식에 맞지 않습니다. 다시 입력해주세요.");
-                continue;
+                if (!validateEmailFormat(emailId, emailPattern)) {
+                    System.out.println("이메일 형식에 맞지 않습니다. 다시 진행 하시겠습니까?");
+                    System.out.println("1 : 다시입력 / 2 : 메뉴로 돌아가기");
+                    boolean answer = askForRetry();
+                    if (answer == false) {
+                        return;
+                    }
+                }
             }
+        }
 
-            System.out.println();
-            System.out.println("비밀번호는 숫자와 영어 그리고 특수 문자가 들어가며 5자 이상이어야합니다.");
-            System.out.print("비밀번호를 입력하세요 : " );
+
+        System.out.println("비밀번호는 숫자와 영어 그리고 특수 문자가 들어가며 5자 이상이어야합니다.");
+        System.out.print("비밀번호를 입력하세요 : " );
+
+        while (check) {
             // 비밀번호 입력
             String password = sc.nextLine();
 
             if(!validatePasswordFormat(password,passwordPattern)) {
-                System.out.println("비밀번호 형식에 맞지 않습니다. 이메일부터 다시 입력해주세요.");
-                continue;
+                System.out.println("비밀번호 형식에 맞지 않습니다. 다시 진행 하시겠습니까?");
+                System.out.println("1 : 다시입력 / 2 : 메뉴로 돌아가기");
+                boolean answer = askForRetry();
+                if (answer == false) {
+                     return;
+                }
             }
+        }
 
-            System.out.println();
-            System.out.println("이름을 입력해주세요.");
+        System.out.println();
+        System.out.println("이름을 입력해주세요.");
 
-            String name = sc.nextLine();
+        String name = sc.nextLine();
 
-            System.out.println();
-            System.out.println("전화번호는 010-xxxx-xxxx 형식으로 입력해주세요.");
-            System.out.println("전화번호를 입력해주세요. : ");
+        System.out.println();
+        System.out.println("전화번호는 010-xxxx-xxxx 형식으로 입력해주세요.");
+        System.out.println("전화번호를 입력해주세요. : ");
 
 
-            String phoneNumber = sc.nextLine();
+        while (check) {
+            // 비밀번호 입력
+            String password = sc.nextLine();
 
-            if(!validatePhoneFormat(phoneNumber,phonePattern)){
-                System.out.println("전화번호 형식에 맞지 않습니다. 이메일부터 다시 입력해주세요.");
-                continue;
-
+            if(!validatePasswordFormat(password,passwordPattern)) {
+                System.out.println("전화번호 형식에 맞지 않습니다. 다시 진행 하시겠습니까?");
+                System.out.println("1 : 다시입력 / 2 : 메뉴로 돌아가기");
+                boolean answer = askForRetry();
+                if (answer == false) {
+                    return;
+                }
             }
+        }
+
 
             // 빌더패턴이 안먹히네..??
             // User client = Client.builder()
@@ -120,8 +141,23 @@ public final class AuthenticationManager {
 
             writeUserInfoToFile();
 
-        }
+    }
 
+
+
+    private static boolean askForRetry() {
+        while(true) {
+            String answer = sc.nextLine();
+            if (answer.equals("1")) {
+                return true;
+            }
+            else if (answer.equals("2")) {
+                return false;
+            }
+            else {
+                System.out.println("1 또는 2만 입력해주세요.");
+            }
+        }
     }
 
 

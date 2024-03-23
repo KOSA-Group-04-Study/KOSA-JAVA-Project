@@ -65,11 +65,11 @@ public final class PaymentManager {
                 insertPoint((Client) user);
             }
 
-            if(inputData.equals("0")) {
+            else if(inputData.equals("0")) {
                 return;
             }
 
-            else{
+            else {
                 System.out.println("잘못된 입력입니다. 다시 입력해주세요.");
             }
         }
