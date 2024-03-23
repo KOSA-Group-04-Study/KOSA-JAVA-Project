@@ -9,20 +9,42 @@ public final class PaymentManager {
     //메소드는 스태틱
     static Scanner sc = new Scanner(System.in);
 
+    public static void payBack(User user, Integer price) {
+        // 결제 취소 -> 포인트 반환
+        Integer retrunPoint = ((Client) user).getPoint() + price;
+        ((Client) user).setPoint(retrunPoint);
+    }
 
-
-    public static boolean payPoint(User user,Integer price) {
+    public static void payPoint(User user,Integer price) {
         // 포인트 결제 -> 포인트 감소
-
-
-
         // 취소시 포인트 반환 -> 포인트 증가
 
-        //try catch finally
-        return false;
+        try {
+           Integer userPoint = ((Client) user).getPoint();
+           // 구매 가능 검증
+           validatePaymentCapability(userPoint, price);
+
+           userPoint -= price;
+           ((Client) user).setPoint(userPoint);
+            System.out.println();
+            System.out.println(" 결제완료 ");
+            System.out.println(user.getName() + "님의 포인트 잔액은 " + ((Client) user).getPoint() + " 입니다.");
+        }catch(IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    // 금액 부족 검증
+    private static void validatePaymentCapability(int userPoint, Integer price) throws IllegalArgumentException{
+        if( userPoint - price < 0 ) {
+            throw new IllegalArgumentException("결제가 불가능합니다. 포인트가 부족합니다.");
+        }
     }
 
 
+
+    // 포인트 관리
     public static void pointManage(User user) {  //포인트 조회 + 충전선택
 
 

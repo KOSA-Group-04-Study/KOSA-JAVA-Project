@@ -44,7 +44,7 @@ public final class AuthenticationManager {
                 if (id.equals(storedId) && password.equals(storedPassword)) {
                     // 빌더 패턴 적용해서 싹 넘기면 좋을텐데 왜 안되는거지
                     if (isAdmin == true) {
-                        return Admin.builder().
+               //         return Admin.builder().
                     }
                 }
 
@@ -68,7 +68,7 @@ public final class AuthenticationManager {
         // 여기서 아이디, 비밀번호 입력받고 정규표현식으로 체크  여기서 while , 파일쓰기도 해야함.
         // 유저 어떤식 저장될지 형식
         String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-        String passwordPattern = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{5,}$";; // 특수 문자 1개 이상 포함, 영어 대소문 1개씩 무조건, 숫자도 1개 이상 무조건 최소 5자 이상
+        String passwordPattern = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{5,}$"; // 특수 문자 1개 이상 포함, 영어 대소문 1개씩 무조건, 숫자도 1개 이상 무조건 최소 5자 이상
         String phonePattern = "010-\\d{4}-\\d{4}";
 
         while(true) {
@@ -113,7 +113,7 @@ public final class AuthenticationManager {
             }
 
             // 빌더패턴이 안먹히네..??
-            //User client = Client.builder().
+            // User client = Client.builder()
 
             // 파일쓰기 ㅇ--> 위에서 생성한 객체의 유저 정보를 넣는다.
             // 유저 정보 저장 로직이 어떻게 될지 모르겠는데. 유저 정보를 파라미터로 받아야하지 않나?
