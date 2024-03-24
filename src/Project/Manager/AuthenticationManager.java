@@ -55,7 +55,7 @@ public final class AuthenticationManager {
             throw new RuntimeException(e);
         }
 
-        //성공시 user객체 , 하기싫을때 null
+        //성공시 user객체 , 실패시 null
         return null;
     }
 
@@ -64,101 +64,98 @@ public final class AuthenticationManager {
     public static void Register() {
         // 여기서 아이디, 비밀번호 입력받고 정규표현식으로 체크  여기서 while , 파일쓰기도 해야함.
         // 유저 어떤식 저장될지 형식
-        String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        String emailPattern =  "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
         String passwordPattern = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{5,}$"; // 특수 문자 1개 이상 포함, 영어 대소문 1개씩 무조건, 숫자도 1개 이상 무조건 최소 5자 이상
         String phonePattern = "010-\\d{4}-\\d{4}";
-        boolean check = true;
+        System.out.println("회원가입을 시작합니다.");
 
-        while (check) {
-            System.out.println("회원가입을 시작합니다.");
-            System.out.print("아이디를 입력하세요 : ");
-            // 이메일 입력
-            while (true) {
-                String emailId = sc.nextLine();
+        String emailId = getEmailInput(emailPattern);
+        if(emailId ==null) return;
+        String password = getPasswordInput(passwordPattern);
+        if(password ==null) return;
+        String name = getNameInput();
+        String phoneNumber = getPhoneNumberInput(phonePattern);
+        if(phoneNumber ==null) return;
 
-                if (!validateEmailFormat(emailId, emailPattern)) {
-                    System.out.println("이메일 형식에 맞지 않습니다. 다시 진행 하시겠습니까?");
-                    System.out.println("1 : 다시입력 / 2 : 메뉴로 돌아가기");
-                    boolean answer = askForRetry();
-                    if (!answer) {
-                        return;
-                    }
-                }
 
-                if(validateEmailFormat(emailId, emailPattern)) {
-                    break;
+        System.out.println("회원가입 완료 ");
+        // 입력이 모두 완료되었을 때 파일에 유저 정보 저장
+        // 아님 User 생성자 생성 후에 ?? 넘겨주기??
+       // writeUserInfoToFile(emailId, password, name, phoneNumber);
+    }
+
+
+    // 이메일 입력을 받는 메소드
+    private static String getEmailInput(String emailPattern) {
+        while (true) {
+            System.out.print("아이디(이메일)를 입력하세요: ");
+            String emailId = sc.nextLine();
+
+            if (validateEmailFormat(emailId, emailPattern)) {
+                return emailId;
+            } else {System.out.println("이메일 형식에 맞지 않습니다. ");
+
+                if(!askForRetry()){
+                    return null; // 메뉴 돌아가기
                 }
             }
         }
+    }
 
 
-        System.out.println("비밀번호는 숫자와 영어 그리고 특수 문자가 들어가며 5자 이상이어야합니다.");
-        System.out.print("비밀번호를 입력하세요 : " );
-
-        while (check) {
-            // 비밀번호 입력
+    // 비밀번호 입력을 받는 메소드
+    private static String getPasswordInput(String passwordPattern) {
+        while (true) {
+            System.out.println("비밀번호는 숫자와 영어 그리고 특수 문자가 들어가며 5자 이상이어야합니다.");
+            System.out.print("비밀번호를 입력하세요: ");
             String password = sc.nextLine();
 
-            if(!validatePasswordFormat(password,passwordPattern)) {
-                System.out.println("비밀번호 형식에 맞지 않습니다. 다시 진행 하시겠습니까?");
-                System.out.println("1 : 다시입력 / 2 : 메뉴로 돌아가기");
-                boolean answer = askForRetry();
-                if (!answer) {
-                     return;
+            if (validatePasswordFormat(password, passwordPattern)) {
+                return password;
+            } else {System.out.println("비밀번호 형식에 맞지 않습니다. ");
+
+                if(!askForRetry()){
+                    return null; // 메뉴 돌아가기
                 }
             }
-            if(validatePasswordFormat(password, emailPattern)) {
-                break;
-            }
         }
+    }
 
-        System.out.println();
+    // 이름 입력을 받는 메소드
+    private static String getNameInput() {
         System.out.println("이름을 입력해주세요.");
-
-        String name = sc.nextLine();
-
-        System.out.println();
-        System.out.println("전화번호는 010-xxxx-xxxx 형식으로 입력해주세요.");
-        System.out.println("전화번호를 입력해주세요. : ");
+        return sc.nextLine();
+    }
 
 
-        while (check) {
-            // 비밀번호 입력
+    // 전화번호 입력을 받는 메소드
+    private static String getPhoneNumberInput(String phonePattern) {
+        while (true) {
+            System.out.println("전화번호는 010-xxxx-xxxx 형식으로 입력해주세요.");
+            System.out.print("전화번호를 입력해주세요: ");
             String phoneNumber = sc.nextLine();
 
-            if(!validatePhoneFormat(phoneNumber,phonePattern)) {
-                System.out.println("전화번호 형식에 맞지 않습니다. 다시 진행 하시겠습니까?");
-                System.out.println("1 : 다시입력 / 2 : 메뉴로 돌아가기");
-                boolean answer = askForRetry();
-                if (!answer) {
-                    return;
+            if (validatePhoneFormat(phoneNumber, phonePattern)) {
+                return phoneNumber;
+            } else {System.out.println("전화번호를 형식에 맞지 않습니다. ");
+
+                if(!askForRetry()){
+                    return null; // 메뉴 돌아가기
                 }
             }
-            if(validatePhoneFormat(phoneNumber, emailPattern)) {
-                break;
-            }
         }
-
-
-            // 빌더패턴이 안먹히네..??
-            // User client = Client.builder()
-
-            // 파일쓰기 ㅇ--> 위에서 생성한 객체의 유저 정보를 넣는다.
-            // 유저 정보 저장 로직이 어떻게 될지 모르겠는데. 유저 정보를 파라미터로 받아야하지 않나?
-
-            writeUserInfoToFile();
-
     }
 
 
     // 다시 입력 여부 결정
     private static boolean askForRetry() {
+        System.out.println("다시 입력하시려면 1을, 메뉴로 돌아가시려면 0을 입력해주세요.");
         while(true) {
             String answer = sc.nextLine();
             if (answer.equals("1")) {
                 return true;
             }
-            else if (answer.equals("2")) {
+            else if (answer.equals("0")) {
                 return false;
             }
             else {
@@ -171,7 +168,7 @@ public final class AuthenticationManager {
     // 전화번호 형식에 맞춰서 입력 패턴 확인.
     private static boolean validatePhoneFormat(String phoneNumber, String phonePattern) {
         Pattern pattern = Pattern.compile(phonePattern);
-        Matcher matcher = pattern.matcher(phonePattern);
+        Matcher matcher = pattern.matcher(phoneNumber);
         return matcher.matches();
     }
 
