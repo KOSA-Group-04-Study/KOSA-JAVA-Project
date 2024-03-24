@@ -6,16 +6,10 @@ import Project.User.User;
 import java.util.ArrayList;
 import java.util.List;
 
+//전체 유저정보 확인 임시 클래스
+//전체 유저정보를 출력
 public class UserPrinter {
     public static void main(String[] args) {
-        // 임시 유저 정보 생성
-        List<User> users = new ArrayList<>();
-        //users.add(new User("user1@naver.com", "password1", "User 1", "01012345678", false));
-        //users.add(new User("user2@gmail.com", "password2", "User 2", "01012345679", false));
-        //users.add(new User("admin@gmail.com", "adminpassword", "Admin", "01012345670", true));
-
-        // 파일에 유저 정보 저장
-        FileDataManager.writeUserInfoToFile(users);
 
         // 파일에서 유저 정보 읽기
         List<User> readUsers = FileDataManager.readUserInfoFromFile();
@@ -24,11 +18,11 @@ public class UserPrinter {
         if (readUsers != null) {
             System.out.println("전체 유저 정보:");
             for (User user : readUsers) {
-                System.out.println("Email: " + user.getEmail());
-                System.out.println("Password: " + user.getPassword());
-                System.out.println("Name: " + user.getName());
-                System.out.println("Phone Number: " + user.getPhoneNumber());
-                System.out.println("Is Admin: " + user.isAdmin());
+                System.out.println("아이디: " + user.getEmail());
+                System.out.println("비밀번호: " + user.getPassword());
+                System.out.println("이름: " + user.getName());
+                System.out.println("전화번호: " + user.getPhoneNumber());
+                System.out.println("관리자 여부: " + user.isAdmin());
                 System.out.println("-----------------------");
             }
         } else {

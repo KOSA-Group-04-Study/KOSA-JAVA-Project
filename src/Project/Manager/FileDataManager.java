@@ -79,6 +79,8 @@ public final class FileDataManager {
     }
 
 
+
+
     //파일읽기 -> (전체)유저정보 읽기
     public static List<User> readUserInfoFromFile() {
         try (FileInputStream fis = new FileInputStream(USER_INFO_FILE_PATH);
