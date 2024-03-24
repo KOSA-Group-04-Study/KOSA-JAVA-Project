@@ -3,7 +3,7 @@ package Project;
 import Project.User.User;
 import lombok.AllArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 public class Reservation {
@@ -11,5 +11,5 @@ public class Reservation {
     User user; // 고객
     Movie movie;// 영화
     Seat seat ; // 예매한 좌석
-    LocalDateTime date; // 날짜
+    LocalDate date; // 날짜
 }
