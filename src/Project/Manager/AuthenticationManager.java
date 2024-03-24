@@ -54,7 +54,6 @@ public final class AuthenticationManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         //성공시 user객체 , 하기싫을때 null
         return null;
     }
@@ -104,7 +103,7 @@ public final class AuthenticationManager {
                 System.out.println("1 : 다시입력 / 2 : 메뉴로 돌아가기");
                 boolean answer = askForRetry();
                 if (!answer) {
-                     return;
+                    return;
                 }
             }
             if(validatePasswordFormat(password, emailPattern)) {
@@ -140,13 +139,12 @@ public final class AuthenticationManager {
         }
 
 
-            // 빌더패턴이 안먹히네..??
-            // User client = Client.builder()
+        // 빌더패턴이 안먹히네..??
+        // User client = Client.builder()
 
-            // 파일쓰기 ㅇ--> 위에서 생성한 객체의 유저 정보를 넣는다.
-            // 유저 정보 저장 로직이 어떻게 될지 모르겠는데. 유저 정보를 파라미터로 받아야하지 않나?
-
-            writeUserInfoToFile();
+        // 파일쓰기 ㅇ--> 위에서 생성한 객체의 유저 정보를 넣는다.
+        // 유저 정보 저장 로직이 어떻게 될지 모르겠는데. 유저 정보를 파라미터로 받아야하지 않나?
+        
 
     }
 

@@ -15,6 +15,11 @@ import java.util.List;
 public class Admin extends User {
 
 
+    public Admin(String email, String password, String name, String phoneNumber, boolean isAdmin) {
+        super(email, password, name, phoneNumber, isAdmin);
+    }
+
+
     // 영화를 상영스케줄에 등록
     public void addMovieToSchedule() {
         MovieScheduleManager.registerMovieToSchedule();
