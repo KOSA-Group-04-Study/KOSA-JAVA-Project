@@ -29,6 +29,10 @@ public final class PaymentManager {
             System.out.println();
             System.out.println(" 결제완료 ");
             System.out.println(user.getName() + "님의 포인트 잔액은 " + ((Client) user).getPoint() + " 입니다.");
+            // 파일 쓰기
+
+
+
         }catch(IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
@@ -90,10 +94,15 @@ public final class PaymentManager {
         if (!ValidationQuantity(quantity)) {
             System.out.print("죄송합니다. 금액은 10000원 단위로 충전가능합니다.");
         }
-        // 유저 금액에 대한 setter가 필요할듯?
+
         int changePoint = user.getPoint() + quantity;
 
         user.setPoint(changePoint);
+
+        // 파일 쓰기
+
+
+
 
     }
 
