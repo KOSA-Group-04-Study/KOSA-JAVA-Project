@@ -1,8 +1,10 @@
 package Project;
 
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 
+@ToString
 public class Movie {
     String title;
     Integer runningTime;
