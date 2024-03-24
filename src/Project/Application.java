@@ -1,10 +1,9 @@
 package Project;
 
-import Project.Manager.FileDataManager;
+import Project.User.Client;
+import Project.User.User;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Application {
@@ -24,28 +23,32 @@ public class Application {
         for (int i = 0; i < 3; i++) {
             schedules[i] = new Schedule[3];
             for (int j = 0; j < 3; j++) {
-                schedules[i][j] = new Schedule(new Seat[5][5]);
+                schedules[i][j] = new Schedule(5, 5);
+                //schedules[i][j] = new Schedule(new Seat[5][5]);
             }
         }
         Schedule[][] schedules2 = new Schedule[3][3];
         for (int i = 0; i < 3; i++) {
             schedules2[i] = new Schedule[3];
             for (int j = 0; j < 3; j++) {
-                schedules2[i][j] = new Schedule(new Seat[5][5]);
+                schedules2[i][j] = new Schedule(5, 5);
+                //schedules2[i][j] = new Schedule(new Seat[5][5]);
             }
         }
         Schedule[][] schedules3 = new Schedule[3][3];
         for (int i = 0; i < 3; i++) {
             schedules3[i] = new Schedule[3];
             for (int j = 0; j < 3; j++) {
-                schedules3[i][j] = new Schedule(new Seat[5][5]);
+                schedules3[i][j] = new Schedule(5, 5);
+                //schedules3[i][j] = new Schedule(new Seat[5][5]);
             }
         }
         Schedule[][] schedules4 = new Schedule[3][3];
         for (int i = 0; i < 3; i++) {
             schedules4[i] = new Schedule[3];
             for (int j = 0; j < 3; j++) {
-                schedules4[i][j] = new Schedule(new Seat[5][5]);
+                schedules[i][j] = new Schedule(5, 5);
+                //schedules4[i][j] = new Schedule(new Seat[5][5]);
             }
         }
 
@@ -56,13 +59,10 @@ public class Application {
 
         data.put("2024-03-22", data1);
 
-
         Cinema cinema = new Cinema();
         cinema.setMovieSchedule(data);
 
         cinema.run();
 
     }
-
-
 }

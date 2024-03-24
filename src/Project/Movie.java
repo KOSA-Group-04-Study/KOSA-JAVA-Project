@@ -3,10 +3,8 @@ package Project;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.io.Serializable;
 @Getter
-
-public class Movie implements Serializable {
+public class Movie {
     String title;
     Integer runningTime;
     Integer price;
@@ -15,6 +13,10 @@ public class Movie implements Serializable {
         this.title = title;
         this.runningTime = runningTime;
         this.price = price;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }
 
