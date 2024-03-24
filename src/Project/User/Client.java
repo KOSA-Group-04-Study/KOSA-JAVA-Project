@@ -12,7 +12,7 @@ import java.util.List;
 
 @Builder
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+
 public class Client extends User  {
     private Integer point; // 포인트
     private List<Reservation> reservationList;
