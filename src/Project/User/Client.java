@@ -6,14 +6,24 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.io.Serializable;
+
 import java.util.List;
 
 
-@Builder
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+//@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Client extends User  {
     private Integer point; // 포인트
     private List<Reservation> reservationList;
+
+    public Client(String email, String password, String name, String phoneNumber, boolean isAdmin, Integer point, List<Reservation> reservationList) {
+        super(email, password, name, phoneNumber, isAdmin);
+        this.point = point;
+        this.reservationList = reservationList;
+    }
+
+
+    public void setPoint(Integer point) {
+        this.point = point;
+    }
 }

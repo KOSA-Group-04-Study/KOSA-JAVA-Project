@@ -5,13 +5,20 @@ import Project.Manager.MovieScheduleManager;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.io.Serializable;
 import java.util.List;
 
-@Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
+//@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Admin extends User {
+
+
+    public Admin(String email, String password, String name, String phoneNumber, boolean isAdmin) {
+        super(email, password, name, phoneNumber, isAdmin);
+    }
+
 
     // 영화를 상영스케줄에 등록
     public void addMovieToSchedule() {
