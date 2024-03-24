@@ -3,6 +3,8 @@ package Project.Manager;
 import Project.User.Client;
 import Project.User.User;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public final class PaymentManager {
@@ -59,7 +61,6 @@ public final class PaymentManager {
         System.out.println(user.getName() + " 님의 포인트는 " +  ((Client) user).getPoint() + " 입니다" );
 
         while(true){
-            boolean check = true;
             System.out.println();
             System.out.println("충전을 원하시면 1을 입력해주시고, 0을 입력하면 메뉴로 돌아갑니다.");
 
@@ -100,9 +101,18 @@ public final class PaymentManager {
         user.setPoint(changePoint);
 
         // 파일 쓰기
-
-
-
+        // 사용자 정보 읽어오기
+        List<User> existingUsers = new ArrayList<>(FileDataManager.readUserInfoFromFile());
+        // 입력받은 데이터와 일치하는 파일 정보 찾아 포인트 변환 내용 적용
+        for (User existingUser : existingUsers) {
+            if(existingUser.getEmail().equals(user.getEmail())){
+                Client client = (Client)existingUser;
+                client.setPoint(changePoint);
+                break;
+            }
+        }
+        // 파일에 변경된 사용자 정보 덮어씌우기.
+        FileDataManager.writeUserInfoToFile(existingUsers);
 
     }
 
