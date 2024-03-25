@@ -1,5 +1,6 @@
 package Project.User;
 
+import Project.Manager.FileDataManager;
 import Project.Reservation;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,6 +23,7 @@ public class Client extends User  {
         this.point = point;
         this.reservationList = reservationList;
     }
+
 
 
     public void setPoint(Integer point) {

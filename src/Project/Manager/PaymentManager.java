@@ -38,7 +38,7 @@ public final class PaymentManager {
 
             // 파일 쓰기
             // 사용자 정보 읽어오기
-            List<User> existingUsers = new ArrayList<>(FileDataManager.readUserInfoFromFile());
+            List<Client> existingUsers = new ArrayList<>(FileDataManager.readUserInfoFromFile());
             // 입력받은 데이터와 일치하는 파일 정보 찾아 포인트 변환 내용 적용
             for (User existingUser : existingUsers) {
                 if(existingUser.getEmail().equals(user.getEmail())){
@@ -69,14 +69,17 @@ public final class PaymentManager {
 
 
     // 포인트 관리
-    public static void pointManage(Client user) {  //포인트 조회 + 충전선택
+    public static void pointManage(User user) {  //포인트 조회 + 충전선택
 
-
+        if (user == null) {
+            System.out.println("사용자 정보가 없습니다.");
+            return;
+        }
 
         System.out.println("안녕하세요. " + user.getName() + " 님의 포인트 정보를 알려드리겠습니다.");
 
         // 지금 포인트는 -> ? 입니다. 충전하려면 1을 누르세요 , 나가려면 ~  do while, while
-        System.out.println(user.getName() + " 님의 포인트는 " +  user.getPoint() + " 입니다" );
+        System.out.println(user.getName() + " 님의 포인트는 " +  ((Client)user).getPoint() + " 입니다" );
 
         while(true){
             System.out.println();
@@ -85,7 +88,7 @@ public final class PaymentManager {
             String inputData = sc.nextLine().trim();
 
             if(inputData.equals("1")){
-                insertPoint( user);
+                insertPoint( (Client) user);
             }
 
             else if(inputData.equals("0")) {
@@ -116,11 +119,11 @@ public final class PaymentManager {
 
         // 파일 쓰기
         // 사용자 정보 읽어오기
-        List<User> existingUsers = new ArrayList<>(FileDataManager.readUserInfoFromFile());
+        List<Client> existingUsers = new ArrayList<>(FileDataManager.readUserInfoFromFile());
         // 입력받은 데이터와 일치하는 파일 정보 찾아 포인트 변환 내용 적용
-        for (User existingUser : existingUsers) {
+        for (Client existingUser : existingUsers) {
             if(existingUser.getEmail().equals(user.getEmail())){
-                Client client = (Client)existingUser;
+                Client client = existingUser;
                 client.setPoint(changePoint);
                 break;
             }

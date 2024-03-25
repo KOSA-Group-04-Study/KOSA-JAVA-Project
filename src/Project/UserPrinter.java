@@ -1,6 +1,7 @@
 package Project;
 
 import Project.Manager.FileDataManager;
+import Project.User.Client;
 import Project.User.User;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class UserPrinter {
     public static void main(String[] args) {
 
         // 파일에서 유저 정보 읽기
-        List<User> readUsers = FileDataManager.readUserInfoFromFile();
+        List<Client> readUsers = FileDataManager.readUserInfoFromFile();
 
         // 읽어온 유저 정보 출력
         if (readUsers != null) {
