@@ -2,6 +2,7 @@ package Project.Manager;
 
 import Project.User.Client;
 import Project.User.User;
+import org.w3c.dom.ls.LSOutput;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,7 @@ public final class PaymentManager {
 
 
         user = (Client) user;
+
         System.out.println("안녕하세요. " + user.getName() + " 님의 포인트 정보를 알려드리겠습니다.");
 
         // 지금 포인트는 -> ? 입니다. 충전하려면 1을 누르세요 , 나가려면 ~  do while, while
@@ -93,9 +95,16 @@ public final class PaymentManager {
         int quantity =0;
         while (true) {
             try {
+                System.out.print("금액을 입력해주세요 : ");
                 quantity = Integer.parseInt(sc.nextLine());
                 if (!ValidationQuantity(quantity)) {
                     System.out.println("죄송합니다. 금액은 10000원 단위로 충전가능합니다.");
+                    System.out.println("충전을 원하시면 1을 입력해주시고, 0을 입력하면 메뉴로 돌아갑니다.");
+                    String choice = sc.nextLine().trim();
+
+                    if (choice.equals("0")){
+                        return;
+                    }
                     continue;
                 }
                 break;
@@ -103,7 +112,6 @@ public final class PaymentManager {
                 System.out.println("숫자를 입력해주세요");
             }
         }
-
 
 
 

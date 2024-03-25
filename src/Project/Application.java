@@ -39,14 +39,16 @@ public class Application {
         FileDataManager.writeMovieScheduleToFile(data);
 
         //관리자 테스트용 파일
-        List<User> list = new ArrayList<>();
-        list.add(new Client("q@naver.com", "1q2w3e4r!", "a", "010-1234-1234", true,0,new ArrayList<>()));
-        list.add(new Admin("q2@naver.com", "1q2w3e4r!", "a", "010-1234-1234", true));
-        FileDataManager.writeUserInfoToFile(list);
-        System.out.println("데이터가 성공적으로 파일에 저장되었습니다.");
+//        List<User> list = new ArrayList<>();
+//        list.add(new Client("q@naver.com", "1q2w3e4r!", "a", "010-1234-1234", false,0,new ArrayList<>()));
+//        list.add(new Admin("q2@naver.com", "1q2w3e4r!", "a", "010-1234-1234", true));
+//        FileDataManager.writeUserInfoToFile(list);
+//        System.out.println("데이터가 성공적으로 파일에 저장되었습니다.");
 
         Cinema cinema = new Cinema();
+
         //cinema.setMovieSchedule(data);
+
         cinema.run();
     }
 
