@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ReservationManager {
     // 상영관 및 시간대 정보
@@ -106,12 +107,11 @@ public class ReservationManager {
             if (!sc.nextLine().equals("Y")) break;
         } while (true);
 
-        //아래는 다른 기능 테스트를 위한 임시 코드로 추후 제거
+        //아래는 예매 조회 기능 테스트를 위한 임시 코드로 추후 제거
         getReservation(client);
 
         //Map<String, Map<Movie, Schedule[][]>> stringMapMap = FileDataManager.readMovieScheduleFromFile();
     }
-
 
     //입력받은 날짜의 상영정보를 보여준다
     public static void getMovieSchedules(Map<Movie, Schedule[][]> movieMap, Map<Integer, MovieScreaningInfo> scheduleNumbersMap ) {
@@ -235,7 +235,7 @@ public class ReservationManager {
         }
         return sb.toString().toUpperCase();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     //2) 예매 조회하기
     public static void getReservation(User user) {
         Scanner sc = new Scanner(System.in);
@@ -244,26 +244,70 @@ public class ReservationManager {
         List<Reservation> reservationList = client.getReservationList();
         String menu = "";
         do {
-            System.out.println("전체 예매조회 - 1");
-            System.out.println("기간별 예매조회 - 2"); //영화를 예매한 날짜에 대해
-            System.out.println("영화별 전체조회 - 3");
-            System.out.println("메뉴로 돌아가기 - 0");
+            System.out.println("전체 예매조회 - [1]");
+            System.out.println("기간별 예매조회 - [2]"); //영화를 예매한 날짜에 대해
+            System.out.println("영화별 전체조회 - [3]");
+            System.out.println("메뉴로 돌아가기 - [0]");
             System.out.print("메뉴를 선택해주세요 : ");
             menu = sc.nextLine();
 
             switch (menu) {
-                case "1":
-                    //전체 예매 조회
-                    //getAllReservations(reservationList)
+                case "1":   //전체 예매 조회
+                    getAllReservations(reservationList);
                     break;
                 case "2":
                     //기간별 예매조회
-                    //getReservationsByPeriod(reservationList)
-                    //기간별 조회는 최근 1개월, 사용자 기간 지정
+                    String periodMenu = "";
+                    do {
+                        System.out.println("최근 1개월 조회 - [1]");
+                        System.out.println("지정 기간 조회 - [2]");
+                        System.out.println("뒤로가기 - [-1]");
+                        System.out.println("메뉴로 돌아가기 - [0]");
+                        periodMenu = sc.nextLine();
+                        //예외처리
+
+                        String[] findPeriod = new String[2];    //조회 기간 [시작 날짜, 끝날짜]
+                        String findDate = "";
+                        //한달 전 기간 찾기
+                        switch (periodMenu) {
+                            case "1":
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                                findPeriod[0] = LocalDate.now().minusMonths(1).format(formatter);   //현재 날짜 기준 한달전
+                                findPeriod[1] = LocalDate.now().format(formatter);  //현재 날짜
+                                getReservationsByPeriod(reservationList, findPeriod);   //해당 기간의 예매 정보 출력
+                                break;
+                            case "2":
+                                System.out.println("시작 날짜 입력 ex) 2024-03-23");
+                                findDate = sc.nextLine();
+                                //날짜 예외 처리 필요 -> 예외처리 후 저장
+                                findPeriod[0] = findDate;
+
+                                System.out.println("끝 날짜 입력 ex) 2024-03-23");
+                                findDate = sc.nextLine();
+                                //날짜 예외 처리 필요 -> 예외처리 후 저장
+                                findPeriod[1] = findDate;
+                                getReservationsByPeriod(reservationList, findPeriod);   //해당 기간의 예매 정보 출력
+                                break;
+                            case "-1":
+                                System.out.println("예매 조회 메뉴로 돌아갑니다.");
+                                break;
+                            case "0":
+                                System.out.println("메인 메뉴로 돌아갑니다.");
+                                menu = periodMenu;
+                                break;
+                            default:
+                                System.out.println("잘못된 입력입니다.");
+                        }
+                    } while(!(periodMenu.equals("0") || periodMenu.equals("-1")));
                     break;
+                //getReservationsByPeriod(reservationList);
+                //기간별 조회는 최근 1개월, 사용자 기간 지정
                 case "3":
                     //영화의 예매조회
-                    //getReservationsForMovie
+                    String movieTitleToFilter = "";
+                    System.out.printf("영화 제목 입력 ex) 서울의봄 : ");
+                    movieTitleToFilter = sc.nextLine();
+                    getReservationsForMovie(reservationList, movieTitleToFilter);
                     break;
                 case "0":
                     System.out.println("메뉴로 돌아갑니다.\n");
@@ -272,14 +316,59 @@ public class ReservationManager {
                     System.out.println("올바른 입력이 아닙니다.\n");
             }
         } while (!menu.equals("0"));
+    }
 
+    //전체 예매 조회
+    private static void getAllReservations(List<Reservation> reservationList) {
         for (Reservation reservation : reservationList) {
             System.out.println(reservation);
         }
         System.out.println();
-
     }
 
+    //기간 별 예매 조회(예매 날짜 기준)
+    private static void getReservationsByPeriod(List<Reservation> reservationList, String[] findPeriod) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(findPeriod[0], formatter);
+        LocalDate endDate = LocalDate.parse(findPeriod[1], formatter);
+
+        List<Reservation> filteredReservationList = reservationList.stream()
+                        .filter(reservation -> {
+                            LocalDate reservationDate = reservation.getReservationDate().toLocalDate();
+                            return (reservationDate.isEqual(startDate) || reservationDate.equals(endDate) ||
+                                    (reservationDate.isAfter(startDate) && reservationDate.isBefore(endDate)));
+                        })
+                        .toList();
+
+        // 필터링된 예약 리스트 출력
+        System.out.printf("=== 예약 목록 (%s - %s) ===\n", findPeriod[0], findPeriod[1]);
+        if (filteredReservationList.isEmpty()) {
+            System.out.println("해당 가긴의 예매 내역을 찾을 수 없습니다.");
+        } else {
+            for (Reservation reservation : filteredReservationList) {
+                System.out.println(reservation);
+            }
+        }
+    }
+
+    //특정 영화 예매 조회
+    private static void getReservationsForMovie(List<Reservation> reservationList, String movieTitleToFilter) {
+        List<Reservation> filteredReservationList = reservationList.stream()
+                        .filter(reservation -> reservation.getMovie().getTitle().equals(movieTitleToFilter))
+                        .toList();
+        // 필터링된 예약 리스트 출력
+        System.out.println("=== " + movieTitleToFilter + " 예약 목록 ===");
+        if (filteredReservationList.isEmpty()) {
+            System.out.println("해당 영화의 예매 내역을 찾을 수 없습니다.");
+        } else {
+            for (Reservation reservation : filteredReservationList) {
+                System.out.println(reservation);
+            }
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     //3) 예매 취소하기
     public static void deleteReservation(User user) {
         //유저 정보로부터 유저가 가지고 있는 예약 정보 출력

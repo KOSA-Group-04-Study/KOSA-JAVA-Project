@@ -3,12 +3,14 @@ package Project;
 import Project.User.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Builder
+@Getter
 @AllArgsConstructor
 public class Reservation {
     private LocalDateTime reservationDate;  //영화 예매 날짜
