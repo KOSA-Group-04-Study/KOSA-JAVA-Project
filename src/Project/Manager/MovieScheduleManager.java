@@ -255,7 +255,7 @@ public class MovieScheduleManager {
                 schedules[i] = new Schedule[SCREENING_TIMES.length];
             }
         }
-        movieSchedules.get(selectedDate).get(movie)[theaterNum][screenTimeNum] = new Schedule();
+        movieSchedules.get(selectedDate).get(movie)[theaterNum][screenTimeNum] = new Schedule(5,5);
     }
 
     private static void deleteDataFromMovieSchedule(String selectedDate,Movie movie,int theaterNum, int screenTimeNum ) {

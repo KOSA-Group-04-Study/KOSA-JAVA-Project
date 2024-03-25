@@ -7,13 +7,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
 @Getter
 //@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Admin extends User {
-
+public class Admin extends User implements Serializable{
 
     public Admin(String email, String password, String name, String phoneNumber, boolean isAdmin) {
         super(email, password, name, phoneNumber, isAdmin);
@@ -39,7 +39,7 @@ public class Admin extends User {
 
     //회원 정보 조회
     public void getUserInfo() {
-        List<Client> users = FileDataManager.readUserInfoFromFile();
+        List<User> users = FileDataManager.readUserInfoFromFile();
         // 뿌리기
     }
 
