@@ -62,7 +62,7 @@ public class Cinema { // 영화관
         else clientMenu(user);
     }
 
-    private void clientMenu(User user) {
+    private static void clientMenu(User user) {
 
         String inputData = "";
         Client client = null;

@@ -198,21 +198,21 @@ public final class AuthenticationManager {
     }
 
 
-    // 전화번호 형식에 맞춰서 입력 패턴 확인.
+    // 전화번호 형식에 맞춰서 입력 패턴 확인
     private static boolean validatePhoneFormat(String phoneNumber, String phonePattern) {
         Pattern pattern = Pattern.compile(phonePattern);
         Matcher matcher = pattern.matcher(phoneNumber);
         return matcher.matches();
     }
 
-    // 비밀번호 형식에 맞춰서 입력 패턴 확인.
+    // 비밀번호 형식에 맞춰서 입력 패턴 확인
     private static boolean validatePasswordFormat(String password, String passwordPattern) {
         Pattern pattern = Pattern.compile(passwordPattern);
         Matcher matcher = pattern.matcher(password);
         return matcher.matches();
     }
 
-    // 이메일 형식에 맞춰서 입력 패턴 확인.
+    // 이메일 형식에 맞춰서 입력 패턴 확인
     public static boolean validateEmailFormat(String emailId, String emailPattern) {
         Pattern pattern = Pattern.compile(emailPattern);
         Matcher matcher = pattern.matcher(emailId);
