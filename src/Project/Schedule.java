@@ -18,6 +18,14 @@ public class Schedule implements Serializable {
         this.empty = row * col;
     }
 
+    public void seatCountDown() {
+        this.empty--;
+    }
+
+    public void seatCountUp() {
+        this.empty++;
+    }
+
 //    public Schedule(Seat[][] seats) {
 //        this.seats = seats;
 //        this.empty = 0;
