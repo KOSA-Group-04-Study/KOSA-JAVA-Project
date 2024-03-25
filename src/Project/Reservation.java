@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 @Builder
 @Getter
 @AllArgsConstructor
-public class Reservation {
+public class Reservation implements Serializable{
     private LocalDateTime reservationDate;  //영화 예매 날짜
     private String reservationNumber;       //예매번호 -> [(날짜16진수)-(상영관, 좌석정보)-(랜덤문자)-(랜덤문자)]
     private User user;                      //고객
@@ -39,5 +41,4 @@ public class Reservation {
                 (seat.col + 1) + "번" + "]",
                 "영화제목: [" + movie.getTitle() + "]");
     }
-
 }

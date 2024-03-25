@@ -4,7 +4,6 @@ import Project.*;
 import Project.User.Client;
 import Project.User.User;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,8 +16,13 @@ public class ReservationManager {
 
     //1) 예매하기
     public static void makeMovieReservation(User user) {
-        Client client = (Client) FileDataManager.readUserInfoFromFile(); //(임시)더미데이터 -> 나중엔 user로 변경
-        Map<String, Map<Movie,Schedule[][]>> data = FileDataManager.readMovieScheduleFromFile(); //(임시)더미데이터 -> 나중에 파일 읽어와야 함.
+        System.out.println(user.getName());
+        Client client = (Client) user; //(임시)더미데이터 -> 나중엔 user로 변경
+
+//        Map<String, Map<Movie,Schedule[][]>> data = tempMovieShedule(); //(임시)더미데이터 -> 나중에 파일 읽어와야 함.
+        Map<String, Map<Movie,Schedule[][]>> data = FileDataManager.readMovieScheduleFromFile();    // MovieSchedule.txt
+        List<User> usersList = FileDataManager.readUserInfoFromFile();                              //유저정보읽기
+        List<Reservation> reservationsList = FileDataManager.readReservationsFromFile();            //예매 정보 읽기
 
         Map<Integer, MovieScreaningInfo> scheduleNumbersMap = new HashMap<Integer, MovieScreaningInfo>();   //Schedule에 넘버링
 
@@ -97,28 +101,45 @@ public class ReservationManager {
             for (Reservation r : client.getReservationList()) {
                 System.out.println(r);
             }
+
             //7. 파일 덮어쓰기
             //MovieSchedule.txt
-            //Reservations.txt
-            // 파일 덮어쓰기 작업 수행
-            //FileDataManager.writeReservationToFile(client.getReservationList());
+            FileDataManager.writeMovieScheduleToFile(data);
 
-            // 예매 정보 추가 및 출력
-            ReservationManager.addReservationToFileAndPrint(user);
+            //Reservations.txt
+            if (reservationsList == null) {
+                reservationsList = new LinkedList<>();
+            }
+            reservationsList.add(myReservation);
+            FileDataManager.writeReservationToFile(reservationsList);
 
             //Users.txt
+            if (usersList == null) {
+                usersList = new LinkedList<>();
+                usersList.add(user);
+            } else {
 
+            }
+
+//            List<User> filteredUsersList = usersList.stream().filter(finduser -> finduser.getName().equals(user.getName())).toList();
+            usersList.stream().filter(finduser -> finduser.getEmail()
+                            .equals(user.getEmail()))
+                    .findFirst()
+                    .ifPresent(finduser -> ((Client) finduser).getReservationList().add(myReservation));
+            for (User u : usersList) {
+                Client a = (Client) u;
+                System.out.printf("%s\t%s\n", a.getEmail(), a.getReservationList().toString());
+            }
 
             System.out.println("다시 예매하시겠습니까? (Y/N)"); // 이거 지우기
             if (!sc.nextLine().equals("Y")) break;
         } while (true);
 
-        //아래는 다른 기능 테스트를 위한 임시 코드로 추후 제거
-        getReservation(client);
+        //아래는 예매 조회 기능 테스트를 위한 임시 코드로 추후 제거
+//        getReservation(client);
 
         //Map<String, Map<Movie, Schedule[][]>> stringMapMap = FileDataManager.readMovieScheduleFromFile();
     }
-
 
     //입력받은 날짜의 상영정보를 보여준다
     public static void getMovieSchedules(Map<Movie, Schedule[][]> movieMap, Map<Integer, MovieScreaningInfo> scheduleNumbersMap ) {
@@ -242,7 +263,7 @@ public class ReservationManager {
         }
         return sb.toString().toUpperCase();
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     //2) 예매 조회하기
     public static void getReservation(User user) {
         Scanner sc = new Scanner(System.in);
@@ -251,26 +272,70 @@ public class ReservationManager {
         List<Reservation> reservationList = client.getReservationList();
         String menu = "";
         do {
-            System.out.println("전체 예매조회 - 1");
-            System.out.println("기간별 예매조회 - 2"); //영화를 예매한 날짜에 대해
-            System.out.println("영화별 전체조회 - 3");
-            System.out.println("메뉴로 돌아가기 - 0");
+            System.out.println("전체 예매조회 - [1]");
+            System.out.println("기간별 예매조회 - [2]"); //영화를 예매한 날짜에 대해
+            System.out.println("영화별 전체조회 - [3]");
+            System.out.println("메뉴로 돌아가기 - [0]");
             System.out.print("메뉴를 선택해주세요 : ");
             menu = sc.nextLine();
 
             switch (menu) {
-                case "1":
-                    //전체 예매 조회
-                    //getAllReservations(reservationList)
+                case "1":   //전체 예매 조회
+                    getAllReservations(reservationList);
                     break;
                 case "2":
                     //기간별 예매조회
-                    //getReservationsByPeriod(reservationList)
-                    //기간별 조회는 최근 1개월, 사용자 기간 지정
+                    String periodMenu = "";
+                    do {
+                        System.out.println("최근 1개월 조회 - [1]");
+                        System.out.println("지정 기간 조회 - [2]");
+                        System.out.println("뒤로가기 - [-1]");
+                        System.out.println("메뉴로 돌아가기 - [0]");
+                        periodMenu = sc.nextLine();
+                        //예외처리
+
+                        String[] findPeriod = new String[2];    //조회 기간 [시작 날짜, 끝날짜]
+                        String findDate = "";
+                        //한달 전 기간 찾기
+                        switch (periodMenu) {
+                            case "1":
+                                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                                findPeriod[0] = LocalDate.now().minusMonths(1).format(formatter);   //현재 날짜 기준 한달전
+                                findPeriod[1] = LocalDate.now().format(formatter);  //현재 날짜
+                                getReservationsByPeriod(reservationList, findPeriod);   //해당 기간의 예매 정보 출력
+                                break;
+                            case "2":
+                                System.out.println("시작 날짜 입력 ex) 2024-03-23");
+                                findDate = sc.nextLine();
+                                //날짜 예외 처리 필요 -> 예외처리 후 저장
+                                findPeriod[0] = findDate;
+
+                                System.out.println("끝 날짜 입력 ex) 2024-03-23");
+                                findDate = sc.nextLine();
+                                //날짜 예외 처리 필요 -> 예외처리 후 저장
+                                findPeriod[1] = findDate;
+                                getReservationsByPeriod(reservationList, findPeriod);   //해당 기간의 예매 정보 출력
+                                break;
+                            case "-1":
+                                System.out.println("예매 조회 메뉴로 돌아갑니다.");
+                                break;
+                            case "0":
+                                System.out.println("메인 메뉴로 돌아갑니다.");
+                                menu = periodMenu;
+                                break;
+                            default:
+                                System.out.println("잘못된 입력입니다.");
+                        }
+                    } while(!(periodMenu.equals("0") || periodMenu.equals("-1")));
                     break;
+                //getReservationsByPeriod(reservationList);
+                //기간별 조회는 최근 1개월, 사용자 기간 지정
                 case "3":
                     //영화의 예매조회
-                    //getReservationsForMovie
+                    String movieTitleToFilter = "";
+                    System.out.printf("영화 제목 입력 ex) 서울의봄 : ");
+                    movieTitleToFilter = sc.nextLine();
+                    getReservationsForMovie(reservationList, movieTitleToFilter);
                     break;
                 case "0":
                     System.out.println("메뉴로 돌아갑니다.\n");
@@ -279,14 +344,59 @@ public class ReservationManager {
                     System.out.println("올바른 입력이 아닙니다.\n");
             }
         } while (!menu.equals("0"));
+    }
 
+    //전체 예매 조회
+    private static void getAllReservations(List<Reservation> reservationList) {
         for (Reservation reservation : reservationList) {
             System.out.println(reservation);
         }
         System.out.println();
-
     }
 
+    //기간 별 예매 조회(예매 날짜 기준)
+    private static void getReservationsByPeriod(List<Reservation> reservationList, String[] findPeriod) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(findPeriod[0], formatter);
+        LocalDate endDate = LocalDate.parse(findPeriod[1], formatter);
+
+        List<Reservation> filteredReservationList = reservationList.stream()
+                .filter(reservation -> {
+                    LocalDate reservationDate = reservation.getReservationDate().toLocalDate();
+                    return (reservationDate.isEqual(startDate) || reservationDate.equals(endDate) ||
+                            (reservationDate.isAfter(startDate) && reservationDate.isBefore(endDate)));
+                })
+                .toList();
+
+        // 필터링된 예약 리스트 출력
+        System.out.printf("=== 예약 목록 (%s - %s) ===\n", findPeriod[0], findPeriod[1]);
+        if (filteredReservationList.isEmpty()) {
+            System.out.println("해당 가긴의 예매 내역을 찾을 수 없습니다.");
+        } else {
+            for (Reservation reservation : filteredReservationList) {
+                System.out.println(reservation);
+            }
+        }
+    }
+
+    //특정 영화 예매 조회
+    private static void getReservationsForMovie(List<Reservation> reservationList, String movieTitleToFilter) {
+        List<Reservation> filteredReservationList = reservationList.stream()
+                .filter(reservation -> reservation.getMovie().getTitle().equals(movieTitleToFilter))
+                .toList();
+        // 필터링된 예약 리스트 출력
+        System.out.println("=== " + movieTitleToFilter + " 예약 목록 ===");
+        if (filteredReservationList.isEmpty()) {
+            System.out.println("해당 영화의 예매 내역을 찾을 수 없습니다.");
+        } else {
+            for (Reservation reservation : filteredReservationList) {
+                System.out.println(reservation);
+            }
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     //3) 예매 취소하기
     public static void deleteReservation(User user) {
         //유저 정보로부터 유저가 가지고 있는 예약 정보 출력
@@ -318,25 +428,74 @@ public class ReservationManager {
 
     }
 
-    // 8) Reservations.txt에 사용자의 예매 정보 추가 및 화면에 출력
-    public static void addReservationToFileAndPrint(User user) {
-        // 사용자가 client인지 확인
-        if (!(user instanceof Client)) {
-            System.out.println("Client만 예매 정보를 추가할 수 있습니다.");
-            return;
-        }
-
-        Client client = (Client) user;
-        List<Reservation> reservationList = client.getReservationList();
-
-        // Reservations.txt에 예매 정보 추가
-        FileDataManager.writeReservationToFile(reservationList);
-
-        // 화면에 예매 정보 출력
-        System.out.println("===== 예매 정보 =====");
-        for (Reservation reservation : reservationList) {
-            System.out.println(reservation);
-        }
-        System.out.println("====================");
-    }
+    // 삭제 예정) 더미 데이터
+//    public static Map tempMovieShedule() {  //임시 MovieShedule.txt 정보
+//        Map<String, Map<Movie,Schedule[][]>> data = new HashMap<>();
+//
+//        Map<Movie, Schedule[][]> data1 = new HashMap<>();
+//
+//        Movie movie1 = new Movie("파묘", 60, 15000);
+//        Movie movie2 = new Movie("엘리멘탈", 60, 25000);
+//        Movie movie3 = new Movie("윙카", 60, 35000);
+//        Movie movie4 = new Movie("서울의봄", 60, 45000);
+//
+//
+//        Schedule[][] schedules = new Schedule[3][3];
+//        for (int i = 0; i < 3; i++) {
+//            schedules[i] = new Schedule[3];
+//            for (int j = 0; j < 3; j++) {
+//                schedules[i][j] = new Schedule(5, 5);
+//                //schedules[i][j] = new Schedule(new Seat[5][5]);
+//            }
+//        }
+//        Schedule[][] schedules2 = new Schedule[3][3];
+//        for (int i = 0; i < 3; i++) {
+//            schedules2[i] = new Schedule[3];
+//            for (int j = 0; j < 3; j++) {
+//                schedules2[i][j] = new Schedule(5, 5);
+//                //schedules2[i][j] = new Schedule(new Seat[5][5]);
+//            }
+//        }
+//        Schedule[][] schedules3 = new Schedule[3][3];
+//        for (int i = 0; i < 3; i++) {
+//            schedules3[i] = new Schedule[3];
+//            for (int j = 0; j < 3; j++) {
+//                schedules3[i][j] = new Schedule(5, 5);
+//                //schedules3[i][j] = new Schedule(new Seat[5][5]);
+//            }
+//        }
+//        Schedule[][] schedules4 = new Schedule[3][3];
+//        for (int i = 0; i < 3; i++) {
+//            schedules4[i] = new Schedule[3];
+//            for (int j = 0; j < 3; j++) {
+//                schedules4[i][j] = new Schedule(5, 5);
+//                //schedules4[i][j] = new Schedule(new Seat[5][5]);
+//            }
+//        }
+//
+//        data1.put(movie1,schedules4);
+//        data1.put(movie2,schedules2);
+//        data1.put(movie3,schedules3);
+//        data1.put(movie4,schedules4);
+//
+//        data.put("2024-03-23", data1);
+//
+//        return data;
+//    }
+//
+//    public static List tempUsers () {  //임시 Users.txt 정보
+//        User user1 = new Client("test1@test.com", "0000", "리신", "01012345678", false, 10000);
+//        User user2 = new Client("test2@test.com", "0000", "김유신", "01012345678", false, 10000);
+//        User user3 = new Client("test3@test.com", "0000", "이순신", "01012345678", false, 10000);
+//        List users = new ArrayList();
+//        users.add(user1);
+//        users.add(user2);
+//        users.add(user3);
+//        return users;
+//    }
+//
+//    public static User tempUser() {
+//        User user = new Client("test1@test.com", "0000", "리신", "01012345678", false, 10000);
+//        return user;
+//    }
 }

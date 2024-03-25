@@ -14,6 +14,7 @@ public class UserPrinter {
         // 파일에서 유저 정보 읽기
         List<User> readUsers = FileDataManager.readUserInfoFromFile();
 
+
         // 읽어온 유저 정보 출력
         if (readUsers != null) {
             System.out.println("전체 유저 정보:");

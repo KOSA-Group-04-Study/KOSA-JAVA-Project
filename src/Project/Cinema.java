@@ -59,16 +59,16 @@ public class Cinema { // 영화관
 
         // 사용자에 따라 다른 메뉴 실행
         if(isAdmin) adminMenu(user);
-        else clientMenu(user);
+        else clientMenu(((Client) user));
     }
 
-    private static void clientMenu(User user) {
+    private static void clientMenu(Client client) {
 
         String inputData = "";
-        Client client = null;
-        if(user != null && user instanceof Client){
-            client = (Client) user;
-        }
+//        Client client = null;
+//        if(user != null && user instanceof Client){
+//            client = (Client) user;
+//        }
 
         //사용자 메인메뉴
         do {

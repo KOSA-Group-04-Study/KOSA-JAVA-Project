@@ -1,15 +1,13 @@
 package Project.Manager;
 
 import Project.User.Admin;
+import Project.User.Client;
 import Project.User.User;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,10 +16,10 @@ import static Project.Manager.FileDataManager.writeUserInfoToFile;
 
 public final class AuthenticationManager {
 
-
-    public static final String PATH = "src/Project/Files/User.txt";
-    Charset charset = StandardCharsets.UTF_8;
     static Scanner sc = new Scanner(System.in);
+
+    static String emailPattern =  "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    static String passwordPattern = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{5,}$"; // 특수 문자 1개 이상 포함, 영어 대소문 1개씩 무조건, 숫자도 1개 이상 무조건 최소 5자 이상
 
     //로그인
     public static User Login() {
@@ -84,12 +82,42 @@ public final class AuthenticationManager {
     }
 
 
+        /* 잠시 주석처리
+        // try - with - resource 적용
+        try (BufferedReader bis = new BufferedReader(new FileReader(PATH))) {
+            String line;
+            while ((line = bis.readLine()) != null) {
+                StringTokenizer tokenizer = new StringTokenizer(line, ",");
+                String storedId = tokenizer.nextToken().trim();
+                String storedPassword = tokenizer.nextToken().trim();
+                String storedName = tokenizer.nextToken().trim();
+                String soredPhoneNumber = tokenizer.nextToken().trim();
+                boolean isAdmin = Boolean.parseBoolean(tokenizer.nextToken().trim());
+                if (id.equals(storedId) && password.equals(storedPassword)) {
+                    // 빌더 패턴 적용해서 싹 넘기면 좋을텐데 왜 안되는거지
+                    if (isAdmin == true) {
+                    //    return Admin.builder().
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("파일이 없습니다.");
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+         */
+    //성공시 user객체 , 실패시 null
+
+
+
+
+
     //회원가입
     public static void Register() {
         // 여기서 아이디, 비밀번호 입력받고 정규표현식으로 체크  여기서 while , 파일쓰기도 해야함.
         // 유저 어떤식 저장될지 형식
-        String emailPattern =  "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-        String passwordPattern = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{5,}$"; // 특수 문자 1개 이상 포함, 영어 대소문 1개씩 무조건, 숫자도 1개 이상 무조건 최소 5자 이상
         String phonePattern = "010-\\d{4}-\\d{4}";
         System.out.println("회원가입을 시작합니다.");
 
@@ -105,12 +133,14 @@ public final class AuthenticationManager {
         System.out.println("회원가입 완료 ");
         // 입력이 모두 완료되었을 때 파일에 유저 정보 저장
         // 아님 User 생성자 생성 후에 ?? 넘겨주기??
-       // writeUserInfoToFile(emailId, password, name, phoneNumber);
+        // writeUserInfoToFile(emailId, password, name, phoneNumber);
 
         // 파일에 사용자 정보 저장 임시코드
-        User newUser = new User(emailId, password, name, phoneNumber, false); //일단 isAdmin 기본 false(사용자)
+        Client newUser = new Client(emailId, password, name, phoneNumber, false,0, new LinkedList<>()); //일단 isAdmin 기본 false(사용자)
+        List<User> usersList = new ArrayList<User>();
+        List<User> existingUsers = ((usersList = FileDataManager.readUserInfoFromFile()) != null) ? new ArrayList<User>(usersList) : new ArrayList<>();
         // 기존 사용자 정보 읽어오기
-        List<User> existingUsers = new ArrayList<>(FileDataManager.readUserInfoFromFile());
+//        List<Client> existingUsers = new ArrayList<>(FileDataManager.readUserInfoFromFile());
         // 기존 사용자 정보와 새로운 사용자 정보를 합쳐야함
         existingUsers.add(newUser);
         // 파일에 추가된 사용자 정보를 덮어쓴다.
@@ -219,4 +249,8 @@ public final class AuthenticationManager {
         return matcher.matches();
     }
 }
+
+
+//List<User> usersList = new ArrayList<User>();
+//List<User> existingUsers = ((usersList = FileDataManager.readUserInfoFromFile()) != null) ? new ArrayList<User>(usersList) : new ArrayList<>();
 

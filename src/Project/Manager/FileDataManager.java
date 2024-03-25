@@ -4,6 +4,7 @@ import Project.Movie;
 import Project.Reservation;
 import Project.Schedule;
 import Project.User.User;
+import Project.User.Client;
 
 import java.io.*;
 import java.util.Iterator;
@@ -42,8 +43,9 @@ public final class FileDataManager {
             return (List<Movie>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("파일 읽기 오류가 발생했습니다: " + e.getMessage());
+            return null;
         }
-        return null;
+
     }
 
     //파일쓰기 -> 예매내역 저장
@@ -63,8 +65,9 @@ public final class FileDataManager {
             return (List<Reservation>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("파일 읽기 오류가 발생했습니다: " + e.getMessage());
+            return null;
         }
-        return null;
+
     }
 
     //파일쓰기 -> 유저정보 저장
@@ -88,8 +91,9 @@ public final class FileDataManager {
             return (List<User>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("파일 읽기 오류가 발생했습니다: " + e.getMessage());
+            return null;
         }
-        return null;
+
     }
 
 

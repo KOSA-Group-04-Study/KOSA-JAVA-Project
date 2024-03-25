@@ -10,61 +10,68 @@ import java.util.Map;
 public class Application {
     public static void main(String[] args) {
 
-        Map<String, Map<Movie,Schedule[][]>> data = new HashMap<>();
+        // 영화 정보 생성
+        List<Movie> movies = createMovies();
+        // 영화 정보를 파일에 저장
+        FileDataManager.writeMoviesToFile(movies);
 
-        Map<Movie, Schedule[][]> data1 = new HashMap<>();
+        // 영화 및 스케줄 데이터 생성
+        Map<String, Map<Movie, Schedule[][]>> data = new HashMap<>();
+        // 영화 스케줄을 날짜별로 저장하는 맵
+        Map<Movie, Schedule[][]> scheduleData;
 
-        /*
-        Movie 파묘 = new Movie("파묘", 60, 15000);
-        Movie 엘리멘탈 = new Movie("엘리멘탈", 60, 25000);
-        Movie 윙카 = new Movie("윙카", 60, 35000);
-        Movie 서울의봄 = new Movie("서울의봄", 60, 45000);
+        // 3월 23일의 영화와 스케줄 데이터 생성
+        scheduleData = createMovieSchedule();
+        data.put("2024-03-23", scheduleData);
 
+        // 3월 24일의 영화와 스케줄 데이터 생성
+        scheduleData = createMovieSchedule();
+        data.put("2024-03-24", scheduleData);
 
+        // 3월 25일의 영화와 스케줄 데이터 생성
+        scheduleData = createMovieSchedule();
+        data.put("2024-03-25", scheduleData);
+
+        // 생성한 데이터를 파일에 저장
+        FileDataManager.writeMovieScheduleToFile(data);
+
+        System.out.println("데이터가 성공적으로 파일에 저장되었습니다.");
+
+        Cinema cinema = new Cinema();
+        //cinema.setMovieSchedule(data);
+        cinema.run();
+    }
+
+    // 영화 정보 생성
+    private static List<Movie> createMovies() {
+        List<Movie> movies = new ArrayList<>();
+        movies.add(new Movie("파묘", 110, 15000));
+        movies.add(new Movie("엘리멘탈", 120, 15000));
+        movies.add(new Movie("윙카", 120, 15000));
+        movies.add(new Movie("서울의봄", 100, 15000));
+        return movies;
+    }
+
+    // 영화 및 스케줄 데이터를 생성하는 메소드
+    private static Map<Movie, Schedule[][]> createMovieSchedule() {
+        Map<Movie, Schedule[][]> movieSchedule = new HashMap<>();
+        for (Movie movie : FileDataManager.readMoviesFromFile()) {
+            Schedule[][] schedules = createSchedules();
+            movieSchedule.put(movie, schedules);
+        }
+        return movieSchedule;
+    }
+
+    // 스케줄 배열을 생성하는 메소드
+    private static Schedule[][] createSchedules() {
         Schedule[][] schedules = new Schedule[3][3];
         for (int i = 0; i < 3; i++) {
             schedules[i] = new Schedule[3];
             for (int j = 0; j < 3; j++) {
-                schedules[i][j] = new Schedule(new Seat[5][5]);
+                schedules[i][j] = new Schedule(5, 5);
             }
         }
-        Schedule[][] schedules2 = new Schedule[3][3];
-        for (int i = 0; i < 3; i++) {
-            schedules2[i] = new Schedule[3];
-            for (int j = 0; j < 3; j++) {
-                schedules2[i][j] = new Schedule(new Seat[5][5]);
-            }
-        }
-        Schedule[][] schedules3 = new Schedule[3][3];
-        for (int i = 0; i < 3; i++) {
-            schedules3[i] = new Schedule[3];
-            for (int j = 0; j < 3; j++) {
-                schedules3[i][j] = new Schedule(new Seat[5][5]);
-            }
-        }
-        Schedule[][] schedules4 = new Schedule[3][3];
-        for (int i = 0; i < 3; i++) {
-            schedules4[i] = new Schedule[3];
-            for (int j = 0; j < 3; j++) {
-                schedules4[i][j] = new Schedule(new Seat[5][5]);
-            }
-        }
-
-        data1.put(파묘,schedules4);
-        data1.put(엘리멘탈,schedules2);
-        data1.put(윙카,schedules3);
-        data1.put(서울의봄,schedules4);
-
-        data.put("2024-03-22", data1);
-
-         */
-
-
-        Cinema cinema = new Cinema();
-        cinema.setMovieSchedule(data);
-
-        cinema.run();
-
+        return schedules;
     }
 
 
