@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -24,6 +24,6 @@ public class Client extends User  {
         super.phoneNumber = phoneNumber;
         super.isAdmin = isAdmin;
         this.point = point;
-        this.reservationList = new ArrayList<>();
+        this.reservationList = new LinkedList<>();
     }
 }

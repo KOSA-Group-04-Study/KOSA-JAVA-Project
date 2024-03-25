@@ -5,6 +5,7 @@ import Project.User.Client;
 import Project.User.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -15,8 +16,8 @@ public class ReservationManager {
 
     //1) 예매하기
     public static void makeMovieReservation(User user) {
-        user = tempUser();  //(임시)더미데이터
-        Map<String, Map<Movie,Schedule[][]>> data = tempMovieShedule(); //(임시)더미데이터
+        Client client = (Client) tempUser(); //(임시)더미데이터 -> 나중엔 user로 변경
+        Map<String, Map<Movie,Schedule[][]>> data = tempMovieShedule(); //(임시)더미데이터 -> 나중에 파일 읽어와야 함.
 
         Map<Integer, MovieScreaningInfo> scheduleNumbersMap = new HashMap<Integer, MovieScreaningInfo>();   //Schedule에 넘버링
 
@@ -77,24 +78,36 @@ public class ReservationManager {
 
             //6.3 예매정보 내역 저장 -> Reservation
             LocalDate choiceMovieDate = LocalDate.parse(selectedDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            Reservation myReservation = new Reservation(ticketNumber, user, choiceMovie, seats[seatNumber[0]][seatNumber[1]], choiceMovieDate);
-            //날짜가... 예매한 날짜? 영화 상영 날짜? - 일단 영화 상영 날짜로 함... 예매번호로 조회 시 영화 상영 날짜 필요하기에...
-            //Reservation LocalDate로 변경하는게 어떨까?.... 아니면 string....
+
+            Reservation myReservation = Reservation.builder()
+                    .reservationDate(LocalDateTime.now())
+                    .reservationNumber(ticketNumber)
+                    .user(client)
+                    .movie(choiceMovie)
+                    .movieDate(choiceMovieDate)
+                    .theater(new Integer[] {row, col})
+                    .seat(seats[seatNumber[0]][seatNumber[1]])
+                    .moviePrice(10000)
+                    .build();
 
             //6.4 유저에 예매 정보 저장 -> User
-            ((Client) user).getReservationList().add(myReservation); //이렇게 접근해서 써도 되는 부분인가...개인적인 궁금증....
-            //그럼 ArrayList 대신 LinkedList로 바꾸겠습니다... 동의하시나요?,,,
+            client.getReservationList().add(myReservation);
 
+            for (Reservation r : client.getReservationList()) {
+                System.out.println(r);
+            }
             //7. 파일 덮어쓰기
             //MovieSchedule.txt
             //Reservations.txt
             //Users.txt
 
-            System.out.println("예매가 완료되었습니다.");
-            System.out.println("다시 예매하시겠습니까? (Y/N)");
+
+            System.out.println("다시 예매하시겠습니까? (Y/N)"); // 이거 지우기
             if (!sc.nextLine().equals("Y")) break;
         } while (true);
 
+        //아래는 다른 기능 테스트를 위한 임시 코드로 추후 제거
+        getReservation(client);
 
         //Map<String, Map<Movie, Schedule[][]>> stringMapMap = FileDataManager.readMovieScheduleFromFile();
     }
@@ -114,8 +127,8 @@ public class ReservationManager {
             for (int i = 0; i < entry.getValue().length; i++) {
                 System.out.printf("%s   ", theaters[i]);                    // 상영관 출력
                 for (int j = 0; j < entry.getValue()[0].length; j++) {
-                    int emptySeats = entry.getValue()[i][j].getEmpty();    //빈좌석
-                    int totalSeats = entry.getValue()[i][j].getTotal();    //총좌석
+                    int emptySeats = entry.getValue()[i][j].getEmpty();     //빈좌석
+                    int totalSeats = entry.getValue()[i][j].getTotal();     //총좌석
                     String seatInfo = emptySeats + "/" + totalSeats;
                     scheduleNumbersMap.put(scheduleNumber, new MovieScreaningInfo(entry.getKey(), i, j));   //schedule 넘버
                     System.out.printf("[%d] %5s |", scheduleNumber++, seatInfo);
@@ -160,7 +173,7 @@ public class ReservationManager {
         System.out.println("=================================");
     }
 
-    //사용자가 입력한 좌석 번호를 행, 열 정수형으로 변환
+    //사용자가 입력한 좌석 번호(알파벳 + 숫자 조합)를 행, 열 정수형으로 변환
     public static Integer[] convertSelectSeat (String selectSeat) {
         selectSeat = selectSeat.trim().toUpperCase();
 
@@ -196,7 +209,7 @@ public class ReservationManager {
         //2. 상영관, 상영시각, 좌석번호
         sb.append(row).append(col).append(selectSeat).append("-");
 
-        //8자리는 알파벳, 숫자의 랜덤 조합
+        //3. 8자리는 알파벳, 숫자의 랜덤 조합
         for (int i = 0; i < 8; i++) {
             // 0: 숫자, 1: 대문자 알파벳, 2: 소문자 알파벳
             int randomType = random.nextInt(3);
@@ -220,18 +233,51 @@ public class ReservationManager {
             }
             if (i == 3) sb.append("-");
         }
-
         return sb.toString().toUpperCase();
     }
 
     //2) 예매 조회하기
     public static void getReservation(User user) {
+        Scanner sc = new Scanner(System.in);
+
         Client client = (Client) user;
         List<Reservation> reservationList = client.getReservationList();
-        //알아서 출력.
+        String menu = "";
+        do {
+            System.out.println("전체 예매조회 - 1");
+            System.out.println("기간별 예매조회 - 2"); //영화를 예매한 날짜에 대해
+            System.out.println("영화별 전체조회 - 3");
+            System.out.println("메뉴로 돌아가기 - 0");
+            System.out.print("메뉴를 선택해주세요 : ");
+            menu = sc.nextLine();
 
-        //1. 유저의 정보에서 유저가 가지고 있는 reservationList를 출력하기... (Reservation에 toString overrinde 필요)
-        //   그게 아니면 여기서 따로 보여 주기 위한 함수 필요
+            switch (menu) {
+                case "1":
+                    //전체 예매 조회
+                    //getAllReservations(reservationList)
+                    break;
+                case "2":
+                    //기간별 예매조회
+                    //getReservationsByPeriod(reservationList)
+                    //기간별 조회는 최근 1개월, 사용자 기간 지정
+                    break;
+                case "3":
+                    //영화의 예매조회
+                    //getReservationsForMovie
+                    break;
+                case "0":
+                    System.out.println("메뉴로 돌아갑니다.\n");
+                    return;
+                default:
+                    System.out.println("올바른 입력이 아닙니다.\n");
+            }
+        } while (!menu.equals("0"));
+
+        for (Reservation reservation : reservationList) {
+            System.out.println(reservation);
+        }
+        System.out.println();
+
     }
 
     //3) 예매 취소하기
