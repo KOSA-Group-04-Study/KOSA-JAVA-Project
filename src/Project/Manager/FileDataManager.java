@@ -73,7 +73,7 @@ public final class FileDataManager {
 
 
     //파일쓰기 -> 유저정보 저장
-    public static void writeUserInfoToFile(List<Client> users) {
+    public static void writeUserInfoToFile(List<User> users) {
         try (FileOutputStream fos = new FileOutputStream(USER_INFO_FILE_PATH);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(users);
@@ -87,10 +87,10 @@ public final class FileDataManager {
 
 
     //파일읽기 -> (전체)유저정보 읽기
-    public static List<Client> readUserInfoFromFile() {
+    public static List<User> readUserInfoFromFile() {
         try (FileInputStream fis = new FileInputStream(USER_INFO_FILE_PATH);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
-            return (List<Client>) ois.readObject();
+            return (List<User>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("파일 읽기 오류가 발생했습니다: " + e.getMessage());
             return null;
