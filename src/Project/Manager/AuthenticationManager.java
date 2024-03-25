@@ -16,9 +16,6 @@ import static Project.Manager.FileDataManager.writeUserInfoToFile;
 
 public final class AuthenticationManager {
 
-
-    public static final String PATH = "src/Project/Files/User.txt";
-    Charset charset = StandardCharsets.UTF_8;
     static Scanner sc = new Scanner(System.in);
 
     static String emailPattern =  "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -32,12 +29,11 @@ public final class AuthenticationManager {
         String Id;
         String password;
 
-/*
+
         Id = getEmailInput(emailPattern);
         if(Id ==null) return null;
         password = getPasswordInput(passwordPattern);
         if(password ==null) return null;
-*/
 
 
         //파일에서 사용자 정보 읽어오기 임시 확인용 코드
