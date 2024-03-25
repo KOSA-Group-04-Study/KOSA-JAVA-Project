@@ -32,23 +32,24 @@ public class Cinema { // 영화관
         String inputData = "";
         User user = null;
         boolean isAdmin = false; //  사용자인지 관리자인지 체크
-
+        boolean check = true;
         // 초기 메뉴화면 -> 로그인, 회원가입  2가지 기능
         do {
             System.out.println("메뉴를 입력하세요. 1-> 로그인 2-> 회원가입 exit-> 종료 ");
             inputData = sc.nextLine();
-
             switch (inputData) {
                 case "1": {
                     //로그인
                     if ((user = AuthenticationManager.Login()) != null) { //user = ~ 유저객체 채우기 (로그인 성공시)}
                         isAdmin = user.isAdmin();
+                        check = false;
                     }
                     break;
                 }
                 case "2": {
                     //회원가입
                     AuthenticationManager.Register();
+                    check = false;
                     break;
                 }
                 default:
@@ -56,7 +57,8 @@ public class Cinema { // 영화관
             }
 
         }
-        while (!inputData.equals("exit"));
+
+        while (check) ;
 
         // 사용자에 따라 다른 메뉴 실행
         if (isAdmin) adminMenu(user);
