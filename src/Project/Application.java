@@ -1,5 +1,6 @@
 package Project;
 
+import Project.Manager.AuthenticationManager;
 import Project.Manager.FileDataManager;
 import Project.Manager.MovieScheduleManager;
 
@@ -85,7 +86,7 @@ public class Application {
 
         Cinema cinema = new Cinema();
         cinema.setMovieSchedule(data);
-//        cinema.setMovieScheduleTemp(data3);
+
         cinema.run();
 
 //        MovieScheduleManager.test("2024-03-22",cinema);

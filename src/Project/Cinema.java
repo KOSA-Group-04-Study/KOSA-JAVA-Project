@@ -9,6 +9,7 @@ import Project.User.User;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -79,8 +80,13 @@ public class Cinema { // 영화관
 
         String inputData = "";
 
-        Client client = null;
-        if (user != null && user instanceof Client) {
+
+
+
+        //Client client = new Client("shinbm21@asd.com","shidn!123", "asd","010-6642-2113",false,100000,new ArrayList<>());
+        /*
+        if(user != null && user instanceof Client){
+>>>>>>> 7d926f6 (Feat: 로그인 로직 수정 및 예매 취소 로직 수정)
             client = (Client) user;
         }
 
@@ -88,12 +94,13 @@ public class Cinema { // 영화관
             System.out.println("Client 사용자 정보가 없습니다.");
             return;
         }
-
+        */
 
         //사용자 메인메뉴
         do {
             System.out.println("메뉴를 입력하세요. 1-> 예매하기 2-> 예매조회 3-> 예매취소 4-> 포인트 관리 exit-> 종료 ");
             inputData = sc.nextLine();
+
 
             switch (inputData) {
                 case "1": {
