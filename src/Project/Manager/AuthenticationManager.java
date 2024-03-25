@@ -22,22 +22,31 @@ public final class AuthenticationManager {
     Charset charset = StandardCharsets.UTF_8;
     static Scanner sc = new Scanner(System.in);
 
+    static String emailPattern =  "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    static String passwordPattern = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{5,}$"; // 특수 문자 1개 이상 포함, 영어 대소문 1개씩 무조건, 숫자도 1개 이상 무조건 최소 5자 이상
+
     //로그인
     public static User Login() {
 
         // 여기서 아이디, 비밀번호 입력받고  여기서 while -> 파일에서 읽어서 검증
         System.out.println("안녕하세요.");
-        System.out.println("아이디를 입력해주세요.");
-        String id = sc.nextLine();
-        System.out.println("비밀번호를 입력해주세요");
-        String password = sc.nextLine();
+        String Id;
+        String password;
+
+
+        Id = getEmailInput(emailPattern);
+        if(Id ==null) return null;
+        password = getPasswordInput(passwordPattern);
+        if(password ==null) return null;
+
+
 
         //파일에서 사용자 정보 읽어오기 임시 확인용 코드
         List<Client> users = readUserInfoFromFile();
         // 파일에서 읽어온 사용자 정보 확인
         if (users != null) {
             for (Client user : users) {
-                if (user.getEmail().equals(id) && user.getPassword().equals(password)) {
+                if (user.getEmail().equals(Id) && user.getPassword().equals(password)) {
                     System.out.println("로그인 성공!");
                     System.out.println("사용자 정보:");
                     System.out.println("아이디: " + user.getEmail());
@@ -53,6 +62,8 @@ public final class AuthenticationManager {
                     return new Client(user.getEmail(), user.getPassword(), user.getName(),user.getPhoneNumber(),user.isAdmin(),user.getPoint(), user.getReservationList());
                 }
             }
+            System.out.println("로그인 실패 : 해당 계정이 존재하지 않습니다.");
+            System.out.println("메뉴로 돌아갑니다.");
         }
 
         /* 잠시 주석처리
@@ -92,8 +103,6 @@ public final class AuthenticationManager {
     public static void Register() {
         // 여기서 아이디, 비밀번호 입력받고 정규표현식으로 체크  여기서 while , 파일쓰기도 해야함.
         // 유저 어떤식 저장될지 형식
-        String emailPattern =  "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-        String passwordPattern = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{5,}$"; // 특수 문자 1개 이상 포함, 영어 대소문 1개씩 무조건, 숫자도 1개 이상 무조건 최소 5자 이상
         String phonePattern = "010-\\d{4}-\\d{4}";
         System.out.println("회원가입을 시작합니다.");
 
