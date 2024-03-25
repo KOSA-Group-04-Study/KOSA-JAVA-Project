@@ -13,6 +13,8 @@ public class MovieScheduleManager {
     private static final int TOTAL_SEAT_NUMBER = 25;
     private static final String dataFormat = "yyyy-MM-dd";
     private static final String EXIT_COMMAND = "exit";
+    private static final String REGISTRATION = "등록";
+    private static final String DELETION = "삭제";
     private static Map<String, Map<Movie, Schedule[][]>> movieSchedules;
     private static final Map<String, AdminSchedule[][]> adminSchedules = new HashMap<>();
     private static final Scanner sc = new Scanner(System.in);
@@ -27,7 +29,7 @@ public class MovieScheduleManager {
         String selectedDate = printScheduleForInputDate();
         if (selectedDate.equals("exit")) return;
         //스케줄 선택한 입력받아오기, 입력에서 row,col 받아오기
-        SelectedScheduleInfo selectedScheduleInfo = inputNumber(selectedDate, "등록");
+        SelectedScheduleInfo selectedScheduleInfo = inputNumber(selectedDate, REGISTRATION);
 
         // 영화이름 입력받고 영화객체 반환
         selectedScheduleInfo.setMovie(inputMovieName());
@@ -50,7 +52,7 @@ public class MovieScheduleManager {
         String selectedDate = printScheduleForInputDate();
         if (selectedDate.equals(EXIT_COMMAND)) return;
         //스케줄 선택한 입력받아오기, 입력에서 row,col 받아오기
-        SelectedScheduleInfo selectedScheduleInfo = inputNumber(selectedDate, "삭제");
+        SelectedScheduleInfo selectedScheduleInfo = inputNumber(selectedDate, DELETION);
         // 날짜 ,영화 row col을 이용해서 해당 스케줄을 null로 수정 -> 삭제처리
         deleteDataFromMovieSchedule(selectedDate, selectedScheduleInfo.movie, selectedScheduleInfo.theaterNum, selectedScheduleInfo.screenTimeNum);
         updateAdminSchedule(selectedDate); // AdminSchedule 도 최신화
@@ -182,7 +184,7 @@ public class MovieScheduleManager {
 
         AdminSchedule[][] adminSchedule = adminSchedules.get(selectedDate);
         SelectedScheduleInfo selectedScheduleInfo = new SelectedScheduleInfo();
-        if (type.equals("등록")) {
+        if (type.equals(REGISTRATION)) {
             if (adminSchedule[i][j] == null) {  // 해당 스케줄에 등록된 영화가 없다면 해당 스케줄정보 반환
                 selectedScheduleInfo.setTheaterNum(i);
                 selectedScheduleInfo.setScreenTimeNum(j);
@@ -192,7 +194,7 @@ public class MovieScheduleManager {
                 throw new InputException("해당 스케줄에는 이미 등록되어있는 영화가 있습니다.");
             }
 
-        } else if (type.equals("삭제") ) {
+        } else if (type.equals(DELETION) ) {
             if (adminSchedule[i][j] != null) { // 해당 스케줄에 등록된 영화가 있다면 해당 스케줄정보 반환
                 if (adminSchedule[i][j].getSchedule().getEmpty() != TOTAL_SEAT_NUMBER) {
                     //해당 스케줄의 영화를 예매한 사람이 있다면 삭제 X

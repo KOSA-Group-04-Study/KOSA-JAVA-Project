@@ -86,6 +86,7 @@ public class Application {
         Cinema cinema = new Cinema();
         cinema.setMovieSchedule(data);
 //        cinema.setMovieScheduleTemp(data3);
+        cinema.run();
 
 //        MovieScheduleManager.test("2024-03-22",cinema);
 //        MovieScheduleManager.test2("2024-03-22",cinema);
@@ -93,10 +94,10 @@ public class Application {
 
 
 //        FileDataManager.writeMovieScheduleToFile(data);
-        MovieScheduleManager.printScheduleForInputDate();
-        MovieScheduleManager.registerMovieToSchedule();
-        MovieScheduleManager.printScheduleForInputDate();
-        MovieScheduleManager.registerMovieToSchedule();
+//        MovieScheduleManager.printScheduleForInputDate();
+//        MovieScheduleManager.registerMovieToSchedule();
+//        MovieScheduleManager.printScheduleForInputDate();
+//        MovieScheduleManager.registerMovieToSchedule();
 //        MovieScheduleManager.printScheduleForInputDate();
 //        MovieScheduleManager.deleteMovieFromSchedule();
 //        MovieScheduleManager.printScheduleForInputDate();
