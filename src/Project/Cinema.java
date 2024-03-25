@@ -60,6 +60,11 @@ public class Cinema { // 영화관
 
         while (check) ;
 
+        if (user == null) {
+            System.out.println("사용자 정보가 없습니다.");
+            return;
+        }
+
         // 사용자에 따라 다른 메뉴 실행
         if (isAdmin) adminMenu(user);
         else clientMenu(user);
@@ -67,11 +72,23 @@ public class Cinema { // 영화관
 
     private static void clientMenu(User user) {
 
+        if (user == null) {
+            System.out.println("사용자 정보가 없습니다.");
+            return;
+        }
+
         String inputData = "";
+
         Client client = null;
         if (user != null && user instanceof Client) {
             client = (Client) user;
         }
+
+        if (client == null) {
+            System.out.println("Client 사용자 정보가 없습니다.");
+            return;
+        }
+
 
         //사용자 메인메뉴
         do {
@@ -81,22 +98,22 @@ public class Cinema { // 영화관
             switch (inputData) {
                 case "1": {
                     //영화 예매하기
-                    ReservationManager.makeMovieReservation(client);
+                    ReservationManager.makeMovieReservation(user);
                     break;
                 }
                 case "2": {
                     //예매조회
-                    ReservationManager.getReservation(client);
+                    ReservationManager.getReservation(user);
                     break;
                 }
                 case "3": {
                     //예매취소
-                    ReservationManager.deleteReservation(client);
+                    ReservationManager.deleteReservation(user);
                     break;
                 }
                 case "4": {
                     //포인트 관리
-                    PaymentManager.pointManage(client);
+                    PaymentManager.pointManage(user);
                     break;
                 }
                 default:

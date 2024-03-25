@@ -3,6 +3,7 @@ package Project.Manager;
 import Project.Movie;
 import Project.Reservation;
 import Project.Schedule;
+import Project.User.Client;
 import Project.User.User;
 
 import java.io.*;
@@ -67,8 +68,9 @@ public final class FileDataManager {
         return null;
     }
 
+
     //파일쓰기 -> 유저정보 저장
-    public static void writeUserInfoToFile(List<User> users) {
+    public static void writeUserInfoToFile(List<Client> users) {
         try (FileOutputStream fos = new FileOutputStream(USER_INFO_FILE_PATH);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(users);
@@ -82,10 +84,10 @@ public final class FileDataManager {
 
 
     //파일읽기 -> (전체)유저정보 읽기
-    public static List<User> readUserInfoFromFile() {
+    public static List<Client> readUserInfoFromFile() {
         try (FileInputStream fis = new FileInputStream(USER_INFO_FILE_PATH);
              ObjectInputStream ois = new ObjectInputStream(fis)) {
-            return (List<User>) ois.readObject();
+            return (List<Client>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("파일 읽기 오류가 발생했습니다: " + e.getMessage());
         }

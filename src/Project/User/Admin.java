@@ -39,7 +39,7 @@ public class Admin extends User {
 
     //회원 정보 조회
     public void getUserInfo() {
-        List<User> users = FileDataManager.readUserInfoFromFile();
+        List<Client> users = FileDataManager.readUserInfoFromFile();
         // 뿌리기
     }
 

@@ -2,15 +2,13 @@ package Project.Manager;
 
 import Project.Manager.FileDataManager;
 import Project.User.Admin;
+import Project.User.Client;
 import Project.User.User;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,11 +33,10 @@ public final class AuthenticationManager {
         String password = sc.nextLine();
 
         //파일에서 사용자 정보 읽어오기 임시 확인용 코드
-        List<User> users = readUserInfoFromFile();
-
+        List<Client> users = readUserInfoFromFile();
         // 파일에서 읽어온 사용자 정보 확인
         if (users != null) {
-            for (User user : users) {
+            for (Client user : users) {
                 if (user.getEmail().equals(id) && user.getPassword().equals(password)) {
                     System.out.println("로그인 성공!");
                     System.out.println("사용자 정보:");
@@ -47,7 +44,13 @@ public final class AuthenticationManager {
                     System.out.println("이름: " + user.getName());
                     System.out.println("전화번호: " + user.getPhoneNumber());
                     System.out.println("관리자 여부: " + (user.isAdmin() ? "O" : "X"));
-                    return user;
+                    System.out.println("포인트: " + (user.getPoint()));
+                    System.out.println("예약 정보:" + user.getReservationList());
+
+                    // 사용자의 유형에 따라 객체 생성 및 반환
+
+
+                    return new Client(user.getEmail(), user.getPassword(), user.getName(),user.getPhoneNumber(),user.isAdmin(),user.getPoint(), user.getReservationList());
                 }
             }
         }
@@ -106,12 +109,12 @@ public final class AuthenticationManager {
         System.out.println("회원가입 완료 ");
         // 입력이 모두 완료되었을 때 파일에 유저 정보 저장
         // 아님 User 생성자 생성 후에 ?? 넘겨주기??
-       // writeUserInfoToFile(emailId, password, name, phoneNumber);
+        // writeUserInfoToFile(emailId, password, name, phoneNumber);
 
         // 파일에 사용자 정보 저장 임시코드
-        User newUser = new User(emailId, password, name, phoneNumber, false); //일단 isAdmin 기본 false(사용자)
+        Client newUser = new Client(emailId, password, name, phoneNumber, false,0, new LinkedList<>()); //일단 isAdmin 기본 false(사용자)
         // 기존 사용자 정보 읽어오기
-        List<User> existingUsers = new ArrayList<>(FileDataManager.readUserInfoFromFile());
+        List<Client> existingUsers = new ArrayList<>(FileDataManager.readUserInfoFromFile());
         // 기존 사용자 정보와 새로운 사용자 정보를 합쳐야함
         existingUsers.add(newUser);
         // 파일에 추가된 사용자 정보를 덮어쓴다.
