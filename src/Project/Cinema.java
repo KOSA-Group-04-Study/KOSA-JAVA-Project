@@ -18,7 +18,7 @@ import java.util.Scanner;
 public class Cinema { // 영화관
 
     Map<String, Map<Movie, Schedule[][]>> movieSchedule;
-    Map<String, AdminSchedule[][]> movieScheduleTemp;
+//    Map<String, AdminSchedule[][]> movieScheduleTemp;
     List<Movie> movieList;
     List<User> userList;
     List<Reservation> reservationList;
