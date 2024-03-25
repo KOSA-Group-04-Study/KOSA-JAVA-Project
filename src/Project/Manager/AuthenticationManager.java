@@ -1,6 +1,5 @@
 package Project.Manager;
 
-import Project.Manager.FileDataManager;
 import Project.User.Admin;
 import Project.User.Client;
 import Project.User.User;
@@ -27,45 +26,28 @@ public final class AuthenticationManager {
 
         // 여기서 아이디, 비밀번호 입력받고  여기서 while -> 파일에서 읽어서 검증
         System.out.println("안녕하세요.");
-        String Id;
-        String password;
-
-
-        Id = getEmailInput(emailPattern);
-        if(Id ==null) return null;
-        password = getPasswordInput(passwordPattern);
-        if(password ==null) return null;
-
+        System.out.println("아이디를 입력해주세요.");
+        String id = sc.nextLine();
+        System.out.println("비밀번호를 입력해주세요");
+        String password = sc.nextLine();
 
         //파일에서 사용자 정보 읽어오기 임시 확인용 코드
-        List<Client> users = new ArrayList<>(FileDataManager.readUserInfoFromFile());
-
+        List<User> users = readUserInfoFromFile();
 
         // 파일에서 읽어온 사용자 정보 확인
         if (users != null) {
-            for (Client user : users) {
-               // if (user.getEmail().equals(Id) && user.getPassword().equals(password)) {
+            for (User user : users) {
+                if (user.getEmail().equals(id) && user.getPassword().equals(password)) {
                     System.out.println("로그인 성공!");
                     System.out.println("사용자 정보:");
                     System.out.println("아이디: " + user.getEmail());
                     System.out.println("이름: " + user.getName());
                     System.out.println("전화번호: " + user.getPhoneNumber());
                     System.out.println("관리자 여부: " + (user.isAdmin() ? "O" : "X"));
-                    System.out.println("포인트: " + (user.getPoint()));
-                    System.out.println("예약 정보:" + user.getReservationList());
-
-                    // 사용자의 유형에 따라 객체 생성 및 반환
-
-
-                    return new Client(user.getEmail(), user.getPassword(), user.getName(),user.getPhoneNumber(),user.isAdmin(),user.getPoint(), user.getReservationList());
+                    return user;
                 }
             }
-            System.out.println("로그인 실패 : 해당 계정이 존재하지 않습니다.");
-            System.out.println("메뉴로 돌아갑니다.");
-            return  null;
         }
-
-
 
         /* 잠시 주석처리
         // try - with - resource 적용
@@ -94,6 +76,39 @@ public final class AuthenticationManager {
 
          */
         //성공시 user객체 , 실패시 null
+        return null;
+
+
+    }
+
+
+        /* 잠시 주석처리
+        // try - with - resource 적용
+        try (BufferedReader bis = new BufferedReader(new FileReader(PATH))) {
+            String line;
+            while ((line = bis.readLine()) != null) {
+                StringTokenizer tokenizer = new StringTokenizer(line, ",");
+                String storedId = tokenizer.nextToken().trim();
+                String storedPassword = tokenizer.nextToken().trim();
+                String storedName = tokenizer.nextToken().trim();
+                String soredPhoneNumber = tokenizer.nextToken().trim();
+                boolean isAdmin = Boolean.parseBoolean(tokenizer.nextToken().trim());
+                if (id.equals(storedId) && password.equals(storedPassword)) {
+                    // 빌더 패턴 적용해서 싹 넘기면 좋을텐데 왜 안되는거지
+                    if (isAdmin == true) {
+                    //    return Admin.builder().
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("파일이 없습니다.");
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+         */
+    //성공시 user객체 , 실패시 null
 
 
 
@@ -122,8 +137,10 @@ public final class AuthenticationManager {
 
         // 파일에 사용자 정보 저장 임시코드
         Client newUser = new Client(emailId, password, name, phoneNumber, false,0, new LinkedList<>()); //일단 isAdmin 기본 false(사용자)
+        List<User> usersList = new ArrayList<User>();
+        List<User> existingUsers = ((usersList = FileDataManager.readUserInfoFromFile()) != null) ? new ArrayList<User>(usersList) : new ArrayList<>();
         // 기존 사용자 정보 읽어오기
-        List<Client> existingUsers = new ArrayList<>(FileDataManager.readUserInfoFromFile());
+//        List<Client> existingUsers = new ArrayList<>(FileDataManager.readUserInfoFromFile());
         // 기존 사용자 정보와 새로운 사용자 정보를 합쳐야함
         existingUsers.add(newUser);
         // 파일에 추가된 사용자 정보를 덮어쓴다.
@@ -232,4 +249,8 @@ public final class AuthenticationManager {
         return matcher.matches();
     }
 }
+
+
+//List<User> usersList = new ArrayList<User>();
+//List<User> existingUsers = ((usersList = FileDataManager.readUserInfoFromFile()) != null) ? new ArrayList<User>(usersList) : new ArrayList<>();
 

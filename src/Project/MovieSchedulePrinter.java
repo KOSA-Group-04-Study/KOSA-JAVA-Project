@@ -56,7 +56,7 @@ public class MovieSchedulePrinter {
                         for (int j = 0; j < schedules[i].length; j++) {
                             if (schedules[i][j] != null) {
                                 System.out.printf("상영관: %s, 상영시간: %s,", THEATER_NUMBER[i] ,SCREENING_TIME[j]);
-                                System.out.printf(" 빈 좌석수: %d%n", TOTAL_SEAT_NUMBER - schedules[i][j].getEmpty());
+                                System.out.printf(" 빈 좌석수: %d%n", schedules[i][j].getEmpty());
                                 // 여기서 좌석 정보를 출력할 수 있습니다.
                             }
 

@@ -1,112 +1,77 @@
 package Project;
 
-import Project.Manager.AuthenticationManager;
 import Project.Manager.FileDataManager;
-import Project.Manager.MovieScheduleManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Application {
     public static void main(String[] args) {
 
-        Map<String, Map<Movie,Schedule[][]>> data = new HashMap<>();
+        // 영화 정보 생성
+        List<Movie> movies = createMovies();
+        // 영화 정보를 파일에 저장
+        FileDataManager.writeMoviesToFile(movies);
 
-        Map<Movie, Schedule[][]> data1 = new HashMap<>();
+        // 영화 및 스케줄 데이터 생성
+        Map<String, Map<Movie, Schedule[][]>> data = new HashMap<>();
+        // 영화 스케줄을 날짜별로 저장하는 맵
+        Map<Movie, Schedule[][]> scheduleData;
 
-//        Map<String, AdminSchedule[][]> data3 = new HashMap<>();
-//
-//        AdminSchedule[][] adminSchedules = new AdminSchedule[3][3];
+        // 3월 23일의 영화와 스케줄 데이터 생성
+        scheduleData = createMovieSchedule();
+        data.put("2024-03-23", scheduleData);
 
-        Movie 파묘 = new Movie("파묘", 60, 15000);
-        Movie 엘리멘탈 = new Movie("엘리멘탈", 60, 25000);
-        Movie 윙카 = new Movie("윙카", 60, 35000);
-        Movie 서울의봄 = new Movie("서울의봄", 60, 45000);
+        // 3월 24일의 영화와 스케줄 데이터 생성
+        scheduleData = createMovieSchedule();
+        data.put("2024-03-24", scheduleData);
 
+        // 3월 25일의 영화와 스케줄 데이터 생성
+        scheduleData = createMovieSchedule();
+        data.put("2024-03-25", scheduleData);
 
-        Schedule[][] schedules = new Schedule[3][3]; //엘리멘탈
-        for (int i = 0; i < 3; i++) {
-            schedules[i] = new Schedule[3];
-        }
-        /*
-        더미데이터 -> 엘리멘탈은 1,3관에서 9시에 밖에안함
-         */
-        schedules[0][0] = new Schedule(); // 1관 9시
-//        adminSchedules[0][0] = new AdminSchedule(엘리멘탈, "09시",schedules[0][0]);
-        schedules[2][0] = new Schedule(); // 3관 9시
-//        adminSchedules[2][0] = new AdminSchedule(엘리멘탈, "09시",schedules[2][0]);
+        // 생성한 데이터를 파일에 저장
+        FileDataManager.writeMovieScheduleToFile(data);
 
-
-        Schedule[][] schedules2 = new Schedule[3][3]; // 윙카
-        for (int i = 0; i < 3; i++) {
-            schedules2[i] = new Schedule[3];
-        }
-        /*
-        윙카는 1,3관에서 12시에 밖에안함
-         */
-        schedules2[0][1] = new Schedule(); // 1관 12시
-//        adminSchedules[0][1] = new AdminSchedule(윙카, "12시",schedules2[0][1]);
-        schedules2[2][1] = new Schedule(); // 3관 12시
-//        adminSchedules[2][1] = new AdminSchedule(윙카, "12시",schedules2[2][1]);
-
-        Schedule[][] schedules3 = new Schedule[3][3]; // 파묘
-        for (int i = 0; i < 3; i++) {
-            schedules3[i] = new Schedule[3];
-        }
-        /*
-        파묘는 1관 18시 , 2관 9,12시에 함
-         */
-        schedules3[0][2] = new Schedule(); // 1관 18시
-//        adminSchedules[0][2] = new AdminSchedule(파묘, "18시",schedules3[0][2]);
-        schedules3[1][0] = new Schedule(); // 2관 9시
-//        adminSchedules[1][0] = new AdminSchedule(파묘, "9시",schedules3[1][0]);
-//        schedules3[1][1] = new Schedule(); // 2관 12시
-//        scheduleTemps[1][1] = new ScheduleTemp(파묘, "12시");
-
-        Schedule[][] schedules4 = new Schedule[3][3]; //서울의봄
-        for (int i = 0; i < 3; i++) {
-            schedules4[i] = new Schedule[3];
-        }
-        /*
-        서울의 봄은 2관 18시 , 3관 18시에 함
-         */
-        schedules4[1][2] = new Schedule(); // 2관 18시
-//        adminSchedules[1][2] = new AdminSchedule(서울의봄, "18시",schedules4[1][2]);
-        schedules4[2][2] = new Schedule(); // 3관 18시
-//        adminSchedules[2][2] = new AdminSchedule(서울의봄, "18시",schedules4[2][2]);
-
-
-        data1.put(엘리멘탈,schedules);
-        data1.put(윙카,schedules2);
-        data1.put(파묘,schedules3);
-        data1.put(서울의봄,schedules4);
-
-        data.put("2024-03-22", data1);
-//        data3.put("2024-03-22", adminSchedules);
+        System.out.println("데이터가 성공적으로 파일에 저장되었습니다.");
 
         Cinema cinema = new Cinema();
-        cinema.setMovieSchedule(data);
-
+        //cinema.setMovieSchedule(data);
         cinema.run();
+    }
 
-//        MovieScheduleManager.test("2024-03-22",cinema);
-//        MovieScheduleManager.test2("2024-03-22",cinema);
-//        MovieScheduleManager.test3("2024-03-22",cinema);
+    // 영화 정보 생성
+    private static List<Movie> createMovies() {
+        List<Movie> movies = new ArrayList<>();
+        movies.add(new Movie("파묘", 110, 15000));
+        movies.add(new Movie("엘리멘탈", 120, 15000));
+        movies.add(new Movie("윙카", 120, 15000));
+        movies.add(new Movie("서울의봄", 100, 15000));
+        return movies;
+    }
 
+    // 영화 및 스케줄 데이터를 생성하는 메소드
+    private static Map<Movie, Schedule[][]> createMovieSchedule() {
+        Map<Movie, Schedule[][]> movieSchedule = new HashMap<>();
+        for (Movie movie : FileDataManager.readMoviesFromFile()) {
+            Schedule[][] schedules = createSchedules();
+            movieSchedule.put(movie, schedules);
+        }
+        return movieSchedule;
+    }
 
-//        FileDataManager.writeMovieScheduleToFile(data);
-//        MovieScheduleManager.printScheduleForInputDate();
-//        MovieScheduleManager.registerMovieToSchedule();
-//        MovieScheduleManager.printScheduleForInputDate();
-//        MovieScheduleManager.registerMovieToSchedule();
-//        MovieScheduleManager.printScheduleForInputDate();
-//        MovieScheduleManager.deleteMovieFromSchedule();
-//        MovieScheduleManager.printScheduleForInputDate();
-//        MovieScheduleManager.deleteMovieFromSchedule();
-//        MovieScheduleManager.printScheduleForInputDate();
-
-
-
+    // 스케줄 배열을 생성하는 메소드
+    private static Schedule[][] createSchedules() {
+        Schedule[][] schedules = new Schedule[3][3];
+        for (int i = 0; i < 3; i++) {
+            schedules[i] = new Schedule[3];
+            for (int j = 0; j < 3; j++) {
+                schedules[i][j] = new Schedule(5, 5);
+            }
+        }
+        return schedules;
     }
 
 
