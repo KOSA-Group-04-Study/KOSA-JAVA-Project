@@ -29,7 +29,10 @@ public class MovieScheduleManager {
         String selectedDate = printScheduleForInputDate();
         if (selectedDate.equals("exit")) return;
         //스케줄 선택한 입력받아오기, 입력에서 row,col 받아오기
-        SelectedScheduleInfo selectedScheduleInfo = inputNumber(selectedDate, REGISTRATION);
+        SelectedScheduleInfo selectedScheduleInfo=inputNumber(selectedDate, REGISTRATION);
+        if (selectedScheduleInfo == null) {
+            return;
+        }
 
         // 영화이름 입력받고 영화객체 반환
         selectedScheduleInfo.setMovie(inputMovieName());
@@ -53,6 +56,9 @@ public class MovieScheduleManager {
         if (selectedDate.equals(EXIT_COMMAND)) return;
         //스케줄 선택한 입력받아오기, 입력에서 row,col 받아오기
         SelectedScheduleInfo selectedScheduleInfo = inputNumber(selectedDate, DELETION);
+        if (selectedScheduleInfo == null) {
+            return;
+        }
         // 날짜 ,영화 row col을 이용해서 해당 스케줄을 null로 수정 -> 삭제처리
         deleteDataFromMovieSchedule(selectedDate, selectedScheduleInfo.movie, selectedScheduleInfo.theaterNum, selectedScheduleInfo.screenTimeNum);
         updateAdminSchedule(selectedDate); // AdminSchedule 도 최신화
@@ -134,10 +140,10 @@ public class MovieScheduleManager {
         String inputData = "";
         AdminSchedule[][] adminSchedule = adminSchedules.get(selectedDate);
         while (true) {
-            System.out.println("입력번호를 입력해주세요");
+            System.out.println("입력번호를 입력해주세요 나가기 -> exit");
             try {
                 inputData = sc.nextLine();
-//                if (inputData.equals(EXIT_COMMAND)) return inputData;
+                if (inputData.equals(EXIT_COMMAND)) return null;
                 int inputNumber = Integer.parseInt(inputData);
                 if (inputNumber >= 1 && inputNumber <= 9) { //입력숫자의 범위와 비어있는 스케줄인지 검증
                     return validateInputNumber(inputNumber, selectedDate, type);

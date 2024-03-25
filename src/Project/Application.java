@@ -1,6 +1,7 @@
 package Project;
 
 import Project.Manager.FileDataManager;
+import Project.User.Admin;
 import Project.User.Client;
 import Project.User.User;
 
@@ -37,6 +38,10 @@ public class Application {
         // 생성한 데이터를 파일에 저장
         FileDataManager.writeMovieScheduleToFile(data);
 
+        //관리자 테스트용 파일
+        List<User> list = new ArrayList<>();
+        list.add(new Admin("q@naver.com", "1q2w3e4r!", "a", "010-1234-1234", true));
+        FileDataManager.writeUserInfoToFile(list);
         System.out.println("데이터가 성공적으로 파일에 저장되었습니다.");
 
         Cinema cinema = new Cinema();
@@ -57,10 +62,31 @@ public class Application {
     // 영화 및 스케줄 데이터를 생성하는 메소드
     private static Map<Movie, Schedule[][]> createMovieSchedule() {
         Map<Movie, Schedule[][]> movieSchedule = new HashMap<>();
-        for (Movie movie : FileDataManager.readMoviesFromFile()) {
-            Schedule[][] schedules = createSchedules();
-            movieSchedule.put(movie, schedules);
-        }
+        List<Movie> movieList = FileDataManager.readMoviesFromFile();
+//        for (Movie movie : ) {
+//            Schedule[][] schedules = createSchedules();
+//            movieSchedule.put(movie, schedules);
+//        }
+        Schedule[][] schedules = createSchedules();
+        schedules[0][0] = new Schedule(5,5); // 1상영관 9시
+        schedules[1][0] = new Schedule(5,5); // 2상영관 9시
+        movieSchedule.put(movieList.get(0),schedules); // 파묘
+
+        schedules = createSchedules();
+        schedules[0][2] = new Schedule(5,5); // 1상영관 18시
+        schedules[2][0] = new Schedule(5,5); // 3상영관 9시
+        movieSchedule.put(movieList.get(1),schedules); // 엘리멘탈
+
+        schedules = createSchedules();
+        schedules[0][1] = new Schedule(5,5); // 1상영관 12시
+        schedules[2][1] = new Schedule(5,5); // 3상영관 12시
+        movieSchedule.put(movieList.get(2),schedules); // 윙카
+
+        schedules = createSchedules();
+        schedules[1][2] = new Schedule(5,5); // 2상영관 18시
+        schedules[2][2] = new Schedule(5,5); // 3상영관 18시
+        movieSchedule.put(movieList.get(3),schedules); // 서울의봄
+
         return movieSchedule;
     }
 
@@ -69,9 +95,6 @@ public class Application {
         Schedule[][] schedules = new Schedule[3][3];
         for (int i = 0; i < 3; i++) {
             schedules[i] = new Schedule[3];
-            for (int j = 0; j < 3; j++) {
-                schedules[i][j] = new Schedule(5, 5);
-            }
         }
         return schedules;
     }

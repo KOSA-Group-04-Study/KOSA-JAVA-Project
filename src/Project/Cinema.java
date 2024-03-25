@@ -151,12 +151,16 @@ public class Cinema { // 영화관
                     admin.getMovieToSchedule();
                     break;
                 }
+                case "exit": {
+                    //포인트 관리
+                    System.exit(0);
+                }
                 default:
                     System.out.println("입력 잘못되었습니다.");
             }
 
         }
-        while (!inputData.equals("exit")) ;
+        while (true) ;
     }
 
 
