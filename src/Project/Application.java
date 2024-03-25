@@ -14,6 +14,7 @@ public class Application {
 
         Map<Movie, Schedule[][]> data1 = new HashMap<>();
 
+        /*
         Movie 파묘 = new Movie("파묘", 60, 15000);
         Movie 엘리멘탈 = new Movie("엘리멘탈", 60, 25000);
         Movie 윙카 = new Movie("윙카", 60, 35000);
@@ -55,6 +56,8 @@ public class Application {
         data1.put(서울의봄,schedules4);
 
         data.put("2024-03-22", data1);
+
+         */
 
 
         Cinema cinema = new Cinema();

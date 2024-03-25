@@ -22,7 +22,6 @@ public class Client extends User  {
         this.reservationList = reservationList;
     }
 
-
     public void setPoint(Integer point) {
         this.point = point;
     }
