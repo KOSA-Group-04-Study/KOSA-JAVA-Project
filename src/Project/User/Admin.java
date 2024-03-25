@@ -27,7 +27,8 @@ public class Admin extends User {
 
     // 영화 상영스케줄 조회
     public void getMovieToSchedule() {
-        MovieScheduleManager.getMovieSchedule();
+        String selectedDate = "2024-03-22";
+//        MovieScheduleManager.getMovieSchedule(selectedDate);
     }
 
     //영화상영종료 (스케쥴표에서)

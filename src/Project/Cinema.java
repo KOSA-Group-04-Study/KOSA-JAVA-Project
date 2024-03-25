@@ -19,6 +19,7 @@ import java.util.Scanner;
 public class Cinema { // 영화관
 
     Map<String, Map<Movie, Schedule[][]>> movieSchedule;
+//    Map<String, AdminSchedule[][]> movieScheduleTemp;
     List<Movie> movieList;
     List<User> userList;
     List<Reservation> reservationList;
@@ -57,6 +58,8 @@ public class Cinema { // 영화관
             }
 
         }
+
+
         while (check) ;
 
         if (user == null) {
@@ -65,7 +68,7 @@ public class Cinema { // 영화관
         }
 
         // 사용자에 따라 다른 메뉴 실행
-        if(isAdmin) adminMenu(user);
+        if (isAdmin) adminMenu(user);
         else clientMenu(user);
     }
 
@@ -80,9 +83,11 @@ public class Cinema { // 영화관
 
 
 
+
         //Client client = new Client("shinbm21@asd.com","shidn!123", "asd","010-6642-2113",false,100000,new ArrayList<>());
         /*
         if(user != null && user instanceof Client){
+>>>>>>> 7d926f6 (Feat: 로그인 로직 수정 및 예매 취소 로직 수정)
             client = (Client) user;
         }
 
@@ -124,7 +129,7 @@ public class Cinema { // 영화관
             }
 
         }
-        while (!inputData.equals("exit")) ;
+        while (!inputData.equals("exit"));
     }
 
     private static void adminMenu(User user) {
@@ -132,7 +137,7 @@ public class Cinema { // 영화관
 
         String inputData = "";
         Admin admin = null;
-        if(user != null && user instanceof Admin){
+        if (user != null && user instanceof Admin) {
             admin = (Admin) user;
         }
 
@@ -167,10 +172,8 @@ public class Cinema { // 영화관
             }
 
         }
-        while (!inputData.equals("exit")) ;
+        while (!inputData.equals("exit"));
     }
-
-
 
 
     public Map<String, Map<Movie, Schedule[][]>> getMovieSchedule() {
@@ -180,6 +183,8 @@ public class Cinema { // 영화관
     public void setMovieSchedule(Map<String, Map<Movie, Schedule[][]>> movieSchedule) {
         this.movieSchedule = movieSchedule;
     }
+
+
 }
 
 

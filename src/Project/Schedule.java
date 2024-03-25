@@ -11,9 +11,9 @@ public class Schedule implements Serializable {
     private Seat[][] seats;
     private Integer empty;
 
-    public Schedule(Seat[][] seats) {
-        this.seats = seats;
-        this.empty = 0;
+    public Schedule() {
+        this.seats = new Seat[5][5];
+        this.empty = 25;
     }
 
 }
