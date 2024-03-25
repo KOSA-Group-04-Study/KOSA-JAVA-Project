@@ -115,8 +115,9 @@ public final class FileDataManager {
             return (Map<String, Map<Movie, Schedule[][]>>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("파일 읽기 오류가 발생했습니다: " + e.getMessage());
+            return null;
         }
-        return null;
+
     }
 
 
