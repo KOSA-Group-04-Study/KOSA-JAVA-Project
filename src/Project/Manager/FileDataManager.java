@@ -3,6 +3,7 @@ package Project.Manager;
 import Project.Movie;
 import Project.Reservation;
 import Project.Schedule;
+import Project.User.Client;
 import Project.User.User;
 import Project.User.Client;
 
@@ -69,6 +70,7 @@ public final class FileDataManager {
         }
 
     }
+
 
     //파일쓰기 -> 유저정보 저장
     public static void writeUserInfoToFile(List<User> users) {

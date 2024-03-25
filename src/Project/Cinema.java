@@ -33,6 +33,7 @@ public class Cinema { // 영화관
         boolean isAdmin = false; //  사용자인지 관리자인지 체크
 
         // 초기 메뉴화면 -> 로그인, 회원가입  2가지 기능
+        loop:
         do {
             System.out.println("메뉴를 입력하세요. 1-> 로그인 2-> 회원가입 exit-> 종료 ");
             inputData = sc.nextLine();
@@ -42,24 +43,30 @@ public class Cinema { // 영화관
                     //로그인
                     if ((user = AuthenticationManager.Login()) != null) { //user = ~ 유저객체 채우기 (로그인 성공시)}
                         isAdmin = user.isAdmin();
+                        break loop;
+                    } else {
+                        continue;
                     }
-                    break;
                 }
                 case "2": {
                     //회원가입
                     AuthenticationManager.Register();
-                    break;
+                    break ;
+                }
+                case "exit": {
+                    System.exit(0);
                 }
                 default:
                     System.out.println("입력 잘못되었습니다.");
             }
 
         }
-        while (!inputData.equals("exit")) ;
+        while (true) ;
 
         // 사용자에 따라 다른 메뉴 실행
         if(isAdmin) adminMenu(user);
         else clientMenu(((Client) user));
+
     }
 
     private static void clientMenu(Client client) {
@@ -72,6 +79,7 @@ public class Cinema { // 영화관
 
         //사용자 메인메뉴
         do {
+
             System.out.println("메뉴를 입력하세요. 1-> 예매하기 2-> 예매조회 3-> 예매취소 4-> 포인트 관리 exit-> 종료 ");
             inputData = sc.nextLine();
 
@@ -96,12 +104,16 @@ public class Cinema { // 영화관
                     PaymentManager.pointManage(client);
                     break;
                 }
+                case "exit": {
+                    //포인트 관리
+                    System.exit(0);
+                }
                 default:
                     System.out.println("입력 잘못되었습니다.");
             }
 
         }
-        while (!inputData.equals("exit")) ;
+        while (true) ;
     }
 
     private static void adminMenu(User user) {

@@ -1,6 +1,7 @@
 package Project;
 
 import Project.Manager.FileDataManager;
+import Project.User.Client;
 import Project.User.User;
 
 import java.util.ArrayList;

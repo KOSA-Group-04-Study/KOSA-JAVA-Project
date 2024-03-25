@@ -90,19 +90,31 @@ public final class PaymentManager {
 
         System.out.println("원하시는 충전 금액을 입력해주세요. ");
         System.out.println("금액은 10000원 단위로 충전 가능합니다. ");
-
-        int quantity = Integer.parseInt(sc.nextLine());
-        if (!ValidationQuantity(quantity)) {
-            System.out.print("죄송합니다. 금액은 10000원 단위로 충전가능합니다.");
+        int quantity =0;
+        while (true) {
+            try {
+                quantity = Integer.parseInt(sc.nextLine());
+                if (!ValidationQuantity(quantity)) {
+                    System.out.println("죄송합니다. 금액은 10000원 단위로 충전가능합니다.");
+                    continue;
+                }
+                break;
+            } catch (Exception e) {
+                System.out.println("숫자를 입력해주세요");
+            }
         }
+
+
+
 
         int changePoint = user.getPoint() + quantity;
 
         user.setPoint(changePoint);
+        System.out.println("현재 사용자 포인트 : "+changePoint);
 
         // 파일 쓰기
         // 사용자 정보 읽어오기
-        List<User> existingUsers = new ArrayList<>(FileDataManager.readUserInfoFromFile());
+        List<User> existingUsers = FileDataManager.readUserInfoFromFile();
         // 입력받은 데이터와 일치하는 파일 정보 찾아 포인트 변환 내용 적용
         for (User existingUser : existingUsers) {
             if(existingUser.getEmail().equals(user.getEmail())){
@@ -113,6 +125,7 @@ public final class PaymentManager {
         }
         // 파일에 변경된 사용자 정보 덮어씌우기.
         FileDataManager.writeUserInfoToFile(existingUsers);
+
 
     }
 
