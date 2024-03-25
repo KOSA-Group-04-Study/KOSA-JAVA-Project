@@ -32,20 +32,22 @@ public final class AuthenticationManager {
         String Id;
         String password;
 
-
+/*
         Id = getEmailInput(emailPattern);
         if(Id ==null) return null;
         password = getPasswordInput(passwordPattern);
         if(password ==null) return null;
-
+*/
 
 
         //파일에서 사용자 정보 읽어오기 임시 확인용 코드
-        List<Client> users = readUserInfoFromFile();
+        List<Client> users = new ArrayList<>(FileDataManager.readUserInfoFromFile());
+
+
         // 파일에서 읽어온 사용자 정보 확인
         if (users != null) {
             for (Client user : users) {
-                if (user.getEmail().equals(Id) && user.getPassword().equals(password)) {
+               // if (user.getEmail().equals(Id) && user.getPassword().equals(password)) {
                     System.out.println("로그인 성공!");
                     System.out.println("사용자 정보:");
                     System.out.println("아이디: " + user.getEmail());
@@ -63,7 +65,10 @@ public final class AuthenticationManager {
             }
             System.out.println("로그인 실패 : 해당 계정이 존재하지 않습니다.");
             System.out.println("메뉴로 돌아갑니다.");
+            return  null;
         }
+
+
 
         /* 잠시 주석처리
         // try - with - resource 적용
@@ -92,10 +97,9 @@ public final class AuthenticationManager {
 
          */
         //성공시 user객체 , 실패시 null
-        return null;
 
 
-    }
+
 
 
     //회원가입

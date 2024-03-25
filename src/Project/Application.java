@@ -1,5 +1,6 @@
 package Project;
 
+import Project.Manager.AuthenticationManager;
 import Project.Manager.FileDataManager;
 
 import java.util.ArrayList;
@@ -59,6 +60,13 @@ public class Application {
 
         Cinema cinema = new Cinema();
         cinema.setMovieSchedule(data);
+
+
+
+
+
+
+
 
         cinema.run();
 

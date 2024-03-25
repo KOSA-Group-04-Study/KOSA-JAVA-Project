@@ -16,7 +16,25 @@ public final class PaymentManager {
         // 결제 취소 -> 포인트 반환
         Integer retrunPoint = ((Client) user).getPoint() + price;
         ((Client) user).setPoint(retrunPoint);
+
+        List<Client> existingUsers = new ArrayList<>(FileDataManager.readUserInfoFromFile());
+
+
+
+        // 입력받은 데이터와 일치하는 파일 정보 찾아 포인트 변환 내용 적용
+        for (Client existingUser : existingUsers) {
+            if(existingUser.getEmail().equals(user.getEmail())){
+                existingUser.setPoint(retrunPoint);
+                System.out.println(existingUser.getName() + "님의 포인트는 " + existingUser.getPoint());
+                break;
+            }
+        }
+        // 파일에 변경된 사용자 정보 덮어씌우기.
+        FileDataManager.writeUserInfoToFile(existingUsers);
+
     }
+
+
 
 
     // 영화 예매에 따른 포인트 감소 메서드
@@ -111,6 +129,7 @@ public final class PaymentManager {
         int quantity = Integer.parseInt(sc.nextLine());
         if (!ValidationQuantity(quantity)) {
             System.out.print("죄송합니다. 금액은 10000원 단위로 충전가능합니다.");
+            return;
         }
 
         int changePoint = user.getPoint() + quantity;
@@ -120,11 +139,13 @@ public final class PaymentManager {
         // 파일 쓰기
         // 사용자 정보 읽어오기
         List<Client> existingUsers = new ArrayList<>(FileDataManager.readUserInfoFromFile());
+
         // 입력받은 데이터와 일치하는 파일 정보 찾아 포인트 변환 내용 적용
         for (Client existingUser : existingUsers) {
             if(existingUser.getEmail().equals(user.getEmail())){
                 Client client = existingUser;
                 client.setPoint(changePoint);
+                System.out.println(client.getName() + "님의 포인트는 " + client.getPoint());
                 break;
             }
         }
