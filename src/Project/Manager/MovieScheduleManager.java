@@ -98,10 +98,6 @@ public class MovieScheduleManager {
             }
             System.out.print("\n( 입력번호 ) :");
             for (int j = 0; j < 3; j++) {
-//                if (adminSchedule[i][j] == null) { // 빈 상영시간이라면 공백을 출력
-//                    System.out.print("             ");
-//                    continue;
-//                }
                 System.out.printf("   [%d]       ", (i * 3) + j + 1); // 1~9 까지의 입력번호를 가진다.
             }
             System.out.println("\n----------------------------------------");
@@ -155,23 +151,21 @@ public class MovieScheduleManager {
     }
 
     private static Movie inputMovieName() {
-        String input="";
         //파일에서 영화목록 가져오기
         List<Movie> movieList = FileDataManager.readMoviesFromFile();
         System.out.println("영화목록");
-        for (Movie movie : movieList) {
-            System.out.println(movie.getTitle());
-        }
+        movieList.stream().map(Movie::getTitle).forEach(System.out::println);
+//        movieList.forEach(movie -> System.out.println(movie.getTitle()));
         //영화 목록 출력
         while (true) {
             System.out.println("등록할 영화제목을 입력하세요");
-            input = sc.nextLine();
-            for (Movie movie : movieList) {
-                if (movie.getTitle().equals(input)) {
-                    return movie;
-                }
+            String input = sc.nextLine();
+            Optional<Movie> inputMovie = movieList.stream().filter((movie) -> movie.getTitle().equals(input)).findFirst();
+            if (inputMovie.isPresent()) {
+                return inputMovie.get();
+            } else {
+                System.out.println("존재하지않는 영화입니다.");
             }
-            System.out.println("존재하지않는 영화입니다.");
         }
     }
 
@@ -187,27 +181,27 @@ public class MovieScheduleManager {
         int j=(inputNumber-1)%3;
 
         AdminSchedule[][] adminSchedule = adminSchedules.get(selectedDate);
-        SelectedScheduleInfo dto = new SelectedScheduleInfo();
+        SelectedScheduleInfo selectedScheduleInfo = new SelectedScheduleInfo();
         if (type.equals("등록")) {
-            if (adminSchedule[i][j] == null) {  // 해당 스케줄에 등록된 영화가 없다면 등록 진행
-                dto.setTheaterNum(i);
-                dto.setScreenTimeNum(j);
-                return dto;
+            if (adminSchedule[i][j] == null) {  // 해당 스케줄에 등록된 영화가 없다면 해당 스케줄정보 반환
+                selectedScheduleInfo.setTheaterNum(i);
+                selectedScheduleInfo.setScreenTimeNum(j);
+                return selectedScheduleInfo;
             }
             else{
                 throw new InputException("해당 스케줄에는 이미 등록되어있는 영화가 있습니다.");
             }
 
         } else if (type.equals("삭제") ) {
-            if (adminSchedule[i][j] != null) { // 해당 스케줄에 등록된 영화가 있다면 삭제 진행
+            if (adminSchedule[i][j] != null) { // 해당 스케줄에 등록된 영화가 있다면 해당 스케줄정보 반환
                 if (adminSchedule[i][j].getSchedule().getEmpty() != TOTAL_SEAT_NUMBER) {
                     //해당 스케줄의 영화를 예매한 사람이 있다면 삭제 X
                     throw new InputException("해당 스케줄에는 등록되어있는 영화는 예매자가 있어 삭제가 불가합니다.");
                 }
-                dto.setMovie(adminSchedule[i][j].getMovie());
-                dto.setTheaterNum(i);
-                dto.setScreenTimeNum(j);
-                return dto;
+                selectedScheduleInfo.setMovie(adminSchedule[i][j].getMovie());
+                selectedScheduleInfo.setTheaterNum(i);
+                selectedScheduleInfo.setScreenTimeNum(j);
+                return selectedScheduleInfo;
             } else {
                 throw new InputException("해당 스케줄에는 등록되어있는 영화가 없습니다.");
             }
@@ -237,8 +231,6 @@ public class MovieScheduleManager {
     }
 
     private static void updateAdminSchedule(String selectedDate) {
-
-
         Map<Movie, Schedule[][]> movieSchedule = movieSchedules.get(selectedDate);
         AdminSchedule[][] convertedData = new AdminSchedule[3][3];
         movieSchedule.forEach((movie, schedules) -> {

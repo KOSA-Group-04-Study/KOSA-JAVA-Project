@@ -92,16 +92,16 @@ public class Application {
 //        MovieScheduleManager.test3("2024-03-22",cinema);
 
 
-        FileDataManager.writeMovieScheduleToFile(data);
-//        MovieScheduleManager.printScheduleFordate();
-        MovieScheduleManager.registerMovieToSchedule();
-//        MovieScheduleManager.printScheduleFordate();
-        MovieScheduleManager.registerMovieToSchedule();
-//        MovieScheduleManager.printScheduleFordate();
-        MovieScheduleManager.deleteMovieFromSchedule();
+//        FileDataManager.writeMovieScheduleToFile(data);
         MovieScheduleManager.printScheduleForInputDate();
-        MovieScheduleManager.deleteMovieFromSchedule();
+        MovieScheduleManager.registerMovieToSchedule();
         MovieScheduleManager.printScheduleForInputDate();
+        MovieScheduleManager.registerMovieToSchedule();
+//        MovieScheduleManager.printScheduleForInputDate();
+//        MovieScheduleManager.deleteMovieFromSchedule();
+//        MovieScheduleManager.printScheduleForInputDate();
+//        MovieScheduleManager.deleteMovieFromSchedule();
+//        MovieScheduleManager.printScheduleForInputDate();
 
 
 
