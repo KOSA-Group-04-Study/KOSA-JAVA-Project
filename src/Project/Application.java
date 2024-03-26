@@ -1,6 +1,7 @@
 package Project;
 
 import Project.FilesIO.FileDataManager;
+import Project.FilesIO.TestDataGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ public class Application {
     public static void main(String[] args) {
 
 
-
+        //TestDataGenerator.testDataGenerate();
         Cinema cinema = new Cinema();
 
         //cinema.setMovieSchedule(data);

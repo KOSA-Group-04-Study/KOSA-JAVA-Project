@@ -101,7 +101,7 @@ public class ReservationManager {
                 .movieDate(choiceMovieDate)
                 .theater(new Integer[] {row, col})
                 .seat(seats[seatNumber[0]][seatNumber[1]])
-                .moviePrice(10000)
+                .moviePrice(choiceMovie.getPrice())
                 .build();
 
 

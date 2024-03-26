@@ -16,6 +16,7 @@ public final class PaymentManager {
         // 결제 취소 -> 포인트 반환
         Integer retrunPoint = ((Client) user).getPoint() + price;
         ((Client) user).setPoint(retrunPoint);
+
     }
 
     public static boolean payPoint(User user,Integer price) {

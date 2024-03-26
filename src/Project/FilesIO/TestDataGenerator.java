@@ -18,6 +18,7 @@ public class TestDataGenerator {
         List<Movie> movies = createMovies();
         List<User> users = createUser();
         Map<String, Map<Movie, Schedule[][]>> movieSchedules = createMovieSchedules();
+        List<Reservation> emptyList = new ArrayList<>();;
 
         // 영화 정보를 파일에 저장
         FileDataManager.writeMoviesToFile(movies);
@@ -25,6 +26,9 @@ public class TestDataGenerator {
         FileDataManager.writeUserInfoToFile(users);
         // 영화스케줄 정보 파일에 저장
         FileDataManager.writeMovieScheduleToFile(movieSchedules);
+        // 예매내역 빈 리스트를 파일에 저장
+        // 파일 읽기 오류가 발생했습니다: null 출력 방지
+        FileDataManager.writeReservationToFile(emptyList);
 
     }
 
