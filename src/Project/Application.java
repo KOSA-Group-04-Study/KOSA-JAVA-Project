@@ -1,6 +1,7 @@
 package Project;
 
 import Project.Manager.FileDataManager;
+import Project.Manager.MovieScheduleManager;
 import Project.User.Admin;
 import Project.User.Client;
 import Project.User.User;
