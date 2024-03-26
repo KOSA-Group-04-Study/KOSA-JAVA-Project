@@ -35,8 +35,18 @@ public class ReservationManager {
 
 
         //1. 사용자에게 영화 상영 날짜를 입력받는다. (while 문)
-        System.out.println("상영할 영화 날짜를 입력해 주세요 ex) 2024-03-23");
-        String selectedDate = sc.nextLine();
+
+        String selectedDate = ReservationException.DataInputFormat();
+        if (selectedDate == null) {
+            return; // 사용자가 다시 입력하지 않기로 결정한 경우 메서드 종료
+        }
+
+        ReservationException.checkScheduleExistence(selectedDate, data);
+        if (data.get(selectedDate) == null) {
+            // 스케줄이 존재하지 않으면 다시 날짜를 입력받음
+            makeMovieReservation(user);
+            return; // 재귀 호출 후 메서드 종료
+        }
         //1.1 입력 날짜 검증 필요 (형식이 올바른지)
         //1.2 입력 날짜 스케쥴 존재 여부 검증 필요
 
@@ -50,9 +60,26 @@ public class ReservationManager {
 
 
         //3.사용자에게 원하는 영화 스케쥴을 입력받는다. (while 문)
-        System.out.println("원하는 영화의 스케쥴을 선택해 주세요. (ex) [38] 선택시 : 38)");
-        Integer choiceSchedule = Integer.parseInt(sc.nextLine());
+        //
+        // 올바른 입력 확인
+        Integer choiceSchedule = ReservationException.choiceSchedule(  scheduleNumbersMap);
+
+
+        if (choiceSchedule ==null) {
+            System.out.println("메뉴로 돌아갑니다");
+            return;
+        }
+        // 스케쥴 존재 확인
+        //3-1
+       // boolean check = ReservationException.checkInputScheduleExistence(choiceSchedule,scheduleNumbersMap);
         //상영관 검증 로직 필요 (존재 여부, 올바른 입력 확인)
+        /*
+        if(check == false) {
+            System.out.println("메뉴로 돌아갑니다.");
+            return;
+        }
+
+         */
 
         Movie choiceMovie = scheduleNumbersMap.get(choiceSchedule).getMovie();  //선택한 영화 정보
         Integer row = scheduleNumbersMap.get(choiceSchedule).getI();              //선택한 상영관
@@ -67,10 +94,20 @@ public class ReservationManager {
         getSeats(seats);
 
         //4.2 사용자에게 좌석을 입력받기
-        System.out.println("좌석을 선택하세요. (예: A1 또는 a1)");
-        String selectSeat = sc.nextLine();  //선택한 좌석번호
+        //4.2 좌석 번호 선택 이력 검증 로직(a1 또는 A1 형식으로 받도록)
+        String selectSeat = ReservationException.validateSeatSelection();  //선택한 좌석번호
+        if (selectSeat == null) {
+            System.out.println("메뉴로 돌아갑니다");
+            return;
+        }
         Integer[] seatNumber = convertSelectSeat(selectSeat);   // 선택한 좌석번호 변환 -> 좌석 번호 [행, 열]
         //4.3 예매 좌석 검증 필요 (null인지 아닌지 여부(예매 여부), 올바른 입력 여부)
+
+        boolean seatCheck = ReservationException.checkEmptySeat(seatNumber,scheduleNumbersMap, choiceSchedule);
+        if(seatCheck == false) {
+            System.out.println("메뉴로 돌아갑니다.");
+            return;
+        }
 
         //5. 결제
         //결제 여부 확인 필요
@@ -155,7 +192,7 @@ public class ReservationManager {
                 System.out.println();
                 System.out.print("       ");
                 for (int j = 0; j < times.length; j++) {
-                    System.out.print("----------");
+                    System.out.print("------------");
                 }
                 System.out.println();
             }

@@ -156,7 +156,7 @@ public final class AuthenticationManager {
                 return false;
             }
             else {
-                System.out.println("1 또는 2만 입력해주세요.");
+                System.out.println("1 또는 0만 입력해주세요.");
             }
         }
     }
