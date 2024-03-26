@@ -1,5 +1,7 @@
-package Project;
+package Project.Reservation;
 
+import Project.Movie;
+import Project.Schedule;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

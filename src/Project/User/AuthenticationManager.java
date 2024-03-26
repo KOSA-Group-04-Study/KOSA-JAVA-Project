@@ -1,18 +1,12 @@
-package Project.Manager;
+package Project.User;
 
-import Project.User.Admin;
-import Project.User.Client;
-import Project.User.User;
+import Project.FilesIO.FileDataManager;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static Project.Manager.FileDataManager.readUserInfoFromFile;
-import static Project.Manager.FileDataManager.writeUserInfoToFile;
+import static Project.FilesIO.FileDataManager.readUserInfoFromFile;
 
 public final class AuthenticationManager {
 

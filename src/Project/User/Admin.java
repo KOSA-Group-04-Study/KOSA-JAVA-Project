@@ -1,13 +1,9 @@
 package Project.User;
 
-import Project.Manager.FileDataManager;
-import Project.Manager.MovieScheduleManager;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import Project.FilesIO.FileDataManager;
+import Project.MovieSchedule.MovieScheduleManager;
 import lombok.Getter;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 

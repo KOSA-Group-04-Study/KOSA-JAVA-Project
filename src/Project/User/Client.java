@@ -1,9 +1,8 @@
 package Project.User;
 
-import Project.Reservation;
+import Project.Reservation.Reservation;
 import lombok.*;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;

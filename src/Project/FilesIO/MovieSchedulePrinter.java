@@ -1,10 +1,8 @@
-package Project;
+package Project.FilesIO;
 
-import Project.Manager.FileDataManager;
 import Project.Movie;
 import Project.Schedule;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

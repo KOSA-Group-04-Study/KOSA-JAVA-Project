@@ -1,6 +1,7 @@
-package Project.Manager;
+package Project.MovieSchedule;
 
 import Project.*;
+import Project.FilesIO.FileDataManager;
 import lombok.*;
 
 import java.text.SimpleDateFormat;

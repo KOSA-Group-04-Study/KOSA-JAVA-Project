@@ -1,11 +1,12 @@
-package Project;
+package Project.Reservation;
 
+import Project.Movie;
+import Project.Seat;
 import Project.User.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,8 +38,8 @@ public class Reservation implements Serializable{
                 "이름: [" + user.getName() + "]",
                 "영화상영정보: [" + movieDate +" "+ times[this.theater[1]],
                 theaters[this.theater[0]],
-                ((char) (seat.row + 65)) + "열",
-                (seat.col + 1) + "번" + "]",
+                ((char) (seat.getRow() + 65)) + "열",
+                (seat.getCol() + 1) + "번" + "]",
                 "영화제목: [" + movie.getTitle() + "]");
     }
 }

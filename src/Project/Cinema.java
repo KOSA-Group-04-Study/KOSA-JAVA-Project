@@ -1,8 +1,9 @@
 package Project;
 
-import Project.Manager.AuthenticationManager;
-import Project.Manager.PaymentManager;
-import Project.Manager.ReservationManager;
+import Project.Reservation.ReservationManager;
+import Project.User.AuthenticationManager;
+import Project.Payment.PaymentManager;
+import Project.Reservation.Reservation;
 import Project.User.Admin;
 import Project.User.Client;
 import Project.User.User;
