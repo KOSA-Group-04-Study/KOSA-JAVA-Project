@@ -67,7 +67,7 @@ public class MovieScheduleManager {
             //날짜를 입력받아 관리자용 영화 스케줄보여주기
             String selectedDate = printScheduleForInputDate();
 
-            //선택한 스케줄 입력번호 받아오기(+검증) , 해당 입력번호에 대한 스케줄정보 반환 ( 등록시 -> 스케줄정보(무비,영화관인덱스,상영시간인덱스))
+            //선택한 스케줄 입력번호 받아오기(+검증) , 해당 입력번호에 대한 스케줄정보 반환 ( 삭제시 -> 스케줄정보(영화관인덱스,상영시간인덱스))
             SelectedScheduleInfo selectedScheduleInfo = inputNumber(selectedDate, DELETION);
 
             // movieSchedules 에  입력된 날짜,영화,상영관번호,상영시간의 정보를 이용해서 원래있던 영화상영스케줄 삭제
