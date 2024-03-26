@@ -1,16 +1,11 @@
 package Project.FilesIO;
 
 import Project.Movie;
-import Project.Reservation.Reservation;
 import Project.Schedule;
 import Project.User.Admin;
 import Project.User.Client;
 import Project.User.User;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TestDataGenerator {
 
@@ -25,7 +20,6 @@ public class TestDataGenerator {
         FileDataManager.writeUserInfoToFile(users);
         // 영화스케줄 정보 파일에 저장
         FileDataManager.writeMovieScheduleToFile(movieSchedules);
-
     }
 
     // 영화 정보 생성
@@ -41,7 +35,7 @@ public class TestDataGenerator {
     // 관리자,사용자 한명씩
     private static List<User> createUser() {
         List<User> list = new ArrayList<>();
-        list.add(new Client("q@naver.com", "1q2w3e4r!", "a", "010-1234-1234", false, 0, new ArrayList<>()));
+        list.add(new Client("q@naver.com", "1q2w3e4r!", "a", "010-1234-1234", false, 1000000, new LinkedList<>()));
         list.add(new Admin("q2@naver.com", "1q2w3e4r!", "a", "010-1234-1234", true));
         return list;
     }

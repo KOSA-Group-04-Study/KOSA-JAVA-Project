@@ -87,8 +87,8 @@ public class ReservationManager {
 
         //6.2 예매번호 생성 후 저장
         String ticketNumber = ticketNumberGenerator(selectedDate, row, col ,selectSeat);
-        System.out.println("예매가 완료되었습니다.");
-        System.out.printf("예매번호 : [%s]\n", ticketNumber);
+//        System.out.println("예매가 완료되었습니다.");
+//        System.out.printf("예매번호 : [%s]\n", ticketNumber);
 
         //6.3 예매정보 내역 저장 -> Reservation
         LocalDate choiceMovieDate = LocalDate.parse(selectedDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -104,7 +104,7 @@ public class ReservationManager {
                 .moviePrice(10000)
                 .build();
 
-
+        OutputView.movietiketPrint(myReservation);
         //7. 파일 덮어쓰기
         //7.1 MovieSchedule.txt
         FileDataManager.writeMovieScheduleToFile(data);
