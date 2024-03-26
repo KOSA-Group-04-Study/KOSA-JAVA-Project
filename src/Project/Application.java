@@ -66,10 +66,7 @@ public class Application {
     private static Map<Movie, Schedule[][]> createMovieSchedule() {
         Map<Movie, Schedule[][]> movieSchedule = new HashMap<>();
         List<Movie> movieList = FileDataManager.readMoviesFromFile();
-//        for (Movie movie : ) {
-//            Schedule[][] schedules = createSchedules();
-//            movieSchedule.put(movie, schedules);
-//        }
+
         Schedule[][] schedules = createSchedules();
         schedules[0][0] = new Schedule(5,5); // 1상영관 9시
         schedules[1][0] = new Schedule(5,5); // 2상영관 9시

@@ -6,6 +6,7 @@ import Project.User.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -16,20 +17,21 @@ public class ReservationManager {
 
     //1) 예매하기
     public static void makeMovieReservation(User user) {
+        Scanner sc = new Scanner(System.in);
 
         Map<String, Map<Movie,Schedule[][]>> data = FileDataManager.readMovieScheduleFromFile();    // MovieSchedule.txt
         List<User> usersList = FileDataManager.readUserInfoFromFile();                              //유저정보읽기
         List<Reservation> reservationsList = FileDataManager.readReservationsFromFile();            //예매 정보 읽기
 
+        //유저 정보 최신화
         Optional<User> foundUserOptional  = usersList.stream()
                 .filter(findUser -> findUser.getEmail().equals(user.getEmail()))
                 .findFirst();
-
         Client client = (Client) foundUserOptional.orElse(null);
 
-        Map<Integer, MovieScreaningInfo> scheduleNumbersMap = new HashMap<Integer, MovieScreaningInfo>();   //Schedule에 넘버링
+        //영화 스케쥴 넘버링(메인 데이터 관리)
+        Map<Integer, MovieScreaningInfo> scheduleNumbersMap = new HashMap<Integer, MovieScreaningInfo>();
 
-        Scanner sc = new Scanner(System.in);
 
         //1. 사용자에게 영화 상영 날짜를 입력받는다. (while 문)
         System.out.println("상영할 영화 날짜를 입력해 주세요 ex) 2024-03-23");
@@ -45,8 +47,9 @@ public class ReservationManager {
         System.out.println("=====영화 상영 일정====");
         getMovieSchedules(movieMap, scheduleNumbersMap);
 
+
         //3.사용자에게 원하는 영화 스케쥴을 입력받는다. (while 문)
-        System.out.println("상영관을 선택해 주세요. (ex) [38] 선택시 : 38)");
+        System.out.println("원하는 영화의 스케쥴을 선택해 주세요. (ex) [38] 선택시 : 38)");
         Integer choiceSchedule = Integer.parseInt(sc.nextLine());
         //상영관 검증 로직 필요 (존재 여부, 올바른 입력 확인)
 
@@ -58,7 +61,8 @@ public class ReservationManager {
 
         //4 좌석 선택 (while 문)
         //4.1 해당 상영관의 좌석을 보여주기
-        Seat[][] seats = movieMap.get(choiceMovie)[row][col].getSeats();
+        Seat[][] seats = scheduleNumbersMap.get(choiceSchedule).getSchedule().getSeats();   //이걸로 변경
+//        Seat[][] seats = movieMap.get(choiceMovie)[row][col].getSeats();
         getSeats(seats);
 
         //4.2 사용자에게 좌석을 입력받기
@@ -75,8 +79,9 @@ public class ReservationManager {
 
         //6. 예매 정보 저장 (결제 성공시)
         //6.1 좌석 정보를 저장한다.
-        seats[seatNumber[0]][seatNumber[1]] = new Seat(seatNumber[0], seatNumber[1]); //예매한 좌석 정보 저장
-        movieMap.get(choiceMovie)[row][col].setEmpty(movieMap.get(choiceMovie)[row][col].getEmpty() - 1);   //빈좌석 - 1
+        seats[seatNumber[0]][seatNumber[1]] = new Seat(seatNumber[0], seatNumber[1]);   //예매한 좌석 정보 저장
+        scheduleNumbersMap.get(choiceSchedule).getSchedule().seatCountDown();           //빈좌석 - 1
+//        movieMap.get(choiceMovie)[row][col].setEmpty(movieMap.get(choiceMovie)[row][col].getEmpty() - 1);   //빈좌석 - 1
 
         //6.2 예매번호 생성 후 저장
         String ticketNumber = ticketNumberGenerator(selectedDate, row, col ,selectSeat);
@@ -98,38 +103,35 @@ public class ReservationManager {
                 .build();
 
         //6.4 유저에 예매 정보 저장 -> User
-        client.getReservationList().add(myReservation);
+//        client.getReservationList().add(myReservation);
 
         //7. 파일 덮어쓰기
-        //MovieSchedule.txt
+        //7.1 MovieSchedule.txt
         FileDataManager.writeMovieScheduleToFile(data);
 
-        //Reservations.txt
+        //7.2 Reservations.txt
         if (reservationsList == null) {
             reservationsList = new LinkedList<>();
         }
         reservationsList.add(myReservation);
         FileDataManager.writeReservationToFile(reservationsList);
 
-        //Users.txt
-        if (usersList == null) {
-            usersList = new LinkedList<>();
-            usersList.add(client);
-        }
-
-        usersList.stream().filter(finduser -> finduser.getEmail()
-                        .equals(client.getEmail()))
-                        .findFirst()
-                        .ifPresent(finduser -> ((Client) finduser).getReservationList().add(myReservation));
+        //7.3 Users.txt
+        client.getReservationList().add(myReservation);
+//        usersList.stream().filter(finduser -> finduser.getEmail().equals(client.getEmail()))
+//                        .findFirst()
+//                        .ifPresent(finduser -> ((Client) finduser).getReservationList().add(myReservation));
         FileDataManager.writeUserInfoToFile(usersList);
-
     }
 
     //입력받은 날짜의 상영정보를 보여준다
     public static void getMovieSchedules(Map<Movie, Schedule[][]> movieMap, Map<Integer, MovieScreaningInfo> scheduleNumbersMap ) {
+        //영화 순서 정렬
+        List<Map.Entry<Movie, Schedule[][]>> movieEntryList = new ArrayList<>(movieMap.entrySet());
+        movieEntryList.sort(Comparator.comparing(entry -> entry.getKey().getTitle()));
 
         Integer scheduleNumber = 1;
-        for (Map.Entry<Movie, Schedule[][]> entry : movieMap.entrySet()) {
+        for (Map.Entry<Movie, Schedule[][]> entry : movieEntryList) {
             System.out.println("제목 : " + entry.getKey().getTitle());
             System.out.print("       ");
             for (ScreeningTime time : ReservationManager.times) {
@@ -139,11 +141,16 @@ public class ReservationManager {
             for (int i = 0; i < entry.getValue().length; i++) {
                 System.out.printf("%s   ", theaters[i]);                    // 상영관 출력
                 for (int j = 0; j < entry.getValue()[0].length; j++) {
+                    if (entry.getValue()[i][j] == null) {
+                        System.out.print("\t\t\t  |");
+                        continue;
+                    }
+
                     int emptySeats = entry.getValue()[i][j].getEmpty();     //빈좌석
                     int totalSeats = entry.getValue()[i][j].getTotal();     //총좌석
                     String seatInfo = emptySeats + "/" + totalSeats;
-                    scheduleNumbersMap.put(scheduleNumber, new MovieScreaningInfo(entry.getKey(), i, j));   //schedule 넘버
-                    System.out.printf("[%d] %5s |", scheduleNumber++, seatInfo);
+                    scheduleNumbersMap.put(scheduleNumber, new MovieScreaningInfo(entry.getKey(), i, j, entry.getValue()[i][j]));   //schedule 넘버
+                    System.out.printf("[%d]\t%s |", scheduleNumber++, seatInfo);
                 }
                 System.out.println();
                 System.out.print("       ");
@@ -414,6 +421,7 @@ public class ReservationManager {
         String check = "";
         //유저에게 삭제할 예매번호 입력받기
         do {
+            System.out.print("예매 취소를 위해 예매번호를 입력해주세요: ");
             String inputReservationNumber = sc.nextLine();
 
             Optional<Reservation> foundReservationOptional = userReservationsList.stream()
@@ -422,6 +430,7 @@ public class ReservationManager {
 
             Reservation foundReservation = foundReservationOptional.orElse(null);
 
+            //예외 처리
             if (foundReservation == null) {
                 System.out.println("잘못된 예매 번호 입니다. 다시입력하시겠습니까? (Y / N)");
                 check = sc.nextLine();
@@ -429,13 +438,66 @@ public class ReservationManager {
                 else return;
             }
 
-            System.out.println("정말로 예매를 취소하시겠습니까? (Y / N)");
+            //예외 처리 - 현재 날짜보다 지난 영화의 경우
+//            if (foundReservation.getMovieDate().isBefore(LocalDate.now())) {
+//                System.out.println("기간이 지난 예매내역으로 취소하실 수 없습니다.");
+//                System.out.println("다시입력하시겠습니까? (Y / N)");
+//                check = sc.nextLine();
+//                if (check.equals("Y")) continue;
+//                else return;
+//            } else if (foundReservation.getMovieDate().isEqual(LocalDate.now())) {
+//                LocalDateTime[] screeningTime = {
+//                        LocalDateTime.of(foundReservation.getMovieDate(), LocalTime.of(9, 0)),
+//                        LocalDateTime.of(foundReservation.getMovieDate(), LocalTime.of(12, 0)),
+//                        LocalDateTime.of(foundReservation.getMovieDate(), LocalTime.of(18, 0))
+//                };
+//
+//                if (screeningTime[foundReservation.getTheater()[1]].isBefore(LocalDateTime.now())) {
+//                    System.out.println("기간이 지난 예매내역으로 취소하실 수 없습니다.");
+//                    System.out.println("다시입력하시겠습니까? (Y / N)");
+//                    check = sc.nextLine();
+//                    if (check.equals("Y")) continue;
+//                    else return;
+//                }
+//            }
+            ////위 부분은 사용 예정
+
+            System.out.println(foundReservation);
+            System.out.print("정말로 예매를 취소하시겠습니까? (Y / N)");
             check = sc.nextLine();
             if (check.equals("N")) return;
 
+            //MovieSchedule.txt
+            String selectedDate = foundReservation.getMovieDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            Movie choiceMovie = foundReservation.getMovie();
+            Integer I = foundReservation.getTheater()[0];
+            Integer J = foundReservation.getTheater()[1];
+
+
+            for (Map.Entry<Movie, Schedule[][]> entry : data.get(selectedDate).entrySet()) {
+                if (entry.getKey().getTitle().equals(choiceMovie.getTitle())) {
+                    Schedule choiceSchedule = entry.getValue()[I][J];
+                    choiceSchedule.setEmpty(choiceSchedule.getEmpty() + 1);                         //빈좌석 + 1
+                    choiceSchedule.setSeats(null);                                                  //좌석 null로 변경
+                    break;
+                }
+            }
 
 
 
+//            Schedule choiceSchedule = data.get(selectedDate).get(choiceMovie)[I][J];
+//            choiceSchedule.setEmpty(choiceSchedule.getEmpty() + 1);                         //빈좌석 + 1
+//            choiceSchedule.setSeats(null);                                                  //좌석 null로 변경
+            FileDataManager.writeMovieScheduleToFile(data);
+
+            //Reservations.txt
+            reservationsList.remove(foundReservation);
+            FileDataManager.writeReservationToFile(reservationsList);
+
+            //User.txt
+            client.getReservationList().remove(foundReservation);
+            FileDataManager.writeUserInfoToFile(usersList);
+            break;
 
         } while(true);
 
