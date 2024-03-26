@@ -2,6 +2,8 @@ package Project.MovieSchedule;
 
 import Project.*;
 import Project.FilesIO.FileDataManager;
+import Project.User.Client;
+import Project.User.User;
 import lombok.*;
 
 import java.text.SimpleDateFormat;
@@ -91,7 +93,6 @@ public class MovieScheduleManager {
     //관리자용 영화 스케줄 보여주기 -> (날짜 입력받아 검증하고 날짜 반환) + (파일 읽기를 이용해 영화스케줄 전역변수 최신화) + ( 관리자용 영화 스케줄 출력)
     public static String printScheduleForInputDate() {
         String selectedDate = inputDate(); //날짜 입력받기
-        if(selectedDate.equals(EXIT_COMMAND)) throw new ExitException();
         prepareData(selectedDate); // 영화스케줄전역변수 업데이트
 
         AdminSchedule[][] adminSchedule = adminSchedules.get(selectedDate);
@@ -132,6 +133,23 @@ public class MovieScheduleManager {
         return selectedDate;
     }
 
+    //회원정보 출력 메소드
+    public static void printAllUsers() {
+        List<User> users = FileDataManager.readUserInfoFromFile();
+        for (User user : users) {
+            System.out.println("-------------------");
+            System.out.println("사용자 정보:");
+            System.out.println("아이디: " + user.getEmail());
+            System.out.println("이름: " + user.getName());
+            System.out.println("전화번호: " + user.getPhoneNumber());
+            System.out.println("관리자 여부: " + (user.isAdmin() ? "O" : "X"));
+            if (user instanceof Client client) {
+                System.out.println("포인트 :"+client.getPoint());
+            }
+            System.out.println("-------------------");
+        }
+    }
+
 
     //날짜 입력 받는 메소드
     private static String inputDate() {
@@ -142,7 +160,7 @@ public class MovieScheduleManager {
             try {
                 System.out.println("날짜를 입력하세요  예시 -> 2024-03-23 , 나가기 -> exit");
                 inputdata = sc.nextLine();
-                if (inputdata.equals(EXIT_COMMAND)) return inputdata;
+                if (inputdata.equals(EXIT_COMMAND)) throw new ExitException();
                 sdf.parse(inputdata); //포맷팅 검사
             } catch (Exception e) {
                 System.out.println("잘못된 날짜입니다. 다시입력하세요 ");
