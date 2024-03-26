@@ -14,11 +14,12 @@ import java.util.Map;
 public class Application {
     public static void main(String[] args) {
 
+        // 영화 정보 생성
+        List<Movie> movies = createMovies();
+        // 영화 정보를 파일에 저장
+        FileDataManager.writeMoviesToFile(movies);
+
         if (FileDataManager.readMovieScheduleFromFile() == null) {
-            // 영화 정보 생성
-            List<Movie> movies = createMovies();
-            // 영화 정보를 파일에 저장
-            FileDataManager.writeMoviesToFile(movies);
 
             // 영화 및 스케줄 데이터 생성
             Map<String, Map<Movie, Schedule[][]>> data = new HashMap<>();
