@@ -29,8 +29,8 @@ public final class FileDataManager {
     // 초기에 Movies.txt와 Movies.Schedule.txt에 정보 저장하기 위해
     // 파일쓰기 -> 영화 정보를 파일에 쓰기
     public static void writeMoviesToFile(List<Movie> movies) {
-        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(MOVIE_FILE_PATH))) {
-            outputStream.writeObject(movies); //직렬화
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(MOVIE_FILE_PATH))) { //직렬화
+            outputStream.writeObject(movies); //직렬화 가능 객체를 바이트 스트림으로 변환하고 파일에 저장
             System.out.println("영화 정보가 파일에 저장되었습니다.");
         } catch (IOException e) {
             System.err.println("영화 정보를 파일에 쓰는 중 오류가 발생했습니다: " + e.getMessage());

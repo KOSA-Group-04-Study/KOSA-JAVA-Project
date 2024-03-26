@@ -12,7 +12,6 @@ import java.io.Serializable;
 import java.util.List;
 
 @Getter
-//@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Admin extends User implements Serializable{
 
     public Admin(String email, String password, String name, String phoneNumber, boolean isAdmin) {
