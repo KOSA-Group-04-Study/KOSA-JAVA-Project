@@ -14,7 +14,6 @@ public class Application {
 
         //TestDataGenerator.testDataGenerate();
         Cinema cinema = new Cinema();
-
         //cinema.setMovieSchedule(data);
 
         cinema.run();
