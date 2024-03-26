@@ -1,10 +1,7 @@
-package Project;
+package Project.FilesIO;
 
-import Project.Manager.FileDataManager;
-import Project.User.Client;
 import Project.User.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 //전체 유저정보 확인 임시 클래스

@@ -1,11 +1,9 @@
-package Project.Manager;
+package Project.FilesIO;
 
 import Project.Movie;
-import Project.Reservation;
+import Project.Reservation.Reservation;
 import Project.Schedule;
-import Project.User.Client;
 import Project.User.User;
-import Project.User.Client;
 
 import java.io.*;
 import java.util.Iterator;

@@ -1,8 +1,9 @@
 package Project;
 
-import Project.Manager.AuthenticationManager;
-import Project.Manager.PaymentManager;
-import Project.Manager.ReservationManager;
+import Project.Reservation.ReservationManager;
+import Project.User.AuthenticationManager;
+import Project.Payment.PaymentManager;
+import Project.Reservation.Reservation;
 import Project.User.Admin;
 import Project.User.Client;
 import Project.User.User;
@@ -56,17 +57,21 @@ public class Cinema { // 영화관
                 case "exit": {
                     System.exit(0);
                 }
+
                 default:
                     System.out.println("입력 잘못되었습니다.");
             }
 
         }
+
         while (true) ;
 
-        // 사용자에 따라 다른 메뉴 실행
-        if(isAdmin) adminMenu(user);
-        else clientMenu(((Client) user));
 
+        // 사용자에 따라 다른 메뉴 실행
+        if(isAdmin) {
+            adminMenu(user);}
+        else {
+            clientMenu((Client) user);}
     }
 
     private static void clientMenu(Client client) {
@@ -76,6 +81,7 @@ public class Cinema { // 영화관
 //        if(user != null && user instanceof Client){
 //            client = (Client) user;
 //        }
+
 
         //사용자 메인메뉴
         do {
@@ -105,14 +111,16 @@ public class Cinema { // 영화관
                     break;
                 }
                 case "exit": {
-                    //포인트 관리
                     System.exit(0);
                 }
-                default:
-                    System.out.println("입력 잘못되었습니다.");
+
+                default: {
+                    System.out.println("잘못된 입력입니다. 다시 입력해주세요.");
+                }
             }
 
         }
+
         while (true) ;
     }
 
@@ -151,12 +159,16 @@ public class Cinema { // 영화관
                     admin.getMovieToSchedule();
                     break;
                 }
+                case "exit": {
+                    //포인트 관리
+                    System.exit(0);
+                }
                 default:
                     System.out.println("입력 잘못되었습니다.");
             }
 
         }
-        while (!inputData.equals("exit")) ;
+        while (true) ;
     }
 
 

@@ -1,13 +1,9 @@
 package Project.User;
 
-import Project.Manager.FileDataManager;
-import Project.Manager.MovieScheduleManager;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import Project.FilesIO.FileDataManager;
+import Project.MovieSchedule.MovieScheduleManager;
 import lombok.Getter;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -26,8 +22,7 @@ public class Admin extends User implements Serializable{
 
     // 영화 상영스케줄 조회
     public void getMovieToSchedule() {
-        String selectedDate = "2024-03-22";
-//        MovieScheduleManager.getMovieSchedule(selectedDate);
+        MovieScheduleManager.printScheduleForInputDate();
     }
 
     //영화상영종료 (스케쥴표에서)
@@ -39,6 +34,18 @@ public class Admin extends User implements Serializable{
     //회원 정보 조회
     public void getUserInfo() {
         List<User> users = FileDataManager.readUserInfoFromFile();
+        for (User user : users) {
+            System.out.println("-------------------");
+            System.out.println("사용자 정보:");
+            System.out.println("아이디: " + user.getEmail());
+            System.out.println("이름: " + user.getName());
+            System.out.println("전화번호: " + user.getPhoneNumber());
+            System.out.println("관리자 여부: " + (user.isAdmin() ? "O" : "X"));
+            if (user instanceof Client client) {
+                System.out.println("포인트 :"+client.getPoint());
+            }
+            System.out.println("-------------------");
+        }
         // 뿌리기
     }
 
