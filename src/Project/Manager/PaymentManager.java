@@ -6,6 +6,7 @@ import org.w3c.dom.ls.LSOutput;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public final class PaymentManager {
@@ -18,7 +19,7 @@ public final class PaymentManager {
         ((Client) user).setPoint(retrunPoint);
     }
 
-    public static void payPoint(User user,Integer price) {
+    public static boolean payPoint(User user,Integer price) {
         // 포인트 결제 -> 포인트 감소
         // 취소시 포인트 반환 -> 포인트 증가
 
@@ -33,13 +34,12 @@ public final class PaymentManager {
             System.out.println(" 결제완료 ");
             System.out.println(user.getName() + "님의 포인트 잔액은 " + ((Client) user).getPoint() + " 입니다.");
             // 파일 쓰기
+            return true;
 
-
-
-        }catch(IllegalArgumentException e) {
+        } catch(IllegalArgumentException e) {
             System.out.println(e.getMessage());
+            return false;
         }
-
     }
 
     // 금액 부족 검증
@@ -53,14 +53,23 @@ public final class PaymentManager {
 
     // 포인트 관리
     public static void pointManage(User user) {  //포인트 조회 + 충전선택
+        List<User> usersList = FileDataManager.readUserInfoFromFile();              // User.txt
+
+        //현재 유저 정보 가져오기
+        Optional<User> foundUserOptional  = usersList.stream()
+                .filter(findUser -> findUser.getEmail().equals(user.getEmail()))
+                .findFirst();
+
+        Client client = (Client) foundUserOptional.orElse(null);
 
 
-        user = (Client) user;
 
-        System.out.println("안녕하세요. " + user.getName() + " 님의 포인트 정보를 알려드리겠습니다.");
+//        user = (Client) user;
+
+        System.out.println("안녕하세요. " + client.getName() + " 님의 포인트 정보를 알려드리겠습니다.");
 
         // 지금 포인트는 -> ? 입니다. 충전하려면 1을 누르세요 , 나가려면 ~  do while, while
-        System.out.println(user.getName() + " 님의 포인트는 " +  ((Client) user).getPoint() + " 입니다" );
+        System.out.println(client.getName() + " 님의 포인트는 " +  client.getPoint() + " 입니다" );
 
         while(true){
             System.out.println();
@@ -69,7 +78,7 @@ public final class PaymentManager {
             String inputData = sc.nextLine().trim();
 
             if(inputData.equals("1")){
-                insertPoint((Client) user);
+                insertPoint(client);
             }
 
             else if(inputData.equals("0")) {
@@ -80,8 +89,6 @@ public final class PaymentManager {
                 System.out.println("잘못된 입력입니다. 다시 입력해주세요.");
             }
         }
-
-
 
         //유저 파일 쓰기
     }

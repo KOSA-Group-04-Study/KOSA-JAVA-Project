@@ -68,20 +68,21 @@ public class ReservationManager {
         //4.2 사용자에게 좌석을 입력받기
         System.out.println("좌석을 선택하세요. (예: A1 또는 a1)");
         String selectSeat = sc.nextLine();  //선택한 좌석번호
-        Integer[] seatNumber = convertSelectSeat(selectSeat); // 선택한 좌석번호 변환 -> 좌석 번호 [행, 열]
+        Integer[] seatNumber = convertSelectSeat(selectSeat);   // 선택한 좌석번호 변환 -> 좌석 번호 [행, 열]
         //4.3 예매 좌석 검증 필요 (null인지 아닌지 여부(예매 여부), 올바른 입력 여부)
 
         //5. 결제
-        //...
-        //... 결제 성공시 선택한 좌석 정보 저장
-        //... 결제 실패시 -> 멘트 + return
-
+        //결제 여부 확인 필요
+        Integer moviePrice = choiceMovie.getPrice();
+        if (!PaymentManager.payPoint(client, moviePrice)) {     //결제 실패시
+            System.out.println("메뉴화면으로 돌아갑니다.");
+            return;
+        }
 
         //6. 예매 정보 저장 (결제 성공시)
         //6.1 좌석 정보를 저장한다.
         seats[seatNumber[0]][seatNumber[1]] = new Seat(seatNumber[0], seatNumber[1]);   //예매한 좌석 정보 저장
         scheduleNumbersMap.get(choiceSchedule).getSchedule().seatCountDown();           //빈좌석 - 1
-//        movieMap.get(choiceMovie)[row][col].setEmpty(movieMap.get(choiceMovie)[row][col].getEmpty() - 1);   //빈좌석 - 1
 
         //6.2 예매번호 생성 후 저장
         String ticketNumber = ticketNumberGenerator(selectedDate, row, col ,selectSeat);
@@ -102,8 +103,6 @@ public class ReservationManager {
                 .moviePrice(10000)
                 .build();
 
-        //6.4 유저에 예매 정보 저장 -> User
-//        client.getReservationList().add(myReservation);
 
         //7. 파일 덮어쓰기
         //7.1 MovieSchedule.txt
@@ -469,25 +468,20 @@ public class ReservationManager {
 
             //MovieSchedule.txt
             String selectedDate = foundReservation.getMovieDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            Movie choiceMovie = foundReservation.getMovie();
-            Integer I = foundReservation.getTheater()[0];
-            Integer J = foundReservation.getTheater()[1];
-
+            Movie choiceMovie = foundReservation.getMovie();        //선택한 영화
+            Integer I = foundReservation.getTheater()[0];           //상영관 번호
+            Integer J = foundReservation.getTheater()[1];           //상영 시각
+            Integer seatI = foundReservation.getSeat().getRow();    //좌석 행
+            Integer seatJ = foundReservation.getSeat().getCol();    //좌석 열
 
             for (Map.Entry<Movie, Schedule[][]> entry : data.get(selectedDate).entrySet()) {
                 if (entry.getKey().getTitle().equals(choiceMovie.getTitle())) {
                     Schedule choiceSchedule = entry.getValue()[I][J];
-                    choiceSchedule.setEmpty(choiceSchedule.getEmpty() + 1);                         //빈좌석 + 1
-                    choiceSchedule.setSeats(null);                                                  //좌석 null로 변경
+                    choiceSchedule.seatCountUp();                       //빈좌석 + 1
+                    choiceSchedule.getSeats()[seatI][seatJ] = null;     //좌석 null로 변경
                     break;
                 }
             }
-
-
-
-//            Schedule choiceSchedule = data.get(selectedDate).get(choiceMovie)[I][J];
-//            choiceSchedule.setEmpty(choiceSchedule.getEmpty() + 1);                         //빈좌석 + 1
-//            choiceSchedule.setSeats(null);                                                  //좌석 null로 변경
             FileDataManager.writeMovieScheduleToFile(data);
 
             //Reservations.txt
@@ -495,39 +489,16 @@ public class ReservationManager {
             FileDataManager.writeReservationToFile(reservationsList);
 
             //User.txt
+            //지불한 포인트 환불
+            Integer refundMoviePrice = foundReservation.getMoviePrice();
+            PaymentManager.payBack(client, refundMoviePrice);
+            System.out.printf("[%d] 포인트가 반환되었습니다.\n", refundMoviePrice);
+            System.out.printf("현재 포인트는 [%d] 입니다\n", client.getPoint());
+
             client.getReservationList().remove(foundReservation);
             FileDataManager.writeUserInfoToFile(usersList);
             break;
 
         } while(true);
-
-
-        //유저 정보로부터 유저가 가지고 있는 예약 정보 출력
-
-        //유저가 취소를 원하는 예매 번호를 입력받음
-
-        // 변경이 필요한 데이터
-        // 1. movieSchedule에 있는 좌석 -> null로 변경 and 빈좌석 +1 변경
-        // 2. Users 가 가지고 있는 예약 지워야 ... 근데.. 이거 ... ArrayList로 괜찮은 건가... (2번이 효율 면에서 문제가 좀...)
-        // 2. 유저한테 돈도 환불해줘야 함...
-
-        // 3. Reservations에 있는 것 순회 하면서 예매번호와 일치하는 하나만 빼고 다시 덮어써야 할듯
-
-
-
-        //예약정보 보여주고 선택받아야함 while
-
-        //유저객체에서 예약정보 삭제
-//        Client client = (Client) user;
-//        List<Reservation> reservationList = client.getReservationList();
-
-        //유저파일에서 예약정보 삭제
-
-        //무비스케줄에서도 예약정보 삭제
-
-        //돈 돌려주기 유저한테
-
-        // 유저 파일 쓰기
-
     }
 }
