@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class MovieScreaningInfo {
+public class MovieScreeningInfo {
     private Movie movie;
     private int i;
     private int j;

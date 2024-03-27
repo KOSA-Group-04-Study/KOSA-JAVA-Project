@@ -1,4 +1,4 @@
-package Project.Reservation.Controller;
+package Project.Reservation;
 
 import Project.Exception.ExitException;
 import Project.FilesIO.FileDataManager;
@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 //예매 취소하기
-public class ReservationCancellationController {
+public class ReservationCancellationManager {
     private static final Scanner sc = new Scanner(System.in);
     private static final String EXIT_COMMAND = "exit";
     private static String menu;
