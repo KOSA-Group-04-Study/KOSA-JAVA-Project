@@ -11,14 +11,12 @@ public class Application {
     public static void main(String[] args) {
 
 
-
         Cinema cinema = new Cinema();
 
         //cinema.setMovieSchedule(data);
 
         cinema.run();
     }
-
 
 
     // 영화 및 스케줄 데이터를 생성하는 메소드
@@ -30,8 +28,6 @@ public class Application {
 
         return movieSchedule;
     }
-
-
 
 
 }

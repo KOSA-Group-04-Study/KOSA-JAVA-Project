@@ -16,7 +16,7 @@ public final class AuthenticationManager {
     static String passwordPattern = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{5,}$"; // 특수 문자 1개 이상 포함, 영어 대소문 1개씩 무조건, 숫자도 1개 이상 무조건 최소 5자 이상
 
     //로그인
-    public static User Login() {
+    public static User login() {
 
         // 여기서 아이디, 비밀번호 입력받고  여기서 while -> 파일에서 읽어서 검증
         System.out.println("안녕하세요.");
@@ -49,19 +49,21 @@ public final class AuthenticationManager {
     }
 
     //회원가입
-    public static void Register() {
+    public static void register() {
         // 여기서 아이디, 비밀번호 입력받고 정규표현식으로 체크  여기서 while , 파일쓰기도 해야함.
         // 유저 어떤식 저장될지 형식
         String phonePattern = "010-\\d{4}-\\d{4}";
         System.out.println("회원가입을 시작합니다.");
 
         String emailId = getEmailInput(emailPattern);
+        checkDuplicationEmail(emailId);
         if(emailId ==null) return;
         String password = getPasswordInput(passwordPattern);
         if(password ==null) return;
         String name = getNameInput();
         String phoneNumber = getPhoneNumberInput(phonePattern);
         if(phoneNumber ==null) return;
+
 
 
         System.out.println("회원가입 완료 ");
@@ -81,6 +83,16 @@ public final class AuthenticationManager {
         FileDataManager.writeUserInfoToFile(existingUsers);
     }
 
+    //아이디가 중복체크
+    private static boolean checkDuplicationEmail(String emailId) {
+        List<User> existingUsers = FileDataManager.readUserInfoFromFile();
+        for (User existingUser : existingUsers) {
+            if(existingUser.getEmail().equals(emailId));
+                System.out.println("존재하는 계정입니다. ");
+                return false;
+        }
+        return true;
+    }
 
     // 이메일 입력을 받는 메소드
     private static String getEmailInput(String emailPattern) {
@@ -89,7 +101,13 @@ public final class AuthenticationManager {
             String emailId = sc.nextLine();
 
             if (validateEmailFormat(emailId, emailPattern)) {
-                return emailId;
+                if(checkDuplicationEmail(emailId)){
+                    return emailId;
+                } else {
+                    if(!askForRetry()){
+                        return null; // 메뉴 돌아가기
+                    }
+                }
             } else {System.out.println("이메일 형식에 맞지 않습니다. ");
 
                 if(!askForRetry()){
@@ -183,8 +201,4 @@ public final class AuthenticationManager {
         return matcher.matches();
     }
 }
-
-
-//List<User> usersList = new ArrayList<User>();
-//List<User> existingUsers = ((usersList = FileDataManager.readUserInfoFromFile()) != null) ? new ArrayList<User>(usersList) : new ArrayList<>();
 
