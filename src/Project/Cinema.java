@@ -37,8 +37,14 @@ public class Cinema { // 영화관
 //        OutputView.loading();
 //        OutputView.logoPrint();
 //        OutputView.firstMenu();
+        boolean isFirstMenuDisplayed = false;  //깜빡깜빡 거리는 초기메뉴화면 한번보고 다시 안보게끔.
         loop:
         do {
+            System.out.println();
+            if (isFirstMenuDisplayed) {
+                OutputView.firstMenu2();
+            }
+            isFirstMenuDisplayed = true;
 //            System.out.println("메뉴를 입력하세요. 1-> 로그인 2-> 회원가입 exit-> 종료 ");
             inputData = sc.nextLine();
 

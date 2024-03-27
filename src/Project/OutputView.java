@@ -322,4 +322,17 @@ public class OutputView {
         System.out.println();
     }
 
+    static void firstMenu2() {
+        String[] firstMenu2 = {
+                "--------------------------start--------------------------------\n",
+                "\t\t\t\t\t   \u001B[31m1. login\u001B[0m\n",
+                "\n",
+                "\t\t\t\t\t   \u001B[31m2. sign up\u001B[0m\n",
+                "         please input :"
+        };
+        for (String menu : firstMenu2) {
+            System.out.print(menu);
+        }
+    }
+
 }
