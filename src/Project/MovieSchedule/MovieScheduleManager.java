@@ -96,40 +96,7 @@ public class MovieScheduleManager {
         prepareData(selectedDate); // 영화스케줄전역변수 업데이트
 
         AdminSchedule[][] adminSchedule = adminSchedules.get(selectedDate);
-        System.out.println("선택하신 날짜 : " + selectedDate);
-
-        for (int i = 0; i < 3; i++) {
-            System.out.printf("%13s)\n", "(" + THEATERS[i]); //상영관 출력
-            System.out.print("(상영 시간)  :");
-            for (String screen_time : SCREENING_TIMES) { // 상영시간 출력
-                System.out.printf("  %-10s", screen_time);
-            }
-            System.out.print("\n(  영화  )  : ");
-            for (int j = 0; j < 3; j++) {
-                if (adminSchedule[i][j] == null) { // 빈 상영시간이라면 공백을 출력
-                    System.out.print("            ");
-                    continue;
-                }
-                AdminSchedule AdminSchedule = adminSchedule[i][j];
-                System.out.printf(" %-10s", AdminSchedule.getMovie().getTitle()); //영화이름 출력
-            }
-
-            System.out.print("\n(좌석 정보)  :");
-            for (int j = 0; j < 3; j++) {
-                if (adminSchedule[i][j] == null) { // 빈 상영시간이라면 공백을 출력
-                    System.out.print("             ");
-                    continue;
-                }
-                Schedule schedule = adminSchedule[i][j].getSchedule();
-                System.out.printf("  %d/%d       ", schedule.getEmpty(), TOTAL_SEAT_NUMBER); // 채워진좌석/총좌석 을 출력
-
-            }
-            System.out.print("\n( 입력번호 ) :");
-            for (int j = 0; j < 3; j++) {
-                System.out.printf("   [%d]       ", (i * 3) + j + 1); // 1~9 까지의 입력번호를 가진다.
-            }
-            System.out.println("\n----------------------------------------");
-        }
+        OutputView.printScheduleBox(selectedDate, adminSchedule);
         return selectedDate;
     }
 
@@ -324,7 +291,7 @@ public class MovieScheduleManager {
     }
     @AllArgsConstructor
     @Getter
-    private static class AdminSchedule {
+    public static class AdminSchedule {
         Movie movie;
         Schedule schedule;
     }
