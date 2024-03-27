@@ -1,4 +1,4 @@
-package Project.Reservation.Controller;
+package Project.Reservation;
 
 import Project.Exception.ExitException;
 import Project.FilesIO.FileDataManager;
@@ -15,7 +15,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ReservationQueryController {
+public class ReservationQueryManager {
     private static final Scanner sc = new Scanner(System.in);
     private static final String EXIT_COMMAND = "exit";
     private static String menu;

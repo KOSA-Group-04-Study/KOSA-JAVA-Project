@@ -1,12 +1,13 @@
 package Project;
 
-import Project.FilesIO.TestDataGenerator;
-import Project.Reservation.Controller.ReservationCancellationController;
-import Project.Reservation.Controller.ReservationController;
-import Project.Reservation.Controller.ReservationQueryController;
+import Project.Reservation.ReservationCancellationManager;
+import Project.Reservation.ReservationManager;
+import Project.Reservation.ReservationQueryManager;
+
+//import Project.FilesIO.TestDataGenerator;
+
 
 import Project.MovieSchedule.MovieScheduleManager;
-import Project.Reservation.ReservationManager;
 import Project.User.AuthenticationManager;
 import Project.Payment.PaymentManager;
 import Project.Reservation.Reservation;
@@ -92,19 +93,19 @@ public class Cinema { // 영화관
             switch (inputData) {
                 case "1": {
                     //영화 예매하기
-                    ReservationController.start(client);
+                    ReservationManager.start(client);
 //                    ReservationManager.makeMovieReservation(client);
                     break;
                 }
                 case "2": {
                     //예매조회
-                    ReservationQueryController.start(client);
+                    ReservationQueryManager.start(client);
 //                    ReservationManager.getReservation(client);
                     break;
                 }
                 case "3": {
                     //예매취소
-                    ReservationCancellationController.start(client);
+                    ReservationCancellationManager.start(client);
 //                    ReservationManager.deleteReservation(client);
                     break;
                 }
