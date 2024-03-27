@@ -1,13 +1,23 @@
 package Project;
 
+import Project.FilesIO.FileDataManager;
 import Project.Reservation.Reservation;
 import Project.Reservation.ScreeningTime;
+import Project.MovieSchedule.MovieScheduleManager;
 import Project.User.User;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 public class OutputView {
 
     static final String[] theaters = {"1관", "2관", "3관"};
+
     static final ScreeningTime[] times = {ScreeningTime.time_09, ScreeningTime.time_12, ScreeningTime.time_18};
+
+    static final int TOTAL_SEAT_NUMBER = 25;
 
     static final String[] rainbowColors = {
             "\u001B[31m",   // Red
@@ -21,10 +31,92 @@ public class OutputView {
     static final String resetColor = "\u001B[0m"; // 리셋 ANSI 이스케이프 시퀀스 (색상을 원래대로 되돌림)
 
     public static void main(String[] args) {
-//        loading();
-//        logoPrint();
-//        firstMenu();
+
+        printUserMenu();
+        printAdminMenu();
+        printBox("예외처리야 임마 \n 뭘봐");
+
     }
+
+    // 사용자 메뉴
+    public static void printUserMenu() {
+        System.out.println("╔═════════━━━─── • ───━━━═════════╗");
+        System.out.println("           메뉴를 입력하세요.           ");
+        System.out.println(" 1-> 예매하기  2-> 예매조회  3-> 예매취소");
+        System.out.println("    4-> 포인트 관리  exit-> 종료       ");
+        System.out.println("╚═════════━━━─── • ───━━━═════════╝");
+    }
+    //관리자 메뉴
+    public static void printAdminMenu() {
+        System.out.println("╔═════════════━━━─── • ───━━━═════════════╗");
+        System.out.println("               메뉴를 입력하세요.              ");
+        System.out.println(" 1-> 영화상영등록  2-> 영화상영종료  3-> 회원정보조회");
+        System.out.println("        4-> 상영목록조회  exit-> 종료          ");
+        System.out.println("╚═════════════━━━─── • ───━━━═════════════╝");
+    }
+
+    // ASCII 아트를 이용한 상자 출력 메서드
+    public static void printBox(String content) {
+        String boxTop = "  ╔════════════════════━━━─── • ───━━━════════════════════╗";
+        String boxBottom = " ╚════════════════════━━━─── • ───━━━════════════════════╝";
+
+        String[] lines = content.split("\n");
+
+        System.out.println(boxTop);
+
+        for (String line : lines) {
+            // 중앙 정렬을 위해 상자의 가로 길이를 기준으로 문자열을 출력
+            int paddingLength = (60 - line.length()) / 2; // 60자 가정
+            String leftPadding = " ".repeat(paddingLength);
+            String rightPadding = " ".repeat(60 - line.length() - paddingLength);
+            System.out.println(leftPadding + line + rightPadding);
+        }
+
+        System.out.println(boxBottom);
+    }
+
+    public static void printScheduleBox(String selectedDate, MovieScheduleManager.AdminSchedule[][] adminSchedules) {
+        StringBuilder boxContent = new StringBuilder();
+        boxContent.append("선택하신 날짜 : ").append(selectedDate);
+        boxContent.append("\n───────────────────────────────────────────────\n");
+
+        for (int i = 0; i < theaters.length; i++) {
+            boxContent.append(String.format("%13s)\n", "(" + theaters[i])); // 상영관 출력
+            boxContent.append("(상영 시간)  :");
+            for (ScreeningTime screen_time : times) { // 상영시간 출력
+                boxContent.append(String.format("  %-10s", screen_time));
+            }
+            boxContent.append("\n(  영화  )  : ");
+            for (int j = 0; j < times.length; j++) {
+                if (adminSchedules[i][j] == null) { // 빈 상영시간이라면 공백을 출력
+                    boxContent.append("            ");
+                    continue;
+                }
+                MovieScheduleManager.AdminSchedule adminSchedule = adminSchedules[i][j];
+                boxContent.append(String.format(" %-10s", adminSchedule.getMovie().getTitle())); // 영화이름 출력
+            }
+
+            boxContent.append("\n    (좌석 정보)  :");
+            for (int j = 0; j < times.length; j++) {
+                if (adminSchedules[i][j] == null) { // 빈 상영시간이라면 공백을 출력
+                    boxContent.append("             ");
+                    continue;
+                }
+                Schedule schedule = adminSchedules[i][j].getSchedule();
+                boxContent.append(String.format("  %d/%d       ", schedule.getEmpty(), TOTAL_SEAT_NUMBER)); // 채워진좌석/총좌석 을 출력
+            }
+            boxContent.append("\n  ( 입력번호 ) :");
+            for (int j = 0; j < times.length; j++) {
+                boxContent.append(String.format("   [%d]       ", (i * times.length) + j + 1)); // 1~9 까지의 입력번호를 가진다.
+            }
+            boxContent.append("\n───────────────────────────────────────────────\n");
+        }
+
+        printBox(boxContent.toString());
+    }
+
+
+
 
 
     public static void movietiketPrint(Reservation reservation) {
