@@ -9,12 +9,12 @@ import Project.User.User;
 
 public class OutputView {
 
-    static final String[] theaters = {"1관", "2관", "3관"};
+    static final String[] THEATERS = {"1관", "2관", "3관"};
 
-    static final ScreeningTime[] times = {ScreeningTime.time_09, ScreeningTime.time_12, ScreeningTime.time_18};
+    static final ScreeningTime[] TIMES = {ScreeningTime.time_09, ScreeningTime.time_12, ScreeningTime.time_18};
 
     static final int TOTAL_SEAT_NUMBER = 25;
-    static final String[] rainbowColors = {
+    static final String[] RAINBOW_COLORS = {
             "\u001B[31m",   // Red
             "\u001B[38;5;208m", //Orange
             "\u001B[33m",   // Yellow
@@ -23,14 +23,7 @@ public class OutputView {
             "\u001B[36m",   // Cyan
             "\u001B[35m",   // Purple
     };
-    static final String resetColor = "\u001B[0m"; // 리셋 ANSI 이스케이프 시퀀스 (색상을 원래대로 되돌림)
-
-    public static void main(String[] args) {
-
-        printUserMenu();
-        printAdminMenu();
-
-    }
+    static final String RESET_COLOR = "\u001B[0m"; // 리셋 ANSI 이스케이프 시퀀스 (색상을 원래대로 되돌림)
 
     // 사용자 메뉴
     public static void printUserMenu() {
@@ -38,12 +31,6 @@ public class OutputView {
                 메뉴를 입력하세요.
                 1-> 예매하기  2-> 예매조회  3-> 예매취소  4-> 포인트 관리
                 """);
-//
-//        System.out.println("\u001B[38;5;208m"+"╔════════════════════━━━─── • ───━━━════════════════════╗+resetColor");
-//        System.out.println("                      메뉴를 입력하세요.                      \n");
-//        System.out.println("    1-> 예매하기  2-> 예매조회  3-> 예매취소  4-> 포인트 관리     \n");
-//        System.out.println("                        exit-> 종료       ");
-//        System.out.println("╚════════════════════━━━─── • ───━━━════════════════════╝");
     }
     //관리자 메뉴
     public static void printAdminMenu() {
@@ -51,12 +38,6 @@ public class OutputView {
                 메뉴를 입력하세요.
                 1-> 영화상영등록    2-> 영화상영종료     3-> 회원정보조회
                 """);
-//
-//        System.out.println("╔════════════════════━━━─── • ───━━━════════════════════╗");
-//        System.out.println("                      메뉴를 입력하세요.                       \n");
-//        System.out.println("    1-> 영화상영등록    2-> 영화상영종료     3-> 회원정보조회       \n");
-//        System.out.println("                        exit-> 종료                      ");
-//        System.out.println("╚════════════════════━━━─── • ───━━━════════════════════╝");
     }
 
     // ASCII 아트를 이용한 상자 출력 메서드
@@ -64,11 +45,11 @@ public class OutputView {
         for (int i = 0; i < 25; i++) {
             System.out.println();
         }
-        String boxTop = "\u001B[33m"+"  ╔════════════════════━━━─── • ───━━━════════════════════╗"+resetColor;
+        String boxTop = "\u001B[33m"+"  ╔════════════════════━━━─── • ───━━━════════════════════╗"+ RESET_COLOR;
 
-        String cinema =   "\u001B[38;5;208m"+ "       \t\t\t\t\t  Cinema " + resetColor+"\uD83C\uDFAC\n";
+        String cinema =   "\u001B[38;5;208m"+ "       \t\t\t\t\t  Cinema " + RESET_COLOR +"\uD83C\uDFAC\n";
 
-        String boxBottom = "\u001B[33m"+"  ╚════════════════════━━━─── • ───━━━════════════════════╝"+resetColor;
+        String boxBottom = "\u001B[33m"+"  ╚════════════════════━━━─── • ───━━━════════════════════╝"+ RESET_COLOR;
 
         String[] lines = content.split("\n");
 
@@ -91,6 +72,12 @@ public class OutputView {
         for (int i = 0; i < 15; i++) {
             System.out.println();
         }
+
+        try { //결과를 볼 시간 1초 대기
+            Thread.sleep(3000); // 대기
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -98,13 +85,13 @@ public class OutputView {
         for (int i = 0; i < 25; i++) {
             System.out.println();
         }
-        String boxTop = "\u001B[33m"+"  ╔════════════════════━━━─── • ───━━━════════════════════╗"+resetColor;
+        String boxTop = "\u001B[33m"+"  ╔════════════════════━━━─── • ───━━━════════════════════╗"+ RESET_COLOR;
 
-        String cinema =   "\u001B[38;5;208m"+ "       \t\t\t\t\t  Cinema " + resetColor+"\uD83C\uDFAC\n";
+        String cinema =   "\u001B[38;5;208m"+ "       \t\t\t\t\t  Cinema " + RESET_COLOR +"\uD83C\uDFAC\n";
 
-        String boxBottom = "\u001B[33m"+"  ╚════════════════════━━━─── • ───━━━════════════════════╝"+resetColor;
+        String boxBottom = "\u001B[33m"+"  ╚════════════════════━━━─── • ───━━━════════════════════╝"+ RESET_COLOR;
 
-        String exitMessage = "\u001B[31m"+"     \t\t\t\t  메뉴로 가기 -> exit "+resetColor;
+        String exitMessage = "\u001B[31m"+"     \t\t\t\t  메뉴로 가기 -> exit "+ RESET_COLOR;
 
         String[] lines = content.split("\n");
 
@@ -133,13 +120,13 @@ public class OutputView {
         for (int i = 0; i < 25; i++) {
             System.out.println();
         }
-        String boxTop = "\u001B[33m"+"  ╔════════════════════━━━─── • ───━━━════════════════════╗"+resetColor;
+        String boxTop = "\u001B[33m"+"  ╔════════════════════━━━─── • ───━━━════════════════════╗"+ RESET_COLOR;
 
-        String cinema =   "\u001B[38;5;208m"+ "       \t\t\t\t\t  Cinema " + resetColor+"\uD83C\uDFAC\n";
+        String cinema =   "\u001B[38;5;208m"+ "       \t\t\t\t\t  Cinema " + RESET_COLOR +"\uD83C\uDFAC\n";
 
-        String boxBottom = "\u001B[33m"+"  ╚════════════════════━━━─── • ───━━━════════════════════╝"+resetColor;
+        String boxBottom = "\u001B[33m"+"  ╚════════════════════━━━─── • ───━━━════════════════════╝"+ RESET_COLOR;
 
-        String exitMessage = "\u001B[31m"+"     \t\t\t\t  시스템 종료 -> exit "+resetColor;
+        String exitMessage = "\u001B[31m"+"     \t\t\t\t  시스템 종료 -> exit "+ RESET_COLOR;
 
         String[] lines = content.split("\n");
 
@@ -168,7 +155,7 @@ public class OutputView {
         String errorImage = "\t"+"⚠\uFE0F"+"\t";
         for (String line : lines) {
             // 빨간색 추가하여 출력
-            System.out.println(errorImage+"\u001B[31m" + line+resetColor+resetColor);
+            System.out.println(errorImage+"\u001B[31m" + line+ RESET_COLOR + RESET_COLOR);
         }
     }
 
@@ -178,14 +165,14 @@ public class OutputView {
         boxContent.append("선택하신 날짜 : ").append(selectedDate);
         boxContent.append("\n───────────────────────────────────────────────\n");
 
-        for (int i = 0; i < theaters.length; i++) {
-            boxContent.append(String.format("%13s)\n", "(" + theaters[i])); // 상영관 출력
+        for (int i = 0; i < THEATERS.length; i++) {
+            boxContent.append(String.format("%13s)\n", "(" + THEATERS[i])); // 상영관 출력
             boxContent.append("(상영 시간)  :");
-            for (ScreeningTime screen_time : times) { // 상영시간 출력
+            for (ScreeningTime screen_time : TIMES) { // 상영시간 출력
                 boxContent.append(String.format("  %-10s", screen_time));
             }
             boxContent.append("\n(  영화  )  : ");
-            for (int j = 0; j < times.length; j++) {
+            for (int j = 0; j < TIMES.length; j++) {
                 if (adminSchedules[i][j] == null) { // 빈 상영시간이라면 공백을 출력
                     boxContent.append("            ");
                     continue;
@@ -195,7 +182,7 @@ public class OutputView {
             }
 
             boxContent.append("\n    (좌석 정보)  :");
-            for (int j = 0; j < times.length; j++) {
+            for (int j = 0; j < TIMES.length; j++) {
                 if (adminSchedules[i][j] == null) { // 빈 상영시간이라면 공백을 출력
                     boxContent.append("             ");
                     continue;
@@ -204,8 +191,8 @@ public class OutputView {
                 boxContent.append(String.format("  %d/%d       ", schedule.getEmpty(), TOTAL_SEAT_NUMBER)); // 채워진좌석/총좌석 을 출력
             }
             boxContent.append("\n  ( 입력번호 ) :");
-            for (int j = 0; j < times.length; j++) {
-                boxContent.append(String.format("   [%d]       ", (i * times.length) + j + 1)); // 1~9 까지의 입력번호를 가진다.
+            for (int j = 0; j < TIMES.length; j++) {
+                boxContent.append(String.format("   [%d]       ", (i * TIMES.length) + j + 1)); // 1~9 까지의 입력번호를 가진다.
             }
             boxContent.append("\n───────────────────────────────────────────────\n");
         }
@@ -247,9 +234,9 @@ public class OutputView {
                 " |_|                                       |_|",
                 String.format(" | |       가격 :    %s원                | |",reservation.getMovie().getPrice()),
                 " |_|                                       |_|",
-                String.format(" | |   상영 일자 :    %s  %s    | |",reservation.getMovieDate(),times[theater[0]]),
+                String.format(" | |   상영 일자 :    %s  %s    | |",reservation.getMovieDate(), TIMES[theater[0]]),
                 " |_|                                       |_|",
-                String.format(" | |     상영관 :    %s                     | |",theaters[theater[1]]),
+                String.format(" | |     상영관 :    %s                     | |", THEATERS[theater[1]]),
                 " |_|                                       |_|",
                 String.format(" | |       좌석 :    %s  %s               | |",col,row),
                 " |_|                                       |_|",
@@ -321,7 +308,7 @@ public class OutputView {
 
 
     public static void loading() {
-        String greenColor = rainbowColors[3];
+        String greenColor = RAINBOW_COLORS[3];
         String[] lines = {
                 "██╗      ██████╗  █████╗ ██████╗ ██╗███╗   ██╗ ██████╗ ",
                 "██║     ██╔═══██╗██╔══██╗██╔══██╗██║████╗  ██║██╔════╝ ",
@@ -332,7 +319,7 @@ public class OutputView {
         };
         // 초록색으로 각 줄을 출력
         for (String line : lines) {
-            System.out.println(greenColor + line + resetColor);
+            System.out.println(greenColor + line + RESET_COLOR);
         }
         System.out.println();
         //프로그레스바 100.0 까지  0.2씩 증가   -> 테스트 빨리하기위해 0.9로 증가시킴(임시)
@@ -366,9 +353,9 @@ public class OutputView {
         // 프로그레스 바 출력
         System.out.print("\r["); // 콘솔 지우기
         for (int i = 0; i < barLength; i++) {
-            String color = rainbowColors[i % rainbowColors.length];
+            String color = RAINBOW_COLORS[i % RAINBOW_COLORS.length];
             if (i < numChars) {
-                System.out.print(color + "=" + resetColor);
+                System.out.print(color + "=" + RESET_COLOR);
             } else {
                 System.out.print(" ");
             }
@@ -377,7 +364,7 @@ public class OutputView {
     }
 
 
-    static void logoPrint() {
+    public static void logoPrint() {
         String[] asciiArtLines = {
                 " ██████╗   ██╗   ███╗   ██╗   ███████╗   ███╗   ███╗    █████╗ ",
                 "██╔════╝   ██║   ████╗  ██║   ██╔════╝   ████╗ ████║   ██╔══██╗",
@@ -388,8 +375,8 @@ public class OutputView {
                 "--------------------------start--------------------------------"
         };
         for (int i = 0; i < asciiArtLines.length; i++) {
-            String color = rainbowColors[i % rainbowColors.length];
-            System.out.println(color + asciiArtLines[i] + resetColor);
+            String color = RAINBOW_COLORS[i % RAINBOW_COLORS.length];
+            System.out.println(color + asciiArtLines[i] + RESET_COLOR);
             try {
                 Thread.sleep(200); // 대기
             } catch (InterruptedException e) {
@@ -399,7 +386,7 @@ public class OutputView {
         System.out.println();
     }
 
-    static void firstMenu2() {
+    public static void firstMenu2() {
         String[] asciiArtLines = {
                 " ██████╗   ██╗   ███╗   ██╗   ███████╗   ███╗   ███╗    █████╗ ",
                 "██╔════╝   ██║   ████╗  ██║   ██╔════╝   ████╗ ████║   ██╔══██╗",
@@ -410,8 +397,8 @@ public class OutputView {
                 "--------------------------start--------------------------------"
         };
         for (int i = 0; i < asciiArtLines.length; i++) {
-            String color = rainbowColors[i % rainbowColors.length];
-            System.out.println(color + asciiArtLines[i] + resetColor);
+            String color = RAINBOW_COLORS[i % RAINBOW_COLORS.length];
+            System.out.println(color + asciiArtLines[i] + RESET_COLOR);
         }
         String[] firstMenu2 = {
                 "\t\t\t\t\t   \u001B[31m1. login\u001B[0m\n",

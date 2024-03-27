@@ -9,4 +9,12 @@ import lombok.Getter;
 public class AdminSchedule {
     Movie movie;
     Schedule schedule;
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public Schedule getSchedule() {
+        return schedule;
+    }
 }

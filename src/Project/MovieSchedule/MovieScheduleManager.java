@@ -21,7 +21,7 @@ public class MovieScheduleManager {
     private static final int TOTAL_SEAT_NUMBER = 25;
     private static final int SEAT_ROW_COUNT = 5;
     private static final int SEAT_COLUMN_COUNT = 5;
-    private static final String dataFormat = "yyyy-MM-dd";
+    private static final String DATA_FORMAT = "yyyy-MM-dd";
     private static final String EXIT_COMMAND = "exit";
     private static final String REGISTRATION = "등록";
     private static final String DELETION = "삭제";
@@ -121,7 +121,7 @@ public class MovieScheduleManager {
 
     //날짜 입력 받는 메소드
     private static String inputDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat(dataFormat);
+        SimpleDateFormat sdf = new SimpleDateFormat(DATA_FORMAT);
         sdf.setLenient(false); // 지정한 포맷과 다르다면 예외발생
         String inputdata = "";
         String ment = """
