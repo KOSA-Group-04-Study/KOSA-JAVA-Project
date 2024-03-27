@@ -36,7 +36,7 @@ public class Cinema { // 영화관
         // 초기 메뉴화면 -> 로그인, 회원가입  2가지 기능
 //        OutputView.loading();
 //        OutputView.logoPrint();
-        OutputView.firstMenu();
+//        OutputView.firstMenu();
         loop:
         do {
 //            System.out.println("메뉴를 입력하세요. 1-> 로그인 2-> 회원가입 exit-> 종료 ");

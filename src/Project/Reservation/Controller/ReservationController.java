@@ -1,5 +1,6 @@
 package Project.Reservation.Controller;
 
+import Project.Exception.ExitException;
 import Project.FilesIO.FileDataManager;
 import Project.Movie;
 import Project.Payment.PaymentManager;
@@ -101,7 +102,7 @@ public class ReservationController {
             writeTextData(usersList, myReservation, client);    //Users.txt
 
 
-        } catch (ReservationController.ExitException e) {
+        } catch (ExitException e) {
             System.out.println(e.getMessage());
         } finally {
             menu = null;
@@ -123,14 +124,14 @@ public class ReservationController {
 
     private static String checkInputMenu() {
         menu = sc.nextLine();
-        if(menu.equals(EXIT_COMMAND)) throw new ReservationController.ExitException();
+        if(menu.equals(EXIT_COMMAND)) throw new ExitException();
         return menu;
     }
 
 
     private static void checkInputSeatInfo() {
         seatInfo = sc.nextLine();
-        if(seatInfo.equals(EXIT_COMMAND)) throw new ReservationController.ExitException();
+        if(seatInfo.equals(EXIT_COMMAND)) throw new ExitException();
     }
 
     private static void displayScheduleDates(Set<String> scheduleDatesSet) {
@@ -316,7 +317,7 @@ public class ReservationController {
 
     private static void moviePaymentProcess(Movie choiceMovie,Client client) {
         Integer moviePrice = choiceMovie.getPrice();
-        if (!PaymentManager.payPoint(client, moviePrice)) throw new ReservationController.ExitException();
+        if (!PaymentManager.payPoint(client, moviePrice)) throw new ExitException();
     }
 
 
@@ -324,7 +325,7 @@ public class ReservationController {
         printInputMessage("해당 예매를 확정하시겠습니까? [1] 예매 확정 / [exit] 예매 취소    > ");
         do {
             menu = sc.nextLine();
-            if(menu.equals(EXIT_COMMAND)) throw new ReservationController.ExitException();
+            if(menu.equals(EXIT_COMMAND)) throw new ExitException();
             if(!menu.equals("1")) {
                 printInvalidInputMessage("잘못된 입력입니다. 다시 입력해주시길 바랍니다.");
             } else {
@@ -460,11 +461,5 @@ public class ReservationController {
     }
 
 
-    ////////////////////////////////////  Exception   ////////////////////////////////////////////
-    //사용자 정의 예외
-    private static class ExitException extends RuntimeException {
-        public ExitException() {
-            super("탈출메시지가 입력되었습니다.");
-        }
-    }
+
 }
