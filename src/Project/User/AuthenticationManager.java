@@ -62,27 +62,19 @@ public final class AuthenticationManager {
     public static void register() {
         // 여기서 아이디, 비밀번호 입력받고 정규표현식으로 체크  여기서 while , 파일쓰기도 해야함.
         // 유저 어떤식 저장될지 형식
-        String loginIntro= """
-              안녕하세요 고객님!
-             회원가입 진행하겠습니다. 
-           아이디(이메일)를 입력해주세요.
-              나가기 -> exit
-                """;
-        OutputView.printBox(loginIntro);
         try {
             String phonePattern = "010-\\d{4}-\\d{4}";
-            System.out.println("\t회원가입을 시작합니다.");
             String emailId = getEmailInput(emailPattern);
             checkDuplicationEmail(emailId);
             String password = getPasswordInput(passwordPattern);
             String name = getNameInput();
             String phoneNumber = getPhoneNumberInput(phonePattern);
 
-
-            System.out.println("\t회원가입 완료 ");
-            // 입력이 모두 완료되었을 때 파일에 유저 정보 저장
-            // 아님 User 생성자 생성 후에 ?? 넘겨주기??
-            // writeUserInfoToFile(emailId, password, name, phoneNumber);
+            String ment = name+"님\n"+  """
+                    회원가입 완료되었습니다.
+                    환영합니다!
+                    """;
+            OutputView.printBox(ment);
 
             // 파일에 사용자 정보 저장 임시코드
             Client newUser = new Client(emailId, password, name, phoneNumber, false,0, new LinkedList<>()); //일단 isAdmin 기본 false(사용자)

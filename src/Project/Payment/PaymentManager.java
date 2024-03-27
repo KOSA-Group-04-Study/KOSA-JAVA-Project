@@ -79,7 +79,7 @@ public final class PaymentManager {
                 메뉴를 입력하세요.
                 1-> 충전하기               
                 """;
-        OutputView.printBox(PointManageIntro);
+        OutputView.printInputMessage(PointManageIntro);
 
         try {
             String inputData = sc.nextLine().trim();
@@ -95,7 +95,7 @@ public final class PaymentManager {
             }
 
         } catch (IllegalArgumentException e) {
-            System.out.println("1 또는 exit만 입력하세요.");
+            OutputView.printExceptionMessage("1 또는 exit만 입력하세요.");
         }
 
         //유저 파일 쓰기
@@ -109,26 +109,25 @@ public final class PaymentManager {
              충전 금액을 입력해주세요. 
            금액은 10000원 단위로 충전 가능합니다.
                 """;
-        OutputView.printBox(insertPointIntro);
-        System.out.println("\t현재 잔여포인트는 " + user.getPoint());
+        insertPointIntro += "현재 잔여포인트는 " + user.getPoint() + "\n";
+        OutputView.printInputMessage(insertPointIntro);
         int quantity =0;
 
         while (true) {
             String needQuantity = "";
             try {
-                System.out.print("\tplease input ->  ");
 
                 needQuantity = sc.nextLine();
                 if (needQuantity.equals(EXIT_COMMAND)) throw new ExitException();
                 if (!ValidationQuantity(Integer.parseInt(needQuantity))) {
-                    System.out.println("\t죄송합니다. 금액은 10000원 단위로 충전가능합니다.");
+                    OutputView.printExceptionMessage("\t죄송합니다. 금액은 10000원 단위로 충전가능합니다.");
                     continue;
                 }
             } catch (NumberFormatException e) {
-                System.out.println("\t숫자를 입력해주세요");
+                OutputView.printExceptionMessage("\t숫자를 입력해주세요");
                 continue;
             } catch (ExitException e) {
-                break;
+                return;
             }
             quantity += Integer.parseInt(needQuantity);
             break;
@@ -137,7 +136,7 @@ public final class PaymentManager {
         int changePoint = user.getPoint() + quantity;
 
         user.setPoint(changePoint);
-        System.out.println("변경된 사용자 포인트 : "+changePoint);
+        OutputView.printBox("충전 후 현재 포인트 : "+changePoint);
 
         // 파일 쓰기
         // 사용자 정보 읽어오기

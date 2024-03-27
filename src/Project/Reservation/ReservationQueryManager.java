@@ -2,6 +2,7 @@ package Project.Reservation;
 
 import Project.Exception.ExitException;
 import Project.FilesIO.FileDataManager;
+import Project.OutputView;
 import Project.Reservation.Reservation;
 import Project.User.Client;
 import Project.User.User;
@@ -20,9 +21,9 @@ public class ReservationQueryManager {
     private static final String EXIT_COMMAND = "exit";
     private static String menu;
 
-    public static void start(User user) {
+public static void start(User user) {
         //예매 조회 출력
-        printReservationQueryStat();
+//        printReservationQueryStat();
 
         //파일 데이터 불러오기
         List<User> usersList = FileDataManager.readUserInfoFromFile();
@@ -76,14 +77,15 @@ public class ReservationQueryManager {
     //예매 조회 메뉴 선택 / 기간별 예매 조회 메뉴 선택
     private static void selectMenu() {
         do {
-            printInputMessage("메뉴를 선택하세요: ");
-            menu = checkInputMenu();
-
+//            printInputMessage("메뉴를 선택하세요: ");
+//            menu = checkInputMenu();
+            menu = sc.nextLine();
+            if(menu.equals(EXIT_COMMAND)) throw new ExitException();
             if(menu.equals("1") || menu.equals("2") || menu.equals("3")) {
                 return;
             } else {
                 printInvalidInputMessage();
-                menu = checkInputMenu();
+//                menu = checkInputMenu();
             }
         } while (true);
     }
@@ -125,23 +127,25 @@ public class ReservationQueryManager {
 
     private static void findSpecificReservation(List<Reservation> userReservationsList) {
         String[] findPeriod = new String[2];
+        OutputView.printInputMessageNotJump("시작 날짜를 입력하세요 [ex) 2024-03-23] : ");
         do {
-            printInputMessage("시작 날짜를 입력하세요 [ex) 2024-03-23] : ");
             findPeriod[0] = sc.nextLine();
+            if(findPeriod[0].equals(EXIT_COMMAND)) throw new ExitException();
             if (!isValidationDate(findPeriod[0]) || !isLocalDateFormat(findPeriod[0])) {
                 printInvalidInputMessage();
-                checkInputMenu();
+//                checkInputMenu();
                 continue;
             }
             break;
         } while (true);
 
         do {
-            printInputMessage("종료 날짜를 입력하세요 [ex) 2024-03-23] : ");
+            OutputView.printInputMessageNotJump("종료 날짜를 입력하세요 [ex) 2024-03-26] : ");
             findPeriod[1] = sc.nextLine();
+            if(findPeriod[1].equals(EXIT_COMMAND)) throw new ExitException();
             if (!isValidationDate(findPeriod[1]) || !isLocalDateFormat(findPeriod[1])) {
                 printInvalidInputMessage();
-                checkInputMenu();
+//                checkInputMenu();
                 continue;
             }
             break;
@@ -194,8 +198,9 @@ public class ReservationQueryManager {
     //특정 영화 예매 목록 조회
     private static void findMovieReservations(List<Reservation> userReservationsList) {
         do {
-            printInputMessage("찾으시려는 영화 제목을 입력해주세요 [ex) 서울의봄] : ");
+            OutputView.printInputMessage("찾으시려는 영화 제목을 입력해주세요 [ex) 서울의봄] : ");
             String movieTitleToFilter = sc.nextLine();
+            if(movieTitleToFilter.equals(EXIT_COMMAND)) throw new ExitException();
             getReservationsForMovie(userReservationsList, movieTitleToFilter);
             printUserNextStepMessage(2);
             menu = checkInputMenu();
@@ -218,8 +223,9 @@ public class ReservationQueryManager {
     }
 
     public static void printInvalidInputMessage() {
-        System.out.println();
-        System.out.println("잘못된 입력입니다. [1] 다시 입력 / [exit] 메뉴로 돌아가기");
+//        System.out.println();
+        OutputView.printExceptionMessage("잘못된 입력입니다.");
+//        System.out.println("잘못된 입력입니다. [1] 다시 입력 / [exit] 메뉴로 돌아가기");
     }
 
     public static void printReservationQueryStat() {
@@ -230,69 +236,106 @@ public class ReservationQueryManager {
     }
 
     public static void printReservationQueryMenu() {
-        System.out.println();
-        System.out.println("[1] 전체 예매 조회");
-        System.out.println("[2] 기간별 예매 조회"); // 영화를 예매한 날짜 기준
-        System.out.println("[3] 영화별 전체 조회");
-        System.out.println("[exit] 메뉴로 돌아가기");
+//        System.out.println();
+        String message = """
+                예매 조회
+                [1] 전체 예매 조회
+                [2] 기간별 예매 조회
+                [3] 영화별 전체 조회
+                메뉴를 선택해주세요
+                """;
+        OutputView.printInputMessage(message);
+//        System.out.println("[1] 전체 예매 조회");
+//        System.out.println("[2] 기간별 예매 조회"); // 영화를 예매한 날짜 기준
+//        System.out.println("[3] 영화별 전체 조회");
+//        System.out.println("[exit] 메뉴로 돌아가기");
     }
 
     public static void printPeriodReservationQueryMenu() {
-        System.out.println();
-        System.out.println("[1] 최근 1개월 조회");
-        System.out.println("[2] 특정 기간별 조회"); // 영화를 예매한 날짜 기준
-        System.out.println("[3] 예매 조회 메뉴로 돌아가기");
-        System.out.println("[exit] 메뉴로 돌아가기");
+        String message = """
+                기간별 예매 조회
+                [1] 최근 1개월 조회
+                [2] 특정 기간별 조회
+                [3] 예매 조회 메뉴로 돌아가기
+                메뉴를 선택해주세요
+                """;
+        OutputView.printInputMessage(message);
+//        System.out.println();
+//        System.out.println("[1] 최근 1개월 조회");
+//        System.out.println("[2] 특정 기간별 조회"); // 영화를 예매한 날짜 기준
+//        System.out.println("[3] 예매 조회 메뉴로 돌아가기");
+//        System.out.println("[exit] 메뉴로 돌아가기");
     }
 
     public static void printUserNextStepMessage(int choice) {
-        System.out.println();
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+//        System.out.println();
         switch (choice) {
             case 1:
-                System.out.println("[1] 예매 조회 메뉴로 돌아가기 / [exit] 메뉴로 돌아가기");
+                sb.append("[1] 예매 조회 메뉴로 돌아가기");
+                OutputView.printInputMessageNotJump(sb.toString());
+//                System.out.println("[1] 예매 조회 메뉴로 돌아가기 / [exit] 메뉴로 돌아가기");
                 break;
             case 2:
-                System.out.println("[0] 다시 조회 하기 /[1] 예매 조회 메뉴로 돌아가기 / [exit] 메뉴로 돌아가기");
+                sb.append("[0] 다시 조회 하기 /[1] 예매 조회 메뉴로 돌아가기");
+                OutputView.printInputMessageNotJump(sb.toString());
+//                System.out.println("[0] 다시 조회 하기 /[1] 예매 조회 메뉴로 돌아가기 / [exit] 메뉴로 돌아가기");
                 break;
         }
     }
 
     //전체 예매 목록 출력
     private static void printAllReservations(List<Reservation> reservationList) {
-        System.out.println();
-        System.out.println("=========================================  전체 예매 조회  =========================================");
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n").append("전체 예매 조회\n");
+//        System.out.println();
+//        System.out.println("=========================================  전체 예매 조회  =========================================");
         for (Reservation reservation : reservationList) {
-            System.out.println(reservation);
+            sb.append(reservation + "\n");
+//            System.out.println(reservation);
         }
-        System.out.println("==================================================================================================");
+//        System.out.println("==================================================================================================");
+        sb.append("\n");
+        OutputView.printBoxNotJump(sb.toString());
     }
 
     // 영화로 필터링된 예매 목록 출력
     public static void printFilteredReservation(List<Reservation> filteredReservationList, String movieTitleToFilter) {
-        System.out.println();
-        System.out.printf("============================= 예약 목록 : [ %s ]=============================\n", movieTitleToFilter);
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        sb.append(String.format(" 예약 목록 : [ %s ]\n", movieTitleToFilter));
+//        System.out.println();
+//        System.out.printf("============================= 예약 목록 : [ %s ]=============================\n", movieTitleToFilter);
         if (filteredReservationList.isEmpty()) {
-            System.out.println("해당 영화의 예매 내역을 찾을 수 없습니다.");
+            OutputView.printExceptionMessage("해당 영화의 예매 내역을 찾을 수 없습니다.");
         } else {
             for (Reservation reservation : filteredReservationList) {
-                System.out.println(reservation);
+                sb.append(reservation + "\n");
+//                System.out.println(reservation);
             }
         }
-        System.out.println("==================================================================================================");
+        OutputView.printBoxNotJump(sb.toString());
+//        System.out.println("==================================================================================================");
     }
 
     // 기간별로 필터링된 예매 목록 출력
     public static void printFilteredReservation(List<Reservation> filteredReservationList, String[] findPeriod) {
-        System.out.println();
-        System.out.printf("============================= 예약 목록 [ %s - %s ] =============================\n", findPeriod[0], findPeriod[1]);
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+        sb.append(String.format("예약 목록 [ %s - %s ]\n", findPeriod[0], findPeriod[1]));
+//        System.out.println();
+//        System.out.printf("============================= 예약 목록 [ %s - %s ] =============================\n", findPeriod[0], findPeriod[1]);
         if (filteredReservationList.isEmpty()) {
-            System.out.println("해당 영화의 예매 내역을 찾을 수 없습니다.");
+            OutputView.printExceptionMessage("해당 영화의 예매 내역을 찾을 수 없습니다.");
         } else {
             for (Reservation reservation : filteredReservationList) {
-                System.out.println(reservation);
+                sb.append(reservation).append("\n");
+//                System.out.println(reservation);
             }
         }
-        System.out.println("==================================================================================================");
+        OutputView.printBoxNotJump(sb.toString());
+//        System.out.println("==================================================================================================");
     }
 
 

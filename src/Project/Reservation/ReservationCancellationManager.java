@@ -3,6 +3,7 @@ package Project.Reservation;
 import Project.Exception.ExitException;
 import Project.FilesIO.FileDataManager;
 import Project.Movie;
+import Project.OutputView;
 import Project.Payment.PaymentManager;
 import Project.Reservation.Reservation;
 import Project.Schedule;
@@ -28,7 +29,7 @@ public class ReservationCancellationManager {
 
     public static void start(User user) {
         //예매 취소 메뉴 출력
-        printReservationCancellationStat();
+//        printReservationCancellationStat();
 
         //파일 데이터 불러오기
         Map<String, Map<Movie, Schedule[][]>> data = FileDataManager.readMovieScheduleFromFile();    // MovieSchedule.txt
@@ -111,9 +112,12 @@ public class ReservationCancellationManager {
     private static void writeTextData (Reservation foundReservation, List<User> usersList, Client client) {
         Integer refundMoviePrice = foundReservation.getMoviePrice();
         PaymentManager.payBack(client, refundMoviePrice);
-        System.out.printf("[%d] 포인트가 반환되었습니다.\n", refundMoviePrice);
-        System.out.printf("현재 포인트는 [%d] 입니다\n", client.getPoint());
-
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("[%d] 포인트가 반환되었습니다.\n", refundMoviePrice));
+        sb.append(String.format("현재 포인트는 [%d] 입니다\n", client.getPoint()));
+//        System.out.printf("[%d] 포인트가 반환되었습니다.\n", refundMoviePrice);
+//        System.out.printf("현재 포인트는 [%d] 입니다\n", client.getPoint());
+        OutputView.printBox(sb.toString());
         client.getReservationList().remove(foundReservation);
         FileDataManager.writeUserInfoToFile(usersList);
     }
@@ -155,8 +159,9 @@ public class ReservationCancellationManager {
 
     //예매 번호 입력 및 유효성 검사
     private static String inputScreeningNumber() {
+        OutputView.printInputMessage("예매 취소를 위해 예매번호를 입력해주세요: ");
+//        printInputMessage("예매 취소를 위해 예매번호를 입력해주세요: ");
         do {
-            printInputMessage("예매 취소를 위해 예매번호를 입력해주세요: ");
             String inputReservationNumber = sc.nextLine();
 
             //탈출 커맨드 입력 시 탈출예외 던지기
@@ -203,32 +208,42 @@ public class ReservationCancellationManager {
     }
 
     public static void getAllReservations(List<Reservation> reservationList) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("전체 예매 조회").append("\n");
         System.out.println("==================전체 예매 조회====================");
         for (Reservation reservation : reservationList) {
-            System.out.println(reservation);
+            sb.append(reservation).append("\n");
+//            System.out.println(reservation);
         }
-        System.out.println("=================================================");
-        System.out.println();
+        sb.append("\n");
+        OutputView.printBoxNotJump(sb.toString());
+//        System.out.println("=================================================");
+//        System.out.println();
     }
 
     public static void printInvalidInputMessage() {
-        System.out.println();
-        System.out.println("잘못된 입력입니다. [1] 다시 입력 / [exit] 메뉴로 돌아가기");
+//        System.out.println();
+//        System.out.println("잘못된 입력입니다. [1] 다시 입력 / [exit] 메뉴로 돌아가기");
+        OutputView.printExceptionMessage("잘못된 입력입니다. [1] 다시 입력 \n");
     }
 
     public static void printNullInputMessage() {
-        System.out.println();
-        System.out.println("유효하지 않은 입력입니다. [1] 다시 입력 / [exit] 메뉴로 돌아가기");
+//        System.out.println();
+//        System.out.println("유효하지 않은 입력입니다. [1] 다시 입력 / [exit] 메뉴로 돌아가기");
+        OutputView.printExceptionMessage("유효하지 않은 입력입니다. [1] 다시 입력\n");
     }
 
     public static void printExpiredReservationWarning() {
-        System.out.println();
-        System.out.println("기간이 지난 예매내역으로 취소하실 수 없습니다. [1] 다시 입력 / [exit] 메뉴로 돌아가기");
+//        System.out.println();
+//        System.out.println("기간이 지난 예매내역으로 취소하실 수 없습니다. [1] 다시 입력 / [exit] 메뉴로 돌아가기");
+        OutputView.printExceptionMessage("기간이 지난 예매내역으로 취소하실 수 없습니다. [1] 다시 입력\n");
     }
 
     public static void printConfirmReservationMessage(Reservation foundReservation) {
-        System.out.println();
-        System.out.println(foundReservation);
-        System.out.println("정말로 예매를 취소하시겠습니까? [1] 예매 취소 / [exit] 메뉴로 돌아가기");
+//        System.out.println();
+//        System.out.println(foundReservation);
+        OutputView.printBoxNotJump(foundReservation.toString()+"\n");
+        OutputView.printInputMessageNotJump("정말로 예매를 취소하시겠습니까? [1] 예매 취소");
+//        System.out.println("정말로 예매를 취소하시겠습니까? [1] 예매 취소 / [exit] 메뉴로 돌아가기");
     }
 }

@@ -33,11 +33,20 @@ public class Reservation implements Serializable{
         ScreeningTime[] times = {ScreeningTime.time_09, ScreeningTime.time_12, ScreeningTime.time_18};
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        return String.format("%s\t\t%s\t%s\t%s\t%s %s %s\t%s",
+//        return String.format("%s\t\t%s\t%s\t%s\t%s %s %s\t%s",
+//                reservationDate.format(formatter),
+//                "예매번호: [" + reservationNumber + "]",
+//                "이름: [" + user.getName() + "]",
+//                "영화상영정보: [" + movieDate +" "+ times[this.theater[1]],
+//                theaters[this.theater[0]],
+//                ((char) (seat.getRow() + 65)) + "열",
+//                (seat.getCol() + 1) + "번" + "]",
+//                "영화제목: [" + movie.getTitle() + "]");
+        return String.format("%s\t\t\n%s\t\n%s\t\n%s\t%s %s %s\t\n%s\n",
                 reservationDate.format(formatter),
                 "예매번호: [" + reservationNumber + "]",
                 "이름: [" + user.getName() + "]",
-                "영화상영정보: [" + movieDate +" "+ times[this.theater[1]],
+                "영화상영정보: [" + movieDate +" "+ times[this.theater[1]].getTime(),
                 theaters[this.theater[0]],
                 ((char) (seat.getRow() + 65)) + "열",
                 (seat.getCol() + 1) + "번" + "]",

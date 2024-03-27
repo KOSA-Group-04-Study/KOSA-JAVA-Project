@@ -3,6 +3,7 @@ package Project.Reservation;
 import Project.Exception.ExitException;
 import Project.FilesIO.FileDataManager;
 import Project.Movie;
+import Project.OutputView;
 import Project.Payment.PaymentManager;
 import Project.Reservation.MovieScreeningInfo;
 import Project.Reservation.Reservation;
@@ -33,16 +34,26 @@ public class ReservationManager {
     private static String[] theaters = {"1관", "2관", "3관"};
     private static ScreeningTime[] times = {ScreeningTime.time_09, ScreeningTime.time_12, ScreeningTime.time_18};
 
+    static final String[] RAINBOW_COLORS = {
+            "\u001B[31m",   // Red
+            "\u001B[38;5;208m", //Orange
+            "\u001B[33m",   // Yellow
+            "\u001B[32m",   // Green
+            "\u001B[34m",   // Blue
+            "\u001B[36m",   // Cyan
+            "\u001B[35m",   // Purple
+    };
+
     public  static void start(User user) {
-        //예매 하기 출력
-        printReservationStat();
+//        //예매 하기 출력
+//        printReservationStat();
 
         //파일 데이터 불러오기
         Map<String, Map<Movie, Schedule[][]>> data = FileDataManager.readMovieScheduleFromFile();    // MovieSchedule.txt
         List<User> usersList = FileDataManager.readUserInfoFromFile();                              //유저정보읽기
         List<Reservation> reservationsList = FileDataManager.readReservationsFromFile();            //예매 정보 읽기
 
-        //유저 정보 최신화 (예왜처리 불필요)
+        //유저 정보 최신화 (예외처리 불필요)
         Client client = (Client) getUserInfo(user, usersList);
 
         //날짜 문자열만 관리
@@ -50,10 +61,10 @@ public class ReservationManager {
 
         try {
             //데이터에서 현재 날짜 이후의 예매 가능 날짜 출력
-            displayScheduleDates(scheduleDatesSet);
+            String availableDates = displayScheduleDates(scheduleDatesSet);
 
             //1. 사용자에게 영화 상영 날짜를 입력받는다.
-            inputSelectDate(scheduleDatesSet);
+            inputSelectDate(scheduleDatesSet,availableDates);
 
             //2. 입력받은 날짜의 상영 정보를 저장하고 보여준다.
             Map<Integer, MovieScreeningInfo> scheduleNumbersMap = getAndPrintMovieSchedules(data);      //영화 상영 스케쥴에 넘버링한 자료구조(메인 데이터 관리)
@@ -68,8 +79,8 @@ public class ReservationManager {
             Seat[][] seats = scheduleNumbersMap.get(choiceSchedule).getSchedule().getSeats();   //이걸로 변경
 
             //4 좌석 선택
-            printOneLine(new String[]{choiceMovie.getTitle(), String.valueOf(times[col]), theaters[row]});
-            choiceSeatProcess(seats);
+            String movieScheduleInfo = printOneLine(new String[]{choiceMovie.getTitle(), String.valueOf(times[col].getTime()), theaters[row]});
+            choiceSeatProcess(seats,movieScheduleInfo);
 
             //5. 결제 여부 확인
             checkPaymentMovie();
@@ -96,6 +107,7 @@ public class ReservationManager {
                     .moviePrice(choiceMovie.getPrice())
                     .build();
 
+            OutputView.movietiketPrint(myReservation);
             //8 파일 덮어쓰기
             FileDataManager.writeMovieScheduleToFile(data);     //MovieSchedule.txt
             writeTextData(reservationsList, myReservation);     //Reservations.txt
@@ -134,7 +146,7 @@ public class ReservationManager {
         if(seatInfo.equals(EXIT_COMMAND)) throw new ExitException();
     }
 
-    private static void displayScheduleDates(Set<String> scheduleDatesSet) {
+    private static String displayScheduleDates(Set<String> scheduleDatesSet) {
         List<LocalDate> sortedDates = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -143,25 +155,25 @@ public class ReservationManager {
             sortedDates.add(localDate);
         }
         Collections.sort(sortedDates);
-        printSortedMovieScheduleDates(sortedDates);
+        return printSortedMovieScheduleDates(sortedDates);
     }
 
 
     //예매를 선택하는 날짜 입력받기
-    private static void inputSelectDate(Set<String> scheduleDatesSet) {
+    private static void inputSelectDate(Set<String> scheduleDatesSet,String availableDates) {
+        availableDates += "영화 상영 날짜를 입력하세요 [ex) 2024-03-26]";
+        OutputView.printInputMessage(availableDates);
         do {
-            printInputMessage("영화 상영 날짜를 입력하세요 [ex) 2024-03-23] : ");
             selectedDate = sc.nextLine();
+            if(selectedDate.equals(EXIT_COMMAND)) throw new ExitException();
             if (!isValidationDate(selectedDate) || !isLocalDateFormat(selectedDate)) {
                 //잘못 입력하셨습니다.
-                printInvalidInputMessage("유효하지 않은 날짜형식입니다.");
-                checkInputMenu();
-
+                OutputView.printExceptionMessage("유효하지 않은 날짜형식입니다.");
+//                checkInputMenu();
             } else if (!scheduleDatesSet.contains(selectedDate)) {
                 //상영 가능한 날짜 없습니다.
-                printInvalidInputMessage("해당 날짜에는 상영 정보가 없습니다.");
-                checkInputMenu();
-
+                OutputView.printExceptionMessage("해당 날짜에는 상영 정보가 없습니다.");
+//                checkInputMenu();
             } else {
                 break;
             }
@@ -190,8 +202,11 @@ public class ReservationManager {
     private static Map<Integer, MovieScreeningInfo> getAndPrintMovieSchedules(Map<String, Map<Movie, Schedule[][]>> data) {
         Map<Integer, MovieScreeningInfo> scheduleNumbersMap = new HashMap<>(); //날짜 변경에 따른 초기화
         Map<Movie, Schedule[][]> movieMap = data.get(selectedDate);     //선택한 날짜의 영화상영정보
+        StringBuilder sb = new StringBuilder();
 
-        System.out.printf("======== [ %s ] 영화 상영 일정] ========\n", selectedDate);
+        sb.append(String.format("======== [ %s ] 영화 상영 일정] ========\n", selectedDate));
+
+//        System.out.printf("======== [ %s ] 영화 상영 일정] ========\n", selectedDate);
 
         //영화 순서 정렬
         List<Map.Entry<Movie, Schedule[][]>> movieEntryList = new ArrayList<>(movieMap.entrySet());
@@ -199,17 +214,23 @@ public class ReservationManager {
 
         Integer scheduleNumber = 1;
         for (Map.Entry<Movie, Schedule[][]> entry : movieEntryList) {
-            System.out.println("제목 : " + entry.getKey().getTitle());
-            System.out.print("       ");
+            sb.append("제목 : " + entry.getKey().getTitle() + "\n");
+            sb.append("       ");
+//            System.out.println("제목 : " + entry.getKey().getTitle());
+//            System.out.print("       ");
             for (ScreeningTime time : times) {
-                System.out.printf("%10s", time);
+                sb.append(String.format("%10s", time.getTime()));
+//                System.out.printf("%10s", time.getTime());
             }
-            System.out.println();
+            sb.append("\n");
+//            System.out.println();
             for (int i = 0; i < entry.getValue().length; i++) {
-                System.out.printf("%s   ", theaters[i]);                    // 상영관 출력
+                sb.append(String.format("%s   ", theaters[i]));
+//                System.out.printf("%s   ", theaters[i]);                    // 상영관 출력
                 for (int j = 0; j < entry.getValue()[0].length; j++) {
                     if (entry.getValue()[i][j] == null) {
-                        System.out.print("\t\t\t  |");
+                        sb.append("\t\t\t  |");
+//                        System.out.print("\t\t\t  |");
                         continue;
                     }
 
@@ -217,33 +238,41 @@ public class ReservationManager {
                     int totalSeats = entry.getValue()[i][j].getTotal();     //총좌석
                     String seatInfo = emptySeats + "/" + totalSeats;
                     scheduleNumbersMap.put(scheduleNumber, new MovieScreeningInfo(entry.getKey(), i, j, entry.getValue()[i][j]));   //schedule 넘버
-                    System.out.printf("[%d]\t%s |", scheduleNumber++, seatInfo);
+                    sb.append(String.format("[%d]\t%s |", scheduleNumber++, seatInfo));
+//                    System.out.printf("[%d]\t%s |", scheduleNumber++, seatInfo);
                 }
-                System.out.println();
-                System.out.print("       ");
+                sb.append("\n");
+//                System.out.println();
+                sb.append("       ");
+//                System.out.print("       ");
                 for (int j = 0; j < times.length; j++) {
-                    System.out.print("----------");
+                    sb.append("----------");
+//                    System.out.print("----------");
                 }
-                System.out.println();
+                sb.append("\n");
+//                System.out.println();
             }
-            System.out.println();
+            sb.append("\n");
+//            System.out.println();
         }
+        OutputView.printMovieScheduleForClient(sb.toString());
         return scheduleNumbersMap;
     }
 
     //3.사용자에게 원하는 영화 스케쥴을 입력받는다.
     private static Integer inputChoiceSchedule(Map<Integer, MovieScreeningInfo> scheduleNumbersMap) {
+        OutputView.printInputMessageNotJump("원하는 영화의 스케쥴을 선택해 주세요. [ex) 38]    > ");
         do {
-            printInputMessage("원하는 영화의 스케쥴을 선택해 주세요. [ex) 38]    > ");
             String inputData = sc.nextLine();
+            if(inputData.equals(EXIT_COMMAND)) throw new ExitException();
             if (!inputData.matches("\\d+")) {
                 //숫자형식으로 입력하지 않은 경우
-                printInvalidInputMessage("숫자만 입력받습니다.");
-                checkInputMenu();
+                OutputView.printExceptionMessage("숫자만 입력받습니다.");
+//                checkInputMenu();
             } else if (!scheduleNumbersMap.containsKey(Integer.parseInt(inputData))) {
                 //상영 스케쥴에 존재하지 않는 번호인 경우
-                printInvalidInputMessage("해당 번호에는 배치된 영화가 없습니다.");
-                checkInputMenu();
+                OutputView.printExceptionMessage("해당 번호에는 배치된 영화가 없습니다.");
+//                checkInputMenu();
             } else {
                 return Integer.parseInt(inputData);
             }
@@ -251,31 +280,32 @@ public class ReservationManager {
     }
 
     //4. 좌석 선택
-    private static void choiceSeatProcess(Seat[][] seats) {
+    private static void choiceSeatProcess(Seat[][] seats,String message) {
+        String seatPosition = printMovieScheduleSeats(seats);
+        OutputView.printInputMessageNotJump(message+seatPosition+"\n좌석을 선택하세요. [ex) A1 또는 a1]    > ");
         outLoop:
         do {
             //해당 상영관의 좌석 출력
-            printMovieScheduleSeats(seats);
 
             //좌석을 입력받기
             do {
-                printInputMessage("좌석을 선택하세요. [ex) A1 또는 a1]    > ");
+//                printInputMessage("좌석을 선택하세요. [ex) A1 또는 a1]    > ");
                 checkInputSeatInfo();
                 if (!isValidationSeat()) {
                     //유효한 형식이 아닌 경우
-                    printInvalidInputMessage("올바른 입력값이 아닙니다.");
-                    checkInputSeatInfo();
+                    OutputView.printExceptionMessage("올바른 입력값이 아닙니다.");
+//                    checkInputSeatInfo();
 
                 } else {
                     convertSelectSeat();    //seatinfo -> seatNumber 로 변환
                     if (!isExistSeat(seats)) {
-                        printInvalidInputMessage("해당 좌석은 존재하지 않습니다.");
-                        checkInputSeatInfo();
+                        OutputView.printExceptionMessage("해당 좌석은 존재하지 않습니다.");
+//                        checkInputSeatInfo();
 
                     } else if (!isCheckEmptySeat(seats)) {
                         //이미 예매된 경우
-                        printInvalidInputMessage("해당 좌석은 이미 예매되었습니다");
-                        checkInputSeatInfo();
+                        OutputView.printExceptionMessage("해당 좌석은 이미 예매되었습니다");
+//                        checkInputSeatInfo();
                     } else {
                         break outLoop;
                     }
@@ -322,12 +352,12 @@ public class ReservationManager {
 
 
     private static void checkPaymentMovie() {
-        printInputMessage("해당 예매를 확정하시겠습니까? [1] 예매 확정 / [exit] 예매 취소    > ");
+        OutputView.printInputMessageNotJump("해당 예매를 확정하시겠습니까? \n1 -> 예매 확정 ");
         do {
             menu = sc.nextLine();
             if(menu.equals(EXIT_COMMAND)) throw new ExitException();
             if(!menu.equals("1")) {
-                printInvalidInputMessage("잘못된 입력입니다. 다시 입력해주시길 바랍니다.");
+                OutputView.printExceptionMessage("잘못된 입력입니다. 다시 입력해주시길 바랍니다.");
             } else {
                 return;
             }
@@ -408,11 +438,15 @@ public class ReservationManager {
         System.out.printf("%s [1] 다시 입력 / [exit] 메뉴로 돌아가기\n", message);
     }
 
-    public static void printOneLine(String[] strArr) {
+    public static String printOneLine(String[] strArr) {
+        StringBuilder sb = new StringBuilder();
         for (String str : strArr) {
-            System.out.printf("%s\t", str);
+            sb.append(String.format("%s\t", str));
+//            System.out.printf("%s\t", str);
         }
-        System.out.println();
+        sb.append("\n");
+        return sb.toString();
+//        System.out.println();
     }
 
     public static void printReservationStat() {
@@ -422,42 +456,59 @@ public class ReservationManager {
         System.out.println();
     }
 
-    public static void printSortedMovieScheduleDates(List<LocalDate> sortedDates) {
+    public static String printSortedMovieScheduleDates(List<LocalDate> sortedDates) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        System.out.print("영화 상영 날짜 : ");
+//        System.out.print("영화 상영 날짜 : ");
+        StringBuilder sb = new StringBuilder();
+        sb.append("선택가능한 영화 상영날짜는 다음과 같습니다.\n");
         for (LocalDate localDate : sortedDates) {
             String formattedDate = localDate.format(formatter);
-            System.out.printf("\t[%s]", formattedDate);
+            sb.append(formattedDate).append("\n");
+//            System.out.printf("\t[%s]", formattedDate);.
         }
-        System.out.println();
+//        System.out.println();
+        return sb.toString();
     }
 
-    public static void printMovieScheduleSeats(Seat[][] seats) {
+    public static String printMovieScheduleSeats(Seat[][] seats) {
+        StringBuilder sb = new StringBuilder();
         // 좌석 맵 출력
-        System.out.println("============= 좌석 정보 ============");
-        System.out.println("============= SCREEN =============");
-        System.out.print("   ");
+        sb.append("============= 좌석 정보 ============\n");
+//        System.out.println("============= 좌석 정보 ============");
+        sb.append("============= SCREEN =============\n");
+//        System.out.println("============= SCREEN =============");
+        sb.append("   ");
+//        System.out.print("   ");
 
         // 열 번호 출력
         for (int j = 0; j < seats[0].length; j++) {
-            System.out.printf("%-6s", "  " + (j + 1));
+            sb.append(String.format("%-6s", "  " + (j + 1)));
+//            System.out.printf("%-6s", "  " + (j + 1));
         }
-        System.out.println();
+        sb.append("\n");
+//        System.out.println();
 
 
         for (int i = 0; i < seats.length; i++) {
-            System.out.print(((char) (i + 65)) + " "); // 행 알파벳 출력
+//            System.out.print(((char) (i + 65)) + " "); // 행 알파벳 출력
+            sb.append(((char) (i + 65)) + " ");
             for (int j = 0; j < seats[0].length; j++) {
                 if (seats[i][j] == null) {
-                    System.out.printf("%-6s", "[ " + ((char) (i + 65)) + "" + (j + 1) + " ]");
+                    sb.append(String.format("%-6s", "[ " + ((char) (i + 65)) + "" + (j + 1) + " ]"));
+//                    System.out.printf("%-6s", "[ " + ((char) (i + 65)) + "" + (j + 1) + " ]");
                 } else {
-                    System.out.printf("%-6s", "[ X ]"); // 예약된 좌석
+                    sb.append(String.format("%-6s", "[ X ]"));
+//                    System.out.printf("%-6s", "[ X ]"); // 예약된 좌석
                 }
             }
-            System.out.println();
+            sb.append("\n");
+//            System.out.println();
         }
-        System.out.println("=================================");
-        System.out.println("=================================");
+        sb.append("=================================\n");
+        sb.append("=================================\n");
+//        System.out.println("=================================");
+//        System.out.println("=================================");
+        return sb.toString();
     }
 
 

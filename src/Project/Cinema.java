@@ -69,7 +69,7 @@ public class Cinema { // 영화관
                 }
 
                 default:
-                    System.out.println("입력 잘못되었습니다. 다시입력해주세요");
+                    OutputView.printExceptionMessage("입력 잘못되었습니다. 다시입력해주세요");
             }
 
         }
@@ -134,7 +134,8 @@ public class Cinema { // 영화관
             return;
         }
         do {
-            System.out.println("메뉴를 입력하세요. 1-> 영화상영등록 2-> 영화상영종료 3-> 회원정보조회 4-> 상영목록조회 exit-> 종료 ");
+//            System.out.println("메뉴를 입력하세요. 1-> 영화상영등록 2-> 영화상영종료 3-> 회원정보조회 4-> 상영목록조회 exit-> 종료 ");
+            OutputView.printAdminMenu();
             // 추가작업 ?! -> 5. 새로운"영화"등록
             inputData = sc.nextLine();
 

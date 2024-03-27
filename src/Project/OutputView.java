@@ -74,10 +74,72 @@ public class OutputView {
         }
 
         try { //결과를 볼 시간 1초 대기
-            Thread.sleep(3000); // 대기
+            Thread.sleep(2500); // 대기
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void printBoxNotJump(String content) {
+        String boxTop = "\u001B[33m"+"  ╔════════════════════━━━─── • ───━━━════════════════════╗"+ RESET_COLOR;
+
+        String cinema =   "\u001B[38;5;208m"+ "       \t\t\t\t\t  Cinema " + RESET_COLOR +"\uD83C\uDFAC\n";
+
+        String boxBottom = "\u001B[33m"+"  ╚════════════════════━━━─── • ───━━━════════════════════╝"+ RESET_COLOR;
+
+        String[] lines = content.split("\n");
+
+        System.out.println(boxTop);
+        System.out.println(cinema);
+
+        for (String line : lines) {
+            // 중앙 정렬을 위해 상자의 가로 길이를 기준으로 문자열을 출력
+            int paddingLength = (60 - line.length()) / 2; // 60자 가정
+            String leftPadding = " ".repeat(paddingLength);
+//            String rightPadding = " ".repeat(60 - line.length() - paddingLength);
+            String rightPadding = " ".repeat(60 - line.length() - leftPadding.length());
+
+            System.out.println(leftPadding + line + rightPadding);
+        }
+        System.out.println();
+
+        System.out.println(boxBottom);
+    }
+
+    public static void printMovieScheduleForClient(String content) {
+        for (int i = 0; i < 25; i++) {
+            System.out.println();
+        }
+        String boxTop = "\u001B[33m"+"  ╔════════════════════━━━─── • ───━━━════════════════════╗"+ RESET_COLOR;
+
+        String cinema =   "\u001B[38;5;208m"+ "       \t\t\t\t\t  Cinema " + RESET_COLOR +"\uD83C\uDFAC\n";
+
+        String boxBottom = "\u001B[33m"+"  ╚════════════════════━━━─── • ───━━━════════════════════╝"+ RESET_COLOR;
+
+        String[] lines = content.split("\n");
+
+        System.out.println(boxTop);
+        System.out.println(cinema);
+
+//        for (String line : lines) {
+//            // 중앙 정렬을 위해 상자의 가로 길이를 기준으로 문자열을 출력
+//            int paddingLength = (60 - line.length()) / 2; // 60자 가정
+//            String leftPadding = " ".repeat(paddingLength);
+////            String rightPadding = " ".repeat(60 - line.length() - paddingLength);
+//            String rightPadding = " ".repeat(60 - line.length() - leftPadding.length());
+//
+//            System.out.println(leftPadding + line + rightPadding);
+//        }
+        for (String line : lines) {
+            System.out.println("\t\t"+line);
+        }
+        System.out.println();
+
+        System.out.println(boxBottom);
+
+//        for (int i = 0; i < 15; i++) {
+//            System.out.println();
+//        }
     }
 
 
@@ -114,6 +176,34 @@ public class OutputView {
             System.out.println();
         }
 
+    }
+
+    public static void printInputMessageNotJump(String content) {
+        String boxTop = "\u001B[33m"+"  ╔════════════════════━━━─── • ───━━━════════════════════╗"+ RESET_COLOR;
+
+        String cinema =   "\u001B[38;5;208m"+ "       \t\t\t\t\t  Cinema " + RESET_COLOR +"\uD83C\uDFAC\n";
+
+        String boxBottom = "\u001B[33m"+"  ╚════════════════════━━━─── • ───━━━════════════════════╝"+ RESET_COLOR;
+
+        String exitMessage = "\u001B[31m"+"     \t\t\t\t  메뉴로 가기 -> exit "+ RESET_COLOR;
+
+        String[] lines = content.split("\n");
+
+        System.out.println(boxTop);
+        System.out.println(cinema);
+//        System.out.println("[ "+functionName+" ]");
+
+        for (String line : lines) {
+            // 중앙 정렬을 위해 상자의 가로 길이를 기준으로 문자열을 출력
+            int paddingLength = (60 - line.length()) / 2; // 60자 가정
+            String leftPadding = " ".repeat(paddingLength);
+//            String rightPadding = " ".repeat(60 - line.length() - paddingLength);
+            String rightPadding = " ".repeat(60 - line.length() - leftPadding.length());
+
+            System.out.println(leftPadding + line + rightPadding);
+        }
+        System.out.println("\n"+exitMessage);
+        System.out.println(boxBottom);
     }
 
     public static void printMenuMessage(String content) {
@@ -169,7 +259,7 @@ public class OutputView {
             boxContent.append(String.format("%13s)\n", "(" + THEATERS[i])); // 상영관 출력
             boxContent.append("(상영 시간)  :");
             for (ScreeningTime screen_time : TIMES) { // 상영시간 출력
-                boxContent.append(String.format("  %-10s", screen_time));
+                boxContent.append(String.format("  %-10s", screen_time.getTime()));
             }
             boxContent.append("\n(  영화  )  : ");
             for (int j = 0; j < TIMES.length; j++) {
@@ -181,7 +271,7 @@ public class OutputView {
                 boxContent.append(String.format(" %-10s", adminSchedule.getMovie().getTitle())); // 영화이름 출력
             }
 
-            boxContent.append("\n    (좌석 정보)  :");
+            boxContent.append("\n(좌석 정보)  :");
             for (int j = 0; j < TIMES.length; j++) {
                 if (adminSchedules[i][j] == null) { // 빈 상영시간이라면 공백을 출력
                     boxContent.append("             ");
@@ -197,7 +287,7 @@ public class OutputView {
             boxContent.append("\n───────────────────────────────────────────────\n");
         }
 
-        printBox(boxContent.toString());
+        printMovieScheduleForClient(boxContent.toString());
     }
 
 
@@ -234,9 +324,9 @@ public class OutputView {
                 " |_|                                       |_|",
                 String.format(" | |       가격 :    %s원                | |",reservation.getMovie().getPrice()),
                 " |_|                                       |_|",
-                String.format(" | |   상영 일자 :    %s  %s    | |",reservation.getMovieDate(), TIMES[theater[0]]),
+                String.format(" | |   상영 일자 :    %s    %s    | |",reservation.getMovieDate(), TIMES[theater[1]].getTime()),
                 " |_|                                       |_|",
-                String.format(" | |     상영관 :    %s                     | |", THEATERS[theater[1]]),
+                String.format(" | |     상영관 :    %s                     | |", THEATERS[theater[0]]),
                 " |_|                                       |_|",
                 String.format(" | |       좌석 :    %s  %s               | |",col,row),
                 " |_|                                       |_|",
@@ -260,6 +350,11 @@ public class OutputView {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+        try { //결과를 볼 시간 1초 대기
+            Thread.sleep(2500); // 대기
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -403,8 +498,7 @@ public class OutputView {
         String[] firstMenu2 = {
                 "\t\t\t\t\t   \u001B[31m1. login\u001B[0m\n",
                 "\n",
-                "\t\t\t\t\t   \u001B[31m2. sign up\u001B[0m\n",
-                "         please input :"
+                "\t\t\t\t\t   \u001B[31m2. sign up\u001B[0m\n"
         };
         for (String menu : firstMenu2) {
             System.out.print(menu);

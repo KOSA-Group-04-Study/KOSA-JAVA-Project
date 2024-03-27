@@ -36,7 +36,7 @@ public class MovieScheduleManager {
     //영화상영등록
     public static void registerMovieToSchedule() {
 
-        System.out.println("****영화 상영 등록을 진행합니다.****");
+//        System.out.println("****영화 상영 등록을 진행합니다.****");
 
         try {
             //날짜를 입력받아 관리자용 영화 스케줄보여주기
@@ -61,12 +61,12 @@ public class MovieScheduleManager {
             System.out.println(e.getMessage());
             return; // 메뉴로 보낸다.
         }
-        System.out.println("****영화 상영 등록이 완료되었습니다.****");
+//        System.out.println("****영화 상영 등록이 완료되었습니다.****");
     }
 
     public static void deleteMovieFromSchedule() {
 
-        System.out.println("****영화 상영 종료를 진행합니다.****");
+//        System.out.println("****영화 상영 종료를 진행합니다.****");
 
         try {
             //날짜를 입력받아 관리자용 영화 스케줄보여주기
@@ -89,7 +89,7 @@ public class MovieScheduleManager {
             return; // 메뉴로 보낸다.
         }
 
-        System.out.println("****영화 상영 종료가 완료되었습니다.****");
+//        System.out.println("****영화 상영 종료가 완료되었습니다.****");
     }
 
     //관리자용 영화 스케줄 보여주기 -> (날짜 입력받아 검증하고 날짜 반환) + (파일 읽기를 이용해 영화스케줄 전역변수 최신화) + ( 관리자용 영화 스케줄 출력)
@@ -105,18 +105,28 @@ public class MovieScheduleManager {
     //회원정보 출력 메소드
     public static void printAllUsers() {
         List<User> users = FileDataManager.readUserInfoFromFile();
+        StringBuilder sb = new StringBuilder();
+
         for (User user : users) {
-            System.out.println("-------------------");
-            System.out.println("사용자 정보:");
-            System.out.println("아이디: " + user.getEmail());
-            System.out.println("이름: " + user.getName());
-            System.out.println("전화번호: " + user.getPhoneNumber());
+//            System.out.println("-------------------");
+            sb.append("사용자 정보").append("\n");
+//            System.out.println("사용자 정보:");
+            sb.append("아이디: " + user.getEmail()).append("\n");
+//            System.out.println("아이디: " + user.getEmail());
+            sb.append("이름: " + user.getName()).append("\n");
+//            System.out.println("이름: " + user.getName());
+//            System.out.println("전화번호: " + user.getPhoneNumber());
+            sb.append("전화번호: " + user.getPhoneNumber()).append("\n");
             System.out.println("관리자 여부: " + (user.isAdmin() ? "O" : "X"));
+            sb.append("관리자 여부: " + (user.isAdmin() ? "O" : "X")).append("\n");
             if (user instanceof Client client) {
-                System.out.println("포인트 :" + client.getPoint());
+                sb.append("포인트 :" + client.getPoint()).append("\n");
+//                System.out.println("포인트 :" + client.getPoint());
             }
-            System.out.println("-------------------");
+//            System.out.println("-------------------");
+            sb.append("\n");
         }
+        OutputView.printBox(sb.toString());
     }
 
     //날짜 입력 받는 메소드
@@ -125,12 +135,11 @@ public class MovieScheduleManager {
         sdf.setLenient(false); // 지정한 포맷과 다르다면 예외발생
         String inputdata = "";
         String ment = """
-                날짜를 입력하세요  예시 -> 2024-03-23
+                날짜를 입력하세요  예시 -> 2024-03-26
                     """;
         OutputView.printInputMessage(ment);
         while (true) {
             try {
-                System.out.print("\tplease input ->  ");
                 inputdata = sc.nextLine();
                 if (inputdata.equals(EXIT_COMMAND)) throw new ExitException();
                 sdf.parse(inputdata); //포맷팅 검사
@@ -145,8 +154,9 @@ public class MovieScheduleManager {
 
     // 상영등록 또는 상영종료 할 스케줄의 입력번호를 받는 메소드 (입력 검증까지)
     private static SelectedScheduleInfo inputNumber(String selectedDate, String methodType) {
+//        System.out.println("입력번호를 입력해주세요 나가기 -> exit");
+        OutputView.printInputMessageNotJump("입력번호를 입력해주세요");
         while (true) {
-            System.out.println("입력번호를 입력해주세요 나가기 -> exit");
             String inputData = sc.nextLine();
             if (inputData.equals(EXIT_COMMAND)) throw new ExitException(); //exit입력시 탈출예외던지기
             try {
@@ -154,12 +164,13 @@ public class MovieScheduleManager {
                 if (inputNumber >= 1 && inputNumber <= 9) { //입력숫자의 범위와 비어있는 스케줄인지 검증
                     return validateInputNumber(inputNumber, selectedDate, methodType); //입력번호의 스케줄이 상영등록또는 취소가 가능한 상황인지 체크
                 } else {
-                    System.out.println("입력범위를 벗어났습니다. 1~9만 입력가능");
+                   OutputView.printExceptionMessage("입력범위를 벗어났습니다. 1~9만 입력가능");
                 }
             } catch (IllegalArgumentException e) {
-                System.out.println("숫자만 입력가능합니다.");
+                OutputView.printExceptionMessage("숫자만 입력가능합니다.");
             } catch (InputException e) {
-                System.out.println(e.getMessage());
+                OutputView.printExceptionMessage(e.getMessage());
+//                System.out.println(e.getMessage());
             }
         }
     }
@@ -167,11 +178,12 @@ public class MovieScheduleManager {
     private static Movie inputMovieName() {
         //파일에서 영화목록 가져오기
         List<Movie> movieList = FileDataManager.readMoviesFromFile();
-        System.out.println("영화목록");
+//        System.out.println("영화목록");
         //영화 목록 출력
         movieList.forEach(movie -> System.out.println(movie.getTitle()));
+//        System.out.println("등록할 영화제목을 입력하세요 나가기 -> exit");
+        OutputView.printInputMessageNotJump("등록할 영화제목을 입력하세요");
         while (true) {
-            System.out.println("등록할 영화제목을 입력하세요 나가기 -> exit");
             String input = sc.nextLine();
             if (input.equals(EXIT_COMMAND)) throw new ExitException(); // 탈출커맨드 입력시 탈출예외 던지기
             //파일에서 가져온 영화리스트에서 사용자가 입력한 영화이름과 일치하는 영화 찾기
@@ -179,7 +191,7 @@ public class MovieScheduleManager {
             if (inputMovie.isPresent()) { //Optional 안의 객체가 존재한다면 (= 영화를 찾았다면)
                 return inputMovie.get();
             } else {
-                System.out.println("존재하지않는 영화입니다.");
+                OutputView.printExceptionMessage("존재하지않는 영화입니다.");
             }
         }
     }
