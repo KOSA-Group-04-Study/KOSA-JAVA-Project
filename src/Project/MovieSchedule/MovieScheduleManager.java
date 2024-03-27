@@ -2,6 +2,8 @@ package Project.MovieSchedule;
 
 import Project.*;
 import Project.FilesIO.FileDataManager;
+import Project.User.Client;
+import Project.User.User;
 import lombok.*;
 
 import java.text.SimpleDateFormat;
@@ -91,45 +93,28 @@ public class MovieScheduleManager {
     //관리자용 영화 스케줄 보여주기 -> (날짜 입력받아 검증하고 날짜 반환) + (파일 읽기를 이용해 영화스케줄 전역변수 최신화) + ( 관리자용 영화 스케줄 출력)
     public static String printScheduleForInputDate() {
         String selectedDate = inputDate(); //날짜 입력받기
-        if(selectedDate.equals(EXIT_COMMAND)) throw new ExitException();
         prepareData(selectedDate); // 영화스케줄전역변수 업데이트
 
         AdminSchedule[][] adminSchedule = adminSchedules.get(selectedDate);
-        System.out.println("선택하신 날짜 : " + selectedDate);
-
-        for (int i = 0; i < 3; i++) {
-            System.out.printf("%13s)\n", "(" + THEATERS[i]); //상영관 출력
-            System.out.print("(상영 시간)  :");
-            for (String screen_time : SCREENING_TIMES) { // 상영시간 출력
-                System.out.printf("  %-10s", screen_time);
-            }
-            System.out.print("\n(  영화  )  : ");
-            for (int j = 0; j < 3; j++) {
-                if (adminSchedule[i][j] == null) { // 빈 상영시간이라면 공백을 출력
-                    System.out.print("            ");
-                    continue;
-                }
-                AdminSchedule AdminSchedule = adminSchedule[i][j];
-                System.out.printf(" %-10s", AdminSchedule.getMovie().getTitle()); //영화이름 출력
-            }
-
-            System.out.print("\n(좌석 정보)  :");
-            for (int j = 0; j < 3; j++) {
-                if (adminSchedule[i][j] == null) { // 빈 상영시간이라면 공백을 출력
-                    System.out.print("             ");
-                    continue;
-                }
-                Schedule schedule = adminSchedule[i][j].getSchedule();
-                System.out.printf("  %d/%d       ", schedule.getEmpty(), TOTAL_SEAT_NUMBER); // 채워진좌석/총좌석 을 출력
-
-            }
-            System.out.print("\n( 입력번호 ) :");
-            for (int j = 0; j < 3; j++) {
-                System.out.printf("   [%d]       ", (i * 3) + j + 1); // 1~9 까지의 입력번호를 가진다.
-            }
-            System.out.println("\n----------------------------------------");
-        }
+        OutputView.printScheduleBox(selectedDate, adminSchedule);
         return selectedDate;
+    }
+
+    //회원정보 출력 메소드
+    public static void printAllUsers() {
+        List<User> users = FileDataManager.readUserInfoFromFile();
+        for (User user : users) {
+            System.out.println("-------------------");
+            System.out.println("사용자 정보:");
+            System.out.println("아이디: " + user.getEmail());
+            System.out.println("이름: " + user.getName());
+            System.out.println("전화번호: " + user.getPhoneNumber());
+            System.out.println("관리자 여부: " + (user.isAdmin() ? "O" : "X"));
+            if (user instanceof Client client) {
+                System.out.println("포인트 :"+client.getPoint());
+            }
+            System.out.println("-------------------");
+        }
     }
 
 
@@ -142,7 +127,7 @@ public class MovieScheduleManager {
             try {
                 System.out.println("날짜를 입력하세요  예시 -> 2024-03-23 , 나가기 -> exit");
                 inputdata = sc.nextLine();
-                if (inputdata.equals(EXIT_COMMAND)) return inputdata;
+                if (inputdata.equals(EXIT_COMMAND)) throw new ExitException();
                 sdf.parse(inputdata); //포맷팅 검사
             } catch (Exception e) {
                 System.out.println("잘못된 날짜입니다. 다시입력하세요 ");
@@ -306,7 +291,7 @@ public class MovieScheduleManager {
     }
     @AllArgsConstructor
     @Getter
-    private static class AdminSchedule {
+    public static class AdminSchedule {
         Movie movie;
         Schedule schedule;
     }

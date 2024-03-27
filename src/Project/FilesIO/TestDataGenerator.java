@@ -6,11 +6,7 @@ import Project.Schedule;
 import Project.User.Admin;
 import Project.User.Client;
 import Project.User.User;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TestDataGenerator {
 
@@ -18,6 +14,7 @@ public class TestDataGenerator {
         List<Movie> movies = createMovies();
         List<User> users = createUser();
         Map<String, Map<Movie, Schedule[][]>> movieSchedules = createMovieSchedules();
+        List<Reservation> emptyList = new ArrayList<>();
 
         // 영화 정보를 파일에 저장
         FileDataManager.writeMoviesToFile(movies);
@@ -25,7 +22,8 @@ public class TestDataGenerator {
         FileDataManager.writeUserInfoToFile(users);
         // 영화스케줄 정보 파일에 저장
         FileDataManager.writeMovieScheduleToFile(movieSchedules);
-
+        // 파일 읽기 오류가 발생했습니다: null 출력 방지
+        FileDataManager.writeReservationToFile(emptyList);
     }
 
     // 영화 정보 생성
@@ -41,7 +39,7 @@ public class TestDataGenerator {
     // 관리자,사용자 한명씩
     private static List<User> createUser() {
         List<User> list = new ArrayList<>();
-        list.add(new Client("q@naver.com", "1q2w3e4r!", "a", "010-1234-1234", false, 0, new ArrayList<>()));
+        list.add(new Client("q@naver.com", "1q2w3e4r!", "a", "010-1234-1234", false, 1000000, new LinkedList<>()));
         list.add(new Admin("q2@naver.com", "1q2w3e4r!", "a", "010-1234-1234", true));
         return list;
     }
