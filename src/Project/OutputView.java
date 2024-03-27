@@ -165,11 +165,10 @@ public class OutputView {
 
     public static void printExceptionMessage(String content) {
         String[] lines = content.split("\n");
-        String errorImage = "⚠\uFE0F";
-        System.out.print("\t"+errorImage+"\t");
+        String errorImage = "\t"+"⚠\uFE0F"+"\t";
         for (String line : lines) {
             // 빨간색 추가하여 출력
-            System.out.println("\u001B[31m" + line+resetColor);
+            System.out.println(errorImage+"\u001B[31m" + line+resetColor+resetColor);
         }
     }
 

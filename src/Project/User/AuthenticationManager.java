@@ -39,12 +39,16 @@ public final class AuthenticationManager {
                         sb.append("전화번호: " + user.getPhoneNumber()).append("\n");
                         sb.append("관리자 여부: " + (user.isAdmin() ? "O" : "X")).append("\n");
                         OutputView.printBox(sb.toString());
+
                         return user;
+
                     }
                 }
-            } else {
-                System.out.println("로그인 실패 : 해당 계정이 존재하지 않습니다.");
-                System.out.println("메뉴로 돌아갑니다.");
+                String failLoginIntro = """
+                  로그인 실패 : 해당 계정이 존재하지 않습니다.
+                  메뉴로 돌아갑니다.
+                   """;
+                OutputView.printBox(failLoginIntro);
                 return null;
             }
         } catch (ExitException e) {
@@ -58,9 +62,16 @@ public final class AuthenticationManager {
     public static void register() {
         // 여기서 아이디, 비밀번호 입력받고 정규표현식으로 체크  여기서 while , 파일쓰기도 해야함.
         // 유저 어떤식 저장될지 형식
+        String loginIntro= """
+              안녕하세요 고객님!
+             회원가입 진행하겠습니다. 
+           아이디(이메일)를 입력해주세요.
+              나가기 -> exit
+                """;
+        OutputView.printBox(loginIntro);
         try {
             String phonePattern = "010-\\d{4}-\\d{4}";
-            System.out.println("회원가입을 시작합니다.");
+            System.out.println("\t회원가입을 시작합니다.");
             String emailId = getEmailInput(emailPattern);
             checkDuplicationEmail(emailId);
             String password = getPasswordInput(passwordPattern);
@@ -68,7 +79,7 @@ public final class AuthenticationManager {
             String phoneNumber = getPhoneNumberInput(phonePattern);
 
 
-            System.out.println("회원가입 완료 ");
+            System.out.println("\t회원가입 완료 ");
             // 입력이 모두 완료되었을 때 파일에 유저 정보 저장
             // 아님 User 생성자 생성 후에 ?? 넘겨주기??
             // writeUserInfoToFile(emailId, password, name, phoneNumber);
@@ -97,7 +108,7 @@ public final class AuthenticationManager {
             if(existingUser.getEmail().equals(emailId)){
                 OutputView.printExceptionMessage("""
                         존재하는 계정입니다.
-                        가입된 계정으로 로그인하세요.
+                        가입된 계정으로 로그인하세요. 메뉴로 이동합니다.
                         """);
                 throw new ExitException();
             }
@@ -135,12 +146,14 @@ public final class AuthenticationManager {
                 return password;
             } else {
                 OutputView.printExceptionMessage("비밀번호 형식에 맞지 않습니다. ");
+
             }
         }
     }
 
     // 이름 입력을 받는 메소드
     private static String getNameInput() {
+
         OutputView.printInputMessage("이름을 입력해주세요.");
         String name = sc.nextLine();
         if(name.equals(EXIT_COMMAND)) throw new ExitException();
@@ -160,6 +173,7 @@ public final class AuthenticationManager {
             if (validatePhoneFormat(phoneNumber, phonePattern)) {
                 return phoneNumber;
             } else {
+
                 OutputView.printExceptionMessage("전화번호를 형식에 맞지 않습니다. ");
             }
         }
