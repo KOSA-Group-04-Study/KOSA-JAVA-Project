@@ -1,6 +1,7 @@
 package Project.MovieSchedule;
 
 import Project.*;
+import Project.Exception.ExitException;
 import Project.FilesIO.FileDataManager;
 import Project.User.Client;
 import Project.User.User;
@@ -292,18 +293,10 @@ public class MovieScheduleManager {
         int screenTime; // 상수배열  SCREENING_TIMES 의 인덱스 저장
         Movie movie;
     }
-
     private static class InputException extends RuntimeException {
         public InputException(String message) {
             super(message);
         }
     }
-
-    private static class ExitException extends RuntimeException {
-        public ExitException() {
-            super("탈출메시지가 입력되었습니다.");
-        }
-    }
-
 
 }

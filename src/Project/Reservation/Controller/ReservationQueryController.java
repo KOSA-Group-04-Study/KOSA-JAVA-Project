@@ -1,5 +1,6 @@
 package Project.Reservation.Controller;
 
+import Project.Exception.ExitException;
 import Project.FilesIO.FileDataManager;
 import Project.Reservation.Reservation;
 import Project.User.Client;
@@ -56,7 +57,7 @@ public class ReservationQueryController {
 
                 //예매 조회
             } while (!menu.equals("exit"));
-        } catch (ReservationQueryController.ExitException e) {
+        } catch (ExitException e) {
             System.out.println(e.getMessage());
         }
 
@@ -90,7 +91,7 @@ public class ReservationQueryController {
     //menu를 입력받아 탈출하거나 menu를 리턴
     private static String checkInputMenu() {
         menu = sc.nextLine();
-        if(menu.equals(EXIT_COMMAND)) throw new ReservationQueryController.ExitException();
+        if(menu.equals(EXIT_COMMAND)) throw new ExitException();
         return menu;
     }
 
@@ -295,11 +296,4 @@ public class ReservationQueryController {
     }
 
 
-    ////////////////////////////////////  Exception   ////////////////////////////////////////////
-    //사용자 정의 예외
-    private static class ExitException extends RuntimeException {
-        public ExitException() {
-            super("탈출메시지가 입력되었습니다.");
-        }
-    }
 }

@@ -1,5 +1,6 @@
 package Project.Reservation.Controller;
 
+import Project.Exception.ExitException;
 import Project.FilesIO.FileDataManager;
 import Project.Movie;
 import Project.Payment.PaymentManager;
@@ -230,14 +231,4 @@ public class ReservationCancellationController {
         System.out.println(foundReservation);
         System.out.println("정말로 예매를 취소하시겠습니까? [1] 예매 취소 / [exit] 메뉴로 돌아가기");
     }
-
-
-    ////////////////////////////////////  Exception   ////////////////////////////////////////////
-    //사용자 정의 예외
-    private static class ExitException extends RuntimeException {
-        public ExitException() {
-            super("탈출메시지가 입력되었습니다.");
-        }
-    }
-
 }
