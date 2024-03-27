@@ -42,10 +42,11 @@ public class ReservationManager {
 
         Map<Movie, Schedule[][]> movieMap = data.get(selectedDate); //선택한 날짜의 영화상영정보
         System.out.println("선택하신 날짜 : " + selectedDate);
-        System.out.println("------------------------------------");
+        //System.out.println("------------------------------------");
+        System.out.println();
 
         //2. 입력받은 날짜의 상영 정보를 보여준다.
-        System.out.println("=====영화 상영 일정====");
+        //System.out.println("=====영화 상영 일정====");
         getMovieSchedules(movieMap, scheduleNumbersMap);
 
 
@@ -127,40 +128,12 @@ public class ReservationManager {
     //입력받은 날짜의 상영정보를 보여준다
     public static void getMovieSchedules(Map<Movie, Schedule[][]> movieMap, Map<Integer, MovieScreaningInfo> scheduleNumbersMap ) {
         //영화 순서 정렬
-        List<Map.Entry<Movie, Schedule[][]>> movieEntryList = new ArrayList<>(movieMap.entrySet());
-        movieEntryList.sort(Comparator.comparing(entry -> entry.getKey().getTitle()));
+        //List<Map.Entry<Movie, Schedule[][]>> movieEntryList = new ArrayList<>(movieMap.entrySet());
+        //movieEntryList.sort(Comparator.comparing(entry -> entry.getKey().getTitle()));
 
-        Integer scheduleNumber = 1;
-        for (Map.Entry<Movie, Schedule[][]> entry : movieEntryList) {
-            System.out.println("제목 : " + entry.getKey().getTitle());
-            System.out.print("       ");
-            for (ScreeningTime time : ReservationManager.times) {
-                System.out.printf("%10s", time);
-            }
-            System.out.println();
-            for (int i = 0; i < entry.getValue().length; i++) {
-                System.out.printf("%s   ", theaters[i]);                    // 상영관 출력
-                for (int j = 0; j < entry.getValue()[0].length; j++) {
-                    if (entry.getValue()[i][j] == null) {
-                        System.out.print("\t\t\t  |");
-                        continue;
-                    }
-
-                    int emptySeats = entry.getValue()[i][j].getEmpty();     //빈좌석
-                    int totalSeats = entry.getValue()[i][j].getTotal();     //총좌석
-                    String seatInfo = emptySeats + "/" + totalSeats;
-                    scheduleNumbersMap.put(scheduleNumber, new MovieScreaningInfo(entry.getKey(), i, j, entry.getValue()[i][j]));   //schedule 넘버
-                    System.out.printf("[%d]\t%s |", scheduleNumber++, seatInfo);
-                }
-                System.out.println();
-                System.out.print("       ");
-                for (int j = 0; j < times.length; j++) {
-                    System.out.print("----------");
-                }
-                System.out.println();
-            }
-            System.out.println();
-        }
+        //Integer scheduleNumber = 1;
+        // printMovieSchedules 메서드에 필요한 매개변수를 전달합니다.
+        OutputView.printClientMovieScheduleBox(movieMap, scheduleNumbersMap);
     }
 
     //좌석 조회하기

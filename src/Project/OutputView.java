@@ -1,14 +1,13 @@
 package Project;
 
 import Project.FilesIO.FileDataManager;
+import Project.Reservation.MovieScreaningInfo;
 import Project.Reservation.Reservation;
 import Project.Reservation.ScreeningTime;
 import Project.MovieSchedule.MovieScheduleManager;
 import Project.User.User;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class OutputView {
@@ -16,6 +15,8 @@ public class OutputView {
     static final String[] theaters = {"1관", "2관", "3관"};
 
     static final ScreeningTime[] times = {ScreeningTime.time_09, ScreeningTime.time_12, ScreeningTime.time_18};
+
+    static String[] SCREENING_TIME = {"9시", "12시", "18시"};
 
     static final int TOTAL_SEAT_NUMBER = 25;
 
@@ -38,8 +39,8 @@ public class OutputView {
 //        Movie movie = new Movie("파묘", 100, 10000);
 //        Reservation reservation = new Reservation(LocalDateTime.now(),"123401234",client,movie,"2024-03-23",);
 //        movietiket();
-        printUserMenu();
-        printAdminMenu();
+        //printUserMenu();
+        //printAdminMenu();
 
         // 선택한 날짜와 해당 날짜에 등록된 영화 및 상영 정보를 출력
         //printScheduleForInputDate(selectedDate, movieSchedule);
@@ -51,6 +52,14 @@ public class OutputView {
                  A250L1  20390A200B 3440P23
             """;
         System.out.println(a);
+    }
+
+    // 사용자 메뉴
+    public static void printLoginSignUpMenu() {
+        System.out.println("╔═════════━━━─── • ───━━━═════════╗");
+        System.out.println("           메뉴를 입력하세요.           ");
+        System.out.println("  1-> 로그인  2-> 회원가입  exit-> 종료  ");
+        System.out.println("╚═════════━━━─── • ───━━━═════════╝");
     }
 
     // 사용자 메뉴
@@ -72,7 +81,7 @@ public class OutputView {
     }
 
     // ASCII 아트를 이용한 상자 출력 메서드
-    public static void printBox(String content) {
+    public static void printAdminBox(String content) {
         String boxTop = "  ╔════════════════════━━━─── • ───━━━════════════════════╗";
         String boxBottom = " ╚════════════════════━━━─── • ───━━━════════════════════╝";
 
@@ -91,13 +100,14 @@ public class OutputView {
         System.out.println(boxBottom);
     }
 
-    public static void printScheduleBox(String selectedDate, MovieScheduleManager.AdminSchedule[][] adminSchedules) {
+    public static void printAdminScheduleBox(String selectedDate, MovieScheduleManager.AdminSchedule[][] adminSchedules) {
         StringBuilder boxContent = new StringBuilder();
         boxContent.append("선택하신 날짜 : ").append(selectedDate);
         boxContent.append("\n───────────────────────────────────────────────\n");
 
         for (int i = 0; i < theaters.length; i++) {
-            boxContent.append(String.format("%13s)\n", "(" + theaters[i])); // 상영관 출력
+            boxContent.append(String.format("%3s)\n", "(" + theaters[i])); // 상영관 출력
+            boxContent.append("───────────────────────────────────────────────\n");
             boxContent.append("(상영 시간)  :");
             for (ScreeningTime screen_time : times) { // 상영시간 출력
                 boxContent.append(String.format("  %-10s", screen_time));
@@ -128,7 +138,68 @@ public class OutputView {
             boxContent.append("\n───────────────────────────────────────────────\n");
         }
 
-        printBox(boxContent.toString());
+        printAdminBox(boxContent.toString());
+    }
+
+    public static void printClientBox(String content) {
+        String boxTop = "  ╔═══════════════━━━─── 영화 상영 일정 ───━━━═══════════════╗";
+        String boxBottom = " ╚════════════════════━━━─── • ───━━━════════════════════╝";
+
+        String[] lines = content.split("\n");
+
+        System.out.println(boxTop);
+
+        for (String line : lines) {
+            // 중앙 정렬을 위해 상자의 가로 길이를 기준으로 문자열을 출력
+            int paddingLength = (60 - line.length()) / 2; // 60자 가정
+            String leftPadding = " ".repeat(8);
+            String rightPadding = " ".repeat(80 - line.length() - paddingLength);
+            System.out.println(leftPadding + line + rightPadding);
+        }
+
+        System.out.println(boxBottom);
+    }
+
+    public static void printClientMovieScheduleBox(Map<Movie, Schedule[][]> movieMap, Map<Integer, MovieScreaningInfo> scheduleNumbersMap) {
+        // 영화 순서 정렬
+        List<Map.Entry<Movie, Schedule[][]>> movieEntryList = new ArrayList<>(movieMap.entrySet());
+        movieEntryList.sort(Comparator.comparing(entry -> entry.getKey().getTitle()));
+
+        Integer scheduleNumber = 1;
+        StringBuilder boxContent = new StringBuilder();
+        for (Map.Entry<Movie, Schedule[][]> entry : movieEntryList) {
+            boxContent.append("제목 : ").append(entry.getKey().getTitle()).append("\n");
+            boxContent.append("───────────────────────────────────────────\n");
+            boxContent.append("    ");
+            for (String time : SCREENING_TIME) {
+                boxContent.append(String.format("%11s", time));
+            }
+            boxContent.append("\n───────────────────────────────────────────\n");
+            //boxContent.append("\n");
+            for (int i = 0; i < entry.getValue().length; i++) {
+                boxContent.append(theaters[i]).append("   "); // 상영관 출력
+                for (int j = 0; j < entry.getValue()[0].length; j++) {
+                    if (entry.getValue()[i][j] == null) {
+                        boxContent.append("\t\t\t  |");
+                        continue;
+                    }
+
+                    int emptySeats = entry.getValue()[i][j].getEmpty();     // 빈좌석
+                    int totalSeats = entry.getValue()[i][j].getTotal();     // 총좌석
+                    String seatInfo = emptySeats + "/" + totalSeats;
+                    scheduleNumbersMap.put(scheduleNumber, new MovieScreaningInfo(entry.getKey(), i, j, entry.getValue()[i][j]));   // schedule 넘버
+                    boxContent.append(String.format("[%d]\t%s |", scheduleNumber++, seatInfo));
+                }
+                boxContent.append("\n       ");
+                for (int j = 0; j < times.length; j++) {
+                    boxContent.append("------------");
+                }
+                boxContent.append("\n");
+            }
+            boxContent.append("\n");
+        }
+
+        printClientBox(boxContent.toString());
     }
 
 

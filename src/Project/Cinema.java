@@ -32,7 +32,7 @@ public class Cinema { // 영화관
         // 초기 메뉴화면 -> 로그인, 회원가입  2가지 기능
         loop:
         do {
-            System.out.println("메뉴를 입력하세요. 1-> 로그인 2-> 회원가입 exit-> 종료 ");
+            OutputView.printLoginSignUpMenu();
             inputData = sc.nextLine();
 
             switch (inputData) {
@@ -74,7 +74,7 @@ public class Cinema { // 영화관
         //사용자 메인메뉴
         do {
 
-            System.out.println("메뉴를 입력하세요. 1-> 예매하기 2-> 예매조회 3-> 예매취소 4-> 포인트 관리 exit-> 종료 ");
+            OutputView.printUserMenu();
             inputData = sc.nextLine();
 
             switch (inputData) {
@@ -118,7 +118,7 @@ public class Cinema { // 영화관
             return;
         }
         do {
-            System.out.println("메뉴를 입력하세요. 1-> 영화상영등록 2-> 영화상영종료 3-> 회원정보조회 4-> 상영목록조회 exit-> 종료 ");
+            OutputView.printAdminMenu();
             // 추가작업 ?! -> 5. 새로운"영화"등록
             inputData = sc.nextLine();
 

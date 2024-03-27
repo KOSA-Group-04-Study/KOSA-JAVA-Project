@@ -96,7 +96,7 @@ public class MovieScheduleManager {
         prepareData(selectedDate); // 영화스케줄전역변수 업데이트
 
         AdminSchedule[][] adminSchedule = adminSchedules.get(selectedDate);
-        OutputView.printScheduleBox(selectedDate, adminSchedule);
+        OutputView.printAdminScheduleBox(selectedDate, adminSchedule);
         return selectedDate;
     }
 
