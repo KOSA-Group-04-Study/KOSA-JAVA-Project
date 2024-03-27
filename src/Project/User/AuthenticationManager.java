@@ -22,7 +22,7 @@ public final class AuthenticationManager {
         // 여기서 아이디, 비밀번호 입력받고  여기서 while -> 파일에서 읽어서 검증
         String loginIntro= """
                 안녕하세요 고객님!
-                아이디(이메일)를 입력해주세요. 
+                아이디(이메일)를 입력해주세요.
                 """;
         OutputView.printBox(loginIntro);
         String id = getEmailInput(emailPattern);

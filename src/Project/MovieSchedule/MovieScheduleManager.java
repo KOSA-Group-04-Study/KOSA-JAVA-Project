@@ -6,6 +6,7 @@ import Project.User.Client;
 import Project.User.User;
 import lombok.*;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -41,13 +42,13 @@ public class MovieScheduleManager {
             String selectedDate = printScheduleForInputDate();
 
             //선택한 스케줄 입력번호 받아오기(+검증) , 해당 입력번호에 대한 스케줄정보 반환 ( 등록시 -> 스케줄정보(무비,영화관인덱스,상영시간인덱스))
-            SelectedScheduleInfo selectedScheduleInfo=inputNumber(selectedDate, REGISTRATION);
+            SelectedScheduleInfo selectedScheduleInfo = inputNumber(selectedDate, REGISTRATION);
 
             // 영화이름 입력받고 영화객체 반환 후 선택된 상영스케줄정보에 저장
             selectedScheduleInfo.setMovie(inputMovieName());
 
             // movieSchedules 에  입력된 날짜,영화,상영관번호,상영시간의 정보를 이용해서 새로운 영화상영스케줄 저장
-            addNewScheduleToMovieSchedule(selectedDate,selectedScheduleInfo);
+            addNewScheduleToMovieSchedule(selectedDate, selectedScheduleInfo);
 
             // movieSchedules 의 변경사항을 adminSchedule 에도 업데이트한다.
             updateAdminSchedule(selectedDate);
@@ -111,7 +112,7 @@ public class MovieScheduleManager {
             System.out.println("전화번호: " + user.getPhoneNumber());
             System.out.println("관리자 여부: " + (user.isAdmin() ? "O" : "X"));
             if (user instanceof Client client) {
-                System.out.println("포인트 :"+client.getPoint());
+                System.out.println("포인트 :" + client.getPoint());
             }
             System.out.println("-------------------");
         }
@@ -122,16 +123,23 @@ public class MovieScheduleManager {
         SimpleDateFormat sdf = new SimpleDateFormat(dataFormat);
         sdf.setLenient(false); // 지정한 포맷과 다르다면 예외발생
         String inputdata = "";
-        try {
-            System.out.println("날짜를 입력하세요  예시 -> 2024-03-23 , 나가기 -> exit");
-            inputdata = sc.nextLine();
-            if (inputdata.equals(EXIT_COMMAND)) throw new ExitException();
-            sdf.parse(inputdata); //포맷팅 검사
-        } catch (Exception e) {
-            System.out.println("잘못된 날짜입니다. 다시입력하세요 ");
-            return inputDate();
+        String ment = """
+                날짜를 입력하세요  예시 -> 2024-03-23
+                나가기 -> exit
+                    """;
+        OutputView.printBox(ment);
+        while (true) {
+            try {
+                System.out.print("\tplease input ->  ");
+                inputdata = sc.nextLine();
+                if (inputdata.equals(EXIT_COMMAND)) throw new ExitException();
+                sdf.parse(inputdata); //포맷팅 검사
+            } catch (ParseException e) {
+                System.out.println("잘못된 날짜입니다. 다시입력하세요 ");
+                continue;
+            }
+            break;
         }
-
         return inputdata;
     }
 
@@ -165,7 +173,7 @@ public class MovieScheduleManager {
         while (true) {
             System.out.println("등록할 영화제목을 입력하세요 나가기 -> exit");
             String input = sc.nextLine();
-            if(input.equals(EXIT_COMMAND)) throw new ExitException(); // 탈출커맨드 입력시 탈출예외 던지기
+            if (input.equals(EXIT_COMMAND)) throw new ExitException(); // 탈출커맨드 입력시 탈출예외 던지기
             //파일에서 가져온 영화리스트에서 사용자가 입력한 영화이름과 일치하는 영화 찾기
             Optional<Movie> inputMovie = movieList.stream().filter((movie) -> movie.getTitle().equals(input)).findFirst();
             if (inputMovie.isPresent()) { //Optional 안의 객체가 존재한다면 (= 영화를 찾았다면)
@@ -175,8 +183,6 @@ public class MovieScheduleManager {
             }
         }
     }
-
-
     private static SelectedScheduleInfo validateInputNumber(int inputNumber, String selectedDate, String methodType) {
         /*
         0,0 ~ 2,2  row,col 을 1~9로 매핑했던것을 원래대로 바꾸고 해당 상영시간이 비어있으면 true 비어있지않으면 false 리턴
@@ -184,8 +190,8 @@ public class MovieScheduleManager {
         4~6 -> i == 1
         7~9 -> i == 2
          */
-        int theater=(inputNumber-1)/3; // 상수배열 THEATERS 의 인덱스로 변환
-        int screeningTime=(inputNumber-1)%3; // 상수배열  SCREENING_TIMES 의 인덱스로 변환
+        int theater = (inputNumber - 1) / 3; // 상수배열 THEATERS 의 인덱스로 변환
+        int screeningTime = (inputNumber - 1) % 3; // 상수배열  SCREENING_TIMES 의 인덱스로 변환
 
         AdminSchedule[][] adminSchedule = adminSchedules.get(selectedDate);
         SelectedScheduleInfo selectedScheduleInfo = new SelectedScheduleInfo();
@@ -195,12 +201,11 @@ public class MovieScheduleManager {
                 selectedScheduleInfo.setTheater(theater);
                 selectedScheduleInfo.setScreenTime(screeningTime);
                 return selectedScheduleInfo; //선택된 상영스케줄정보를 반환
-            }
-            else{
+            } else {
                 throw new InputException("해당 스케줄에는 이미 등록되어있는 영화가 있습니다.");
             }
 
-        } else if (methodType.equals(DELETION) ) { // 영화상영종료 메서드에서 호출했을때 실행되는 부분.
+        } else if (methodType.equals(DELETION)) { // 영화상영종료 메서드에서 호출했을때 실행되는 부분.
             if (adminSchedule[theater][screeningTime] != null) { // 해당 스케줄에 등록된 영화가 있다면 해당 스케줄정보 반환
                 if (adminSchedule[theater][screeningTime].getSchedule().getEmpty() != TOTAL_SEAT_NUMBER) {
                     //해당 스케줄의 영화를 예매한 사람이 있다면 삭제 X
@@ -217,7 +222,6 @@ public class MovieScheduleManager {
             throw new InputException("등록 또는 삭제만 가능합니다.");
         }
     }
-
 
 
     // 영화스케줄을 파일에서 읽어와서 영화스케줄전역변수에 넣어준다.
@@ -255,7 +259,7 @@ public class MovieScheduleManager {
     // 해당 날짜, 해당 상영관, 해당 상영시간에 영화 스케줄을 추가해주는 메소드
     private static void addNewScheduleToMovieSchedule(String selectedDate, SelectedScheduleInfo selectedScheduleInfo) {
         //입력된 날짜 영화 스케줄에 입력된 영화의 상영정보가 없을때 == 그 날짜에는 해당영화 상영을 하지않는 상태
-        if(!movieSchedules.get(selectedDate).containsKey(selectedScheduleInfo.getMovie())) {
+        if (!movieSchedules.get(selectedDate).containsKey(selectedScheduleInfo.getMovie())) {
             //스케줄 2차원배열 초기화
             Schedule[][] schedules = new Schedule[THEATERS.length][SCREENING_TIMES.length];
             for (int i = 0; i < THEATERS.length; i++) {
@@ -266,11 +270,11 @@ public class MovieScheduleManager {
         }
         // 해당 날짜,해당 영화,해당 상영관,해당 상영시간에 새로운 스케줄등록 -> 영화상영등록
         movieSchedules.get(selectedDate).get(selectedScheduleInfo.getMovie())[selectedScheduleInfo.getTheater()][selectedScheduleInfo.getScreenTime()]
-                = new Schedule(SEAT_ROW_COUNT,SEAT_COLUMN_COUNT);
+                = new Schedule(SEAT_ROW_COUNT, SEAT_COLUMN_COUNT);
     }
 
     // 영화 상영종료시 영화스케줄에서 해당 날짜, 해당 영화 , 해당 상영관 ,해당 상영시간의 스케줄을 null 로 바꿔줘서 영화 상영종료처리하는 메소드
-    private static void deleteDataFromMovieSchedule(String selectedDate,SelectedScheduleInfo selectedScheduleInfo) {
+    private static void deleteDataFromMovieSchedule(String selectedDate, SelectedScheduleInfo selectedScheduleInfo) {
         movieSchedules.get(selectedDate).get(selectedScheduleInfo.getMovie())[selectedScheduleInfo.theater][selectedScheduleInfo.screenTime] = null;
     }
 
@@ -281,23 +285,25 @@ public class MovieScheduleManager {
     private 는 외부클래스에서만 사용되게끔 하기 위함
     static 은 static 메소드 내부에서 사용 되어야 하고, 내부클래스 인스턴스 생성시 외부클래스의 참조를 갖지않게하여 GC의 처리대상이 되게하기위함
      */
-    @Setter @Getter
+    @Setter
+    @Getter
     private static class SelectedScheduleInfo { // 선택된 상영스케줄(상영관+상영시간+영화)의 정보를 저장할 클래스
         int theater;  // 상수배열 THEATERS 의 인덱스 저장
         int screenTime; // 상수배열  SCREENING_TIMES 의 인덱스 저장
         Movie movie;
     }
+
     private static class InputException extends RuntimeException {
         public InputException(String message) {
             super(message);
         }
     }
+
     private static class ExitException extends RuntimeException {
         public ExitException() {
             super("탈출메시지가 입력되었습니다.");
         }
     }
-
 
 
 }
