@@ -21,11 +21,12 @@ public final class AuthenticationManager {
     public static User login() {
 
         // 여기서 아이디, 비밀번호 입력받고  여기서 while -> 파일에서 읽어서 검증
-        String loginIntro= """
-                안녕하세요 고객님!
+        String loginIntro = """
+                   안녕하세요 고객님!
+                   로그인 시작합니다.
                 아이디(이메일)를 입력해주세요.
-                나가기 -> exit
-                """;
+                   나가기 -> exit
+                   """;
         OutputView.printBox(loginIntro);
         try {
             String id = getEmailInput(emailPattern);
@@ -37,17 +38,16 @@ public final class AuthenticationManager {
                 for (User user : users) {
                     if (user.getEmail().equals(id) && user.getPassword().equals(password)) {
                         System.out.println("로그인 성공!");
-                        System.out.println("사용자 정보:");
-                        System.out.println("아이디: " + user.getEmail());
-                        System.out.println("이름: " + user.getName());
-                        System.out.println("전화번호: " + user.getPhoneNumber());
-                        System.out.println("관리자 여부: " + (user.isAdmin() ? "O" : "X"));
+
                         return user;
+
                     }
                 }
-            } else {
-                System.out.println("로그인 실패 : 해당 계정이 존재하지 않습니다.");
-                System.out.println("메뉴로 돌아갑니다.");
+                String failLoginIntro = """
+                  로그인 실패 : 해당 계정이 존재하지 않습니다.
+                  메뉴로 돌아갑니다.
+                   """;
+                OutputView.printBox(failLoginIntro);
                 return null;
             }
         } catch (ExitException e) {
@@ -61,9 +61,16 @@ public final class AuthenticationManager {
     public static void register() {
         // 여기서 아이디, 비밀번호 입력받고 정규표현식으로 체크  여기서 while , 파일쓰기도 해야함.
         // 유저 어떤식 저장될지 형식
+        String loginIntro= """
+              안녕하세요 고객님!
+             회원가입 진행하겠습니다. 
+           아이디(이메일)를 입력해주세요.
+              나가기 -> exit
+                """;
+        OutputView.printBox(loginIntro);
         try {
             String phonePattern = "010-\\d{4}-\\d{4}";
-            System.out.println("회원가입을 시작합니다.");
+            System.out.println("\t회원가입을 시작합니다.");
 
 
             String emailId = getEmailInput(emailPattern);
@@ -74,7 +81,7 @@ public final class AuthenticationManager {
             String phoneNumber = getPhoneNumberInput(phonePattern);
 
 
-            System.out.println("회원가입 완료 ");
+            System.out.println("\t회원가입 완료 ");
             // 입력이 모두 완료되었을 때 파일에 유저 정보 저장
             // 아님 User 생성자 생성 후에 ?? 넘겨주기??
             // writeUserInfoToFile(emailId, password, name, phoneNumber);
@@ -101,9 +108,9 @@ public final class AuthenticationManager {
         List<User> existingUsers = FileDataManager.readUserInfoFromFile();
         for (User existingUser : existingUsers) {
             if(existingUser.getEmail().equals(emailId)){
-                System.out.println("존재하는 계정입니다. ");
-                System.out.println("가입된 계쩡으로 로그인하세요.");
-                System.out.println("메인 메뉴로 돌아갑니다.");
+                System.out.println("\t존재하는 계정입니다. ");
+                System.out.println("\t가입된 계정으로 로그인하세요.");
+                System.out.println("\t메인 메뉴로 돌아갑니다.");
                 System.out.println();
                 return false;
             }
@@ -120,7 +127,7 @@ public final class AuthenticationManager {
             if (validateEmailFormat(emailId, emailPattern)) {
                 return emailId;
             } else {
-                System.out.println("이메일 형식에 맞지 않습니다. ");
+                System.out.println("\t이메일 형식에 맞지 않습니다. ");
             }
         }
     }
@@ -129,21 +136,21 @@ public final class AuthenticationManager {
     // 비밀번호 입력을 받는 메소드
     private static String getPasswordInput(String passwordPattern) {
         while (true) {
-            System.out.println("비밀번호는 숫자와 영어 그리고 특수 문자가 들어가며 5자 이상이어야합니다.");
-            System.out.print("비밀번호를 입력하세요: ");
+            System.out.println("\t비밀번호는 숫자와 영어 그리고 특수 문자가 들어가며 5자 이상이어야합니다.");
+            System.out.print("\t비밀번호를 입력하세요: ");
             String password = sc.nextLine();
             if(password.equals(EXIT_COMMAND)) throw new ExitException();
             if (validatePasswordFormat(password, passwordPattern)) {
                 return password;
             } else {
-                System.out.println("비밀번호 형식에 맞지 않습니다. ");
+                System.out.println("\t비밀번호 형식에 맞지 않습니다. ");
             }
         }
     }
 
     // 이름 입력을 받는 메소드
     private static String getNameInput() {
-        System.out.println("이름을 입력해주세요.");
+        System.out.print("\t이름을 입력해주세요.");
         String name = sc.nextLine();
         if(name.equals(EXIT_COMMAND)) throw new ExitException();
         return name;
@@ -153,14 +160,14 @@ public final class AuthenticationManager {
     // 전화번호 입력을 받는 메소드
     private static String getPhoneNumberInput(String phonePattern) {
         while (true) {
-            System.out.println("전화번호는 010-xxxx-xxxx 형식으로 입력해주세요.");
-            System.out.print("전화번호를 입력해주세요: ");
+            System.out.println("\t전화번호는 010-xxxx-xxxx 형식으로 입력해주세요.");
+            System.out.print("\t전화번호를 입력해주세요: ");
             String phoneNumber = sc.nextLine();
             if(phoneNumber.equals(EXIT_COMMAND)) throw new ExitException();
             if (validatePhoneFormat(phoneNumber, phonePattern)) {
                 return phoneNumber;
             } else {
-                System.out.println("전화번호를 형식에 맞지 않습니다. ");
+                System.out.println("\t전화번호를 형식에 맞지 않습니다. ");
             }
         }
     }
