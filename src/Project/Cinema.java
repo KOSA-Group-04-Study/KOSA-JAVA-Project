@@ -45,7 +45,7 @@ public class Cinema { // 영화관
             switch (inputData) {
                 case "1": {
                     //로그인
-                    if ((user = AuthenticationManager.Login()) != null) { //user = ~ 유저객체 채우기 (로그인 성공시)}
+                    if ((user = AuthenticationManager.login()) != null) { //user = ~ 유저객체 채우기 (로그인 성공시)}
                         isAdmin = user.isAdmin();
                         break loop;
                     } else {
@@ -54,7 +54,7 @@ public class Cinema { // 영화관
                 }
                 case "2": {
                     //회원가입
-                    AuthenticationManager.Register();
+                    AuthenticationManager.register();
                     break ;
                 }
                 case "exit": {
