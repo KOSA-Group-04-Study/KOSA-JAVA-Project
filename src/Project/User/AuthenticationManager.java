@@ -55,9 +55,13 @@ public final class AuthenticationManager {
         String phonePattern = "010-\\d{4}-\\d{4}";
         System.out.println("회원가입을 시작합니다.");
 
+
         String emailId = getEmailInput(emailPattern);
-        checkDuplicationEmail(emailId);
-        if(emailId ==null) return;
+        if (emailId == null) return;
+        boolean check = checkDuplicationEmail(emailId);
+        if (!check) return;
+
+
         String password = getPasswordInput(passwordPattern);
         if(password ==null) return;
         String name = getNameInput();
@@ -87,9 +91,13 @@ public final class AuthenticationManager {
     private static boolean checkDuplicationEmail(String emailId) {
         List<User> existingUsers = FileDataManager.readUserInfoFromFile();
         for (User existingUser : existingUsers) {
-            if(existingUser.getEmail().equals(emailId));
+            if(existingUser.getEmail().equals(emailId)){
                 System.out.println("존재하는 계정입니다. ");
+                System.out.println("가입된 계쩡으로 로그인하세요.");
+                System.out.println("메인 메뉴로 돌아갑니다.");
+                System.out.println();
                 return false;
+            }
         }
         return true;
     }
@@ -99,17 +107,9 @@ public final class AuthenticationManager {
         while (true) {
             System.out.print("아이디(이메일)를 입력하세요: ");
             String emailId = sc.nextLine();
-
             if (validateEmailFormat(emailId, emailPattern)) {
-                if(checkDuplicationEmail(emailId)){
-                    return emailId;
-                } else {
-                    if(!askForRetry()){
-                        return null; // 메뉴 돌아가기
-                    }
-                }
+                return emailId;
             } else {System.out.println("이메일 형식에 맞지 않습니다. ");
-
                 if(!askForRetry()){
                     return null; // 메뉴 돌아가기
                 }
