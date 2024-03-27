@@ -34,8 +34,8 @@ public class Cinema { // 영화관
         User user = null;
         boolean isAdmin = false; //  사용자인지 관리자인지 체크
         // 초기 메뉴화면 -> 로그인, 회원가입  2가지 기능
-        OutputView.loading();
-        OutputView.logoPrint();
+//        OutputView.loading();
+//        OutputView.logoPrint();
         OutputView.firstMenu();
         loop:
         do {

@@ -1,6 +1,7 @@
 package Project;
 
 import Project.FilesIO.FileDataManager;
+import Project.MovieSchedule.AdminSchedule;
 import Project.Reservation.Reservation;
 import Project.Reservation.ScreeningTime;
 import Project.MovieSchedule.MovieScheduleManager;
@@ -32,8 +33,8 @@ public class OutputView {
 
     public static void main(String[] args) {
 
-        printUserMenu();
-        printAdminMenu();
+        printUserMenu2();
+        printAdminMenu2();
         printBox("예외처리야 임마 \n 뭘봐");
 
     }
@@ -46,6 +47,13 @@ public class OutputView {
         System.out.println("    4-> 포인트 관리  exit-> 종료       ");
         System.out.println("╚═════════━━━─── • ───━━━═════════╝");
     }
+    public static void printUserMenu2() {
+        System.out.println("╔════════════════════━━━─── • ───━━━════════════════════╗");
+        System.out.println("                      메뉴를 입력하세요.                      \n");
+        System.out.println("    1-> 예매하기  2-> 예매조회  3-> 예매취소  4-> 포인트 관리     \n");
+        System.out.println("                        exit-> 종료       ");
+        System.out.println("╚════════════════════━━━─── • ───━━━════════════════════╝");
+    }
     //관리자 메뉴
     public static void printAdminMenu() {
         System.out.println("╔═════════════━━━─── • ───━━━═════════════╗");
@@ -54,11 +62,19 @@ public class OutputView {
         System.out.println("        4-> 상영목록조회  exit-> 종료          ");
         System.out.println("╚═════════════━━━─── • ───━━━═════════════╝");
     }
+    public static void printAdminMenu2() {
+        System.out.println("╔════════════════════━━━─── • ───━━━════════════════════╗");
+        System.out.println("                      메뉴를 입력하세요.                      \n");
+        System.out.println("    1-> 영화상영등록    2-> 영화상영종료     3-> 회원정보조회      \n");
+        System.out.println("                        exit-> 종료       ");
+        System.out.println("╚════════════════════━━━─── • ───━━━════════════════════╝");
+    }
 
     // ASCII 아트를 이용한 상자 출력 메서드
     public static void printBox(String content) {
         String boxTop = "  ╔════════════════════━━━─── • ───━━━════════════════════╗";
-        String boxBottom = " ╚════════════════════━━━─── • ───━━━════════════════════╝";
+
+        String boxBottom = "  ╚════════════════════━━━─── • ───━━━════════════════════╝";
 
         String[] lines = content.split("\n");
 
@@ -75,7 +91,7 @@ public class OutputView {
         System.out.println(boxBottom);
     }
 
-    public static void printScheduleBox(String selectedDate, MovieScheduleManager.AdminSchedule[][] adminSchedules) {
+    public static void printScheduleBox(String selectedDate, AdminSchedule[][] adminSchedules) {
         StringBuilder boxContent = new StringBuilder();
         boxContent.append("선택하신 날짜 : ").append(selectedDate);
         boxContent.append("\n───────────────────────────────────────────────\n");
@@ -92,7 +108,7 @@ public class OutputView {
                     boxContent.append("            ");
                     continue;
                 }
-                MovieScheduleManager.AdminSchedule adminSchedule = adminSchedules[i][j];
+                AdminSchedule adminSchedule = adminSchedules[i][j];
                 boxContent.append(String.format(" %-10s", adminSchedule.getMovie().getTitle())); // 영화이름 출력
             }
 

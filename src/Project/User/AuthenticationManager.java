@@ -1,6 +1,7 @@
 package Project.User;
 
 import Project.FilesIO.FileDataManager;
+import Project.OutputView;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -19,7 +20,11 @@ public final class AuthenticationManager {
     public static User login() {
 
         // 여기서 아이디, 비밀번호 입력받고  여기서 while -> 파일에서 읽어서 검증
-        System.out.println("안녕하세요.");
+        String loginIntro= """
+                안녕하세요 고객님!
+                아이디(이메일)를 입력해주세요. 
+                """;
+        OutputView.printBox(loginIntro);
         String id = getEmailInput(emailPattern);
         if(id  ==null) return null;
         String password = getPasswordInput(passwordPattern);
@@ -87,9 +92,10 @@ public final class AuthenticationManager {
     private static boolean checkDuplicationEmail(String emailId) {
         List<User> existingUsers = FileDataManager.readUserInfoFromFile();
         for (User existingUser : existingUsers) {
-            if(existingUser.getEmail().equals(emailId));
+            if(existingUser.getEmail().equals(emailId)){
                 System.out.println("존재하는 계정입니다. ");
                 return false;
+            }
         }
         return true;
     }
@@ -97,7 +103,7 @@ public final class AuthenticationManager {
     // 이메일 입력을 받는 메소드
     private static String getEmailInput(String emailPattern) {
         while (true) {
-            System.out.print("아이디(이메일)를 입력하세요: ");
+            System.out.print("\tplease input ->  ");
             String emailId = sc.nextLine();
 
             if (validateEmailFormat(emailId, emailPattern)) {
@@ -108,7 +114,7 @@ public final class AuthenticationManager {
                         return null; // 메뉴 돌아가기
                     }
                 }
-            } else {System.out.println("이메일 형식에 맞지 않습니다. ");
+            } else {System.out.println("이메일 형식에 맞지 않습니다. 다시 입력해주세요");
 
                 if(!askForRetry()){
                     return null; // 메뉴 돌아가기

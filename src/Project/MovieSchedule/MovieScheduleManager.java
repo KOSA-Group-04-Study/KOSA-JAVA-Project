@@ -117,24 +117,21 @@ public class MovieScheduleManager {
         }
     }
 
-
     //날짜 입력 받는 메소드
     private static String inputDate() {
         SimpleDateFormat sdf = new SimpleDateFormat(dataFormat);
         sdf.setLenient(false); // 지정한 포맷과 다르다면 예외발생
         String inputdata = "";
-        while (true) {
-            try {
-                System.out.println("날짜를 입력하세요  예시 -> 2024-03-23 , 나가기 -> exit");
-                inputdata = sc.nextLine();
-                if (inputdata.equals(EXIT_COMMAND)) throw new ExitException();
-                sdf.parse(inputdata); //포맷팅 검사
-            } catch (Exception e) {
-                System.out.println("잘못된 날짜입니다. 다시입력하세요 ");
-                continue;
-            }
-            break;
+        try {
+            System.out.println("날짜를 입력하세요  예시 -> 2024-03-23 , 나가기 -> exit");
+            inputdata = sc.nextLine();
+            if (inputdata.equals(EXIT_COMMAND)) throw new ExitException();
+            sdf.parse(inputdata); //포맷팅 검사
+        } catch (Exception e) {
+            System.out.println("잘못된 날짜입니다. 다시입력하세요 ");
+            return inputDate();
         }
+
         return inputdata;
     }
 
@@ -280,6 +277,7 @@ public class MovieScheduleManager {
 
     /*
     내부 클래스, 내부 예외 클래스 접근제한자 설정 이유
+    내부 클래스에 넣은이유는 해당 외부클래스에서만 사용되는 클래스이기 때문이다.
     private 는 외부클래스에서만 사용되게끔 하기 위함
     static 은 static 메소드 내부에서 사용 되어야 하고, 내부클래스 인스턴스 생성시 외부클래스의 참조를 갖지않게하여 GC의 처리대상이 되게하기위함
      */
@@ -288,12 +286,6 @@ public class MovieScheduleManager {
         int theater;  // 상수배열 THEATERS 의 인덱스 저장
         int screenTime; // 상수배열  SCREENING_TIMES 의 인덱스 저장
         Movie movie;
-    }
-    @AllArgsConstructor
-    @Getter
-    public static class AdminSchedule {
-        Movie movie;
-        Schedule schedule;
     }
     private static class InputException extends RuntimeException {
         public InputException(String message) {
