@@ -126,9 +126,8 @@ public class MovieScheduleManager {
         String inputdata = "";
         String ment = """
                 날짜를 입력하세요  예시 -> 2024-03-23
-                나가기 -> exit
                     """;
-        OutputView.printBox(ment);
+        OutputView.printInputMessage(ment);
         while (true) {
             try {
                 System.out.print("\tplease input ->  ");
@@ -136,7 +135,7 @@ public class MovieScheduleManager {
                 if (inputdata.equals(EXIT_COMMAND)) throw new ExitException();
                 sdf.parse(inputdata); //포맷팅 검사
             } catch (ParseException e) {
-                System.out.println("잘못된 날짜입니다. 다시입력하세요 ");
+                OutputView.printExceptionMessage("잘못된 날짜입니다. 다시입력하세요 ");
                 continue;
             }
             break;

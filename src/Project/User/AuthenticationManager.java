@@ -17,16 +17,11 @@ public final class AuthenticationManager {
     static String emailPattern =  "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
     static String passwordPattern = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{5,}$"; // 특수 문자 1개 이상 포함, 영어 대소문 1개씩 무조건, 숫자도 1개 이상 무조건 최소 5자 이상
     private static final String EXIT_COMMAND = "exit";
+
     //로그인
     public static User login() {
 
         // 여기서 아이디, 비밀번호 입력받고  여기서 while -> 파일에서 읽어서 검증
-        String loginIntro= """
-                안녕하세요 고객님!
-                아이디(이메일)를 입력해주세요.
-                나가기 -> exit
-                """;
-        OutputView.printBox(loginIntro);
         try {
             String id = getEmailInput(emailPattern);
             String password = getPasswordInput(passwordPattern);
@@ -36,12 +31,14 @@ public final class AuthenticationManager {
             if (users != null) {
                 for (User user : users) {
                     if (user.getEmail().equals(id) && user.getPassword().equals(password)) {
-                        System.out.println("로그인 성공!");
-                        System.out.println("사용자 정보:");
-                        System.out.println("아이디: " + user.getEmail());
-                        System.out.println("이름: " + user.getName());
-                        System.out.println("전화번호: " + user.getPhoneNumber());
-                        System.out.println("관리자 여부: " + (user.isAdmin() ? "O" : "X"));
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("로그인 성공!").append("\n");
+                        sb.append("사용자 정보:").append("\n");
+                        sb.append("아이디: " + user.getEmail()).append("\n");
+                        sb.append("이름: " + user.getName()).append("\n");
+                        sb.append("전화번호: " + user.getPhoneNumber()).append("\n");
+                        sb.append("관리자 여부: " + (user.isAdmin() ? "O" : "X")).append("\n");
+                        OutputView.printBox(sb.toString());
                         return user;
                     }
                 }
@@ -64,11 +61,8 @@ public final class AuthenticationManager {
         try {
             String phonePattern = "010-\\d{4}-\\d{4}";
             System.out.println("회원가입을 시작합니다.");
-
-
             String emailId = getEmailInput(emailPattern);
-            boolean check = checkDuplicationEmail(emailId);
-            if (!check) return;
+            checkDuplicationEmail(emailId);
             String password = getPasswordInput(passwordPattern);
             String name = getNameInput();
             String phoneNumber = getPhoneNumberInput(phonePattern);
@@ -97,30 +91,32 @@ public final class AuthenticationManager {
     }
 
     //아이디가 중복체크
-    private static boolean checkDuplicationEmail(String emailId) {
+    private static void checkDuplicationEmail(String emailId) {
         List<User> existingUsers = FileDataManager.readUserInfoFromFile();
         for (User existingUser : existingUsers) {
             if(existingUser.getEmail().equals(emailId)){
-                System.out.println("존재하는 계정입니다. ");
-                System.out.println("가입된 계쩡으로 로그인하세요.");
-                System.out.println("메인 메뉴로 돌아갑니다.");
-                System.out.println();
-                return false;
+                OutputView.printExceptionMessage("""
+                        존재하는 계정입니다.
+                        가입된 계정으로 로그인하세요.
+                        """);
+                throw new ExitException();
             }
         }
-        return true;
     }
 
     // 이메일 입력을 받는 메소드
     private static String getEmailInput(String emailPattern) {
+        OutputView.printInputMessage("""
+            안녕하세요 고객님!
+            이메일을 입력해주세요.
+            """);
         while (true) {
-            System.out.print("\tplease input ->  ");
             String emailId = sc.nextLine();
             if(emailId.equals(EXIT_COMMAND)) throw new ExitException();
             if (validateEmailFormat(emailId, emailPattern)) {
                 return emailId;
             } else {
-                System.out.println("이메일 형식에 맞지 않습니다. ");
+                OutputView.printExceptionMessage("이메일 형식에 맞지 않습니다. ");
             }
         }
     }
@@ -128,22 +124,24 @@ public final class AuthenticationManager {
 
     // 비밀번호 입력을 받는 메소드
     private static String getPasswordInput(String passwordPattern) {
+        OutputView.printInputMessage("""
+                    비밀번호는 숫자와 영어 그리고 특수 문자가 들어가며 5자 이상이어야합니다.
+                    비밀번호를 입력해주세요.
+                    """);
         while (true) {
-            System.out.println("비밀번호는 숫자와 영어 그리고 특수 문자가 들어가며 5자 이상이어야합니다.");
-            System.out.print("비밀번호를 입력하세요: ");
             String password = sc.nextLine();
             if(password.equals(EXIT_COMMAND)) throw new ExitException();
             if (validatePasswordFormat(password, passwordPattern)) {
                 return password;
             } else {
-                System.out.println("비밀번호 형식에 맞지 않습니다. ");
+                OutputView.printExceptionMessage("비밀번호 형식에 맞지 않습니다. ");
             }
         }
     }
 
     // 이름 입력을 받는 메소드
     private static String getNameInput() {
-        System.out.println("이름을 입력해주세요.");
+        OutputView.printInputMessage("이름을 입력해주세요.");
         String name = sc.nextLine();
         if(name.equals(EXIT_COMMAND)) throw new ExitException();
         return name;
@@ -152,15 +150,17 @@ public final class AuthenticationManager {
 
     // 전화번호 입력을 받는 메소드
     private static String getPhoneNumberInput(String phonePattern) {
+        OutputView.printInputMessage("""
+                    전화번호는 010-xxxx-xxxx 형식으로 입력해주세요.
+                    전화번호를 입력해주세요.
+                    """);
         while (true) {
-            System.out.println("전화번호는 010-xxxx-xxxx 형식으로 입력해주세요.");
-            System.out.print("전화번호를 입력해주세요: ");
             String phoneNumber = sc.nextLine();
             if(phoneNumber.equals(EXIT_COMMAND)) throw new ExitException();
             if (validatePhoneFormat(phoneNumber, phonePattern)) {
                 return phoneNumber;
             } else {
-                System.out.println("전화번호를 형식에 맞지 않습니다. ");
+                OutputView.printExceptionMessage("전화번호를 형식에 맞지 않습니다. ");
             }
         }
     }

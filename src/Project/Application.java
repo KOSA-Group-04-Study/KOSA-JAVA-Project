@@ -10,8 +10,6 @@ import java.util.Map;
 
 public class Application {
     public static void main(String[] args) {
-
-        TestDataGenerator.testDataGenerate();
         Cinema cinema = new Cinema();
         cinema.run();
     }

@@ -1,5 +1,6 @@
 package Project;
 
+import Project.FilesIO.TestDataGenerator;
 import Project.Reservation.Controller.ReservationCancellationController;
 import Project.Reservation.Controller.ReservationController;
 import Project.Reservation.Controller.ReservationQueryController;
@@ -34,13 +35,12 @@ public class Cinema { // 영화관
         User user = null;
         boolean isAdmin = false; //  사용자인지 관리자인지 체크
         // 초기 메뉴화면 -> 로그인, 회원가입  2가지 기능
-//        OutputView.loading();
-//        OutputView.logoPrint();
-//        OutputView.firstMenu();
+        OutputView.loading();
+        OutputView.logoPrint();
+        OutputView.firstMenu();
         boolean isFirstMenuDisplayed = false;  //깜빡깜빡 거리는 초기메뉴화면 한번보고 다시 안보게끔.
         loop:
         do {
-            System.out.println();
             if (isFirstMenuDisplayed) {
                 OutputView.firstMenu2();
             }
@@ -86,8 +86,7 @@ public class Cinema { // 영화관
         String inputData = "";
         //사용자 메인메뉴
         do {
-
-            System.out.println("메뉴를 입력하세요. 1-> 예매하기 2-> 예매조회 3-> 예매취소 4-> 포인트 관리 exit-> 종료 ");
+            OutputView.printUserMenu();
             inputData = sc.nextLine();
 
             switch (inputData) {
