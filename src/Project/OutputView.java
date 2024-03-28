@@ -352,7 +352,7 @@ public class OutputView {
             }
         }
         try { //결과를 볼 시간 1초 대기
-            Thread.sleep(2500); // 대기
+            Thread.sleep(2900); // 대기
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -418,7 +418,7 @@ public class OutputView {
         }
         System.out.println();
         //프로그레스바 100.0 까지  0.2씩 증가   -> 테스트 빨리하기위해 0.9로 증가시킴(임시)
-        for (double progress = 0.0; progress < 100.2; progress += 0.9) {
+        for (double progress = 0.0; progress < 100.2; progress += 0.2) {
             updateProgressBar(progress);
             try {
                 Thread.sleep(5); // 0.005초 -> 프로그레스바 올라가는 속도조절

@@ -48,6 +48,10 @@ public class MovieScheduleManager {
             // 영화이름 입력받고 영화객체 반환 후 선택된 상영스케줄정보에 저장
             selectedScheduleInfo.setMovie(inputMovieName());
 
+            OutputView.printBox("""
+                    영화 상영등록을 완료하였습니다.
+                    """);
+
             // movieSchedules 에  입력된 날짜,영화,상영관번호,상영시간의 정보를 이용해서 새로운 영화상영스케줄 저장
             addNewScheduleToMovieSchedule(selectedDate, selectedScheduleInfo);
 
@@ -77,6 +81,10 @@ public class MovieScheduleManager {
 
             // movieSchedules 에  입력된 날짜,영화,상영관번호,상영시간의 정보를 이용해서 원래있던 영화상영스케줄 삭제
             deleteDataFromMovieSchedule(selectedDate, selectedScheduleInfo);
+
+            OutputView.printBox("""
+                    영화 상영종료를 완료하였습니다.
+                    """);
 
             // movieSchedules 의 변경사항을 adminSchedule 에도 업데이트한다.
             updateAdminSchedule(selectedDate);
@@ -117,14 +125,13 @@ public class MovieScheduleManager {
 //            System.out.println("이름: " + user.getName());
 //            System.out.println("전화번호: " + user.getPhoneNumber());
             sb.append("전화번호: " + user.getPhoneNumber()).append("\n");
-            System.out.println("관리자 여부: " + (user.isAdmin() ? "O" : "X"));
+//            System.out.println("관리자 여부: " + (user.isAdmin() ? "O" : "X"));
             sb.append("관리자 여부: " + (user.isAdmin() ? "O" : "X")).append("\n");
             if (user instanceof Client client) {
                 sb.append("포인트 :" + client.getPoint()).append("\n");
 //                System.out.println("포인트 :" + client.getPoint());
             }
 //            System.out.println("-------------------");
-            sb.append("\n");
         }
         OutputView.printBox(sb.toString());
     }
@@ -180,7 +187,11 @@ public class MovieScheduleManager {
         List<Movie> movieList = FileDataManager.readMoviesFromFile();
 //        System.out.println("영화목록");
         //영화 목록 출력
-        movieList.forEach(movie -> System.out.println(movie.getTitle()));
+//        movieList.forEach(movie -> System.out.println(movie.getTitle()));
+        StringBuilder sb = new StringBuilder();
+        movieList.stream().map(Movie::getTitle).forEach((title) -> sb.append(title + "\n"));
+        OutputView.printBoxNotJump(sb.toString());
+
 //        System.out.println("등록할 영화제목을 입력하세요 나가기 -> exit");
         OutputView.printInputMessageNotJump("등록할 영화제목을 입력하세요");
         while (true) {

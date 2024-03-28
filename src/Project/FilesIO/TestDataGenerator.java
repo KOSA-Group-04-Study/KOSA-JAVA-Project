@@ -6,6 +6,8 @@ import Project.Schedule;
 import Project.User.Admin;
 import Project.User.Client;
 import Project.User.User;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class TestDataGenerator {
@@ -18,7 +20,7 @@ public class TestDataGenerator {
 
         // 영화 정보를 파일에 저장
         FileDataManager.writeMoviesToFile(movies);
-        // 사용자 정보 파일에 저장
+        // 사용자 정보 파일에 저장``````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
         FileDataManager.writeUserInfoToFile(users);
         // 영화스케줄 정보 파일에 저장
         FileDataManager.writeMovieScheduleToFile(movieSchedules);
