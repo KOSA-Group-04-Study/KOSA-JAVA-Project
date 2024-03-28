@@ -25,10 +25,4 @@ public class Schedule implements Serializable {
     public void seatCountUp() {
         this.empty++;
     }
-
-//    public Schedule(Seat[][] seats) {
-//        this.seats = seats;
-//        this.empty = 0;
-//    }
-
 }
